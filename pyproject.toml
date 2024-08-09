@@ -1,0 +1,44 @@
+[build-system]
+requires = [
+  "setuptools >= 64",
+  "setuptools-scm >= 8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "awx-plugins-core"  # import awx_plugins.credentials.x, awx_plugins.credentials.y
+# name = "awx_plugins.credentials.x"  # import awx_plugins.credentials.x
+# name = "awx_plugins.credentials.y"  # import awx_plugins.credentials.y
+# version =
+dependencies = [  # runtime deps  # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-optional-dependencies
+  # GUIDANCE: only add things that this project imports directly
+  # GUIDANCE: only set lower version bounds
+  # "awx_plugins.base_interface.api",  # keep `__init__.py` empty
+]
+dynamic = [
+  "version",  # let `setuptools-scm` populate this
+]
+
+# Example entry point declarations:
+# * https://github.com/ansible/awx/blob/cb2ad41/setup.cfg#L16-L25
+# * https://github.com/pytest-dev/pytest-xdist/blob/649cca5/pyproject.toml#L48-L50
+# * https://github.com/ansible-community/ansible-pygments/blob/2ffb109/pyproject.toml#L29-L35
+# * https://github.com/ansible-community/sphinx_ansible_theme/blob/645f414/pyproject.toml#L53-L54
+# awx calls `importlib.metadata.entry_points(group='awx_plugins.credentials')` to discover and later enable any plugins present in the same env
+# TODO: consider using https://pluggy.rtfd.io
+#
+# PLUGIN ACTIVATION GUIDANCE (UX):
+# `pip install awx_plugins.credentials.x`  would auto-activate any plugins the packaged project ships
+[project.entry-points."awx_plugins.credentials"]  # new entry points group name
+x = "awx_plugins.credentials.x.api:XPlugin"
+
+# awx calls `importlib.metadata.entry_points(group='awx.credential_plugins')` to discover and later enable any plugins present in the same env
+[project.entry-points."awx.credential_plugins"]  # pre-existing entry points group name
+x = "awx_plugins.credentials.x.api:XPlugin"
+# conjur = awx.main.credential_plugins.conjur:conjur_plugin
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[tool.setuptools_scm]  # this section presence is a feature-flag to activate `setuptools-scm`
