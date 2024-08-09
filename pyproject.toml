@@ -1,0 +1,34 @@
+[build-system]
+requires = [
+  "setuptools >= 64",
+  "setuptools-scm >= 8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "awx.plugins-core"  # import awx.plugins.credentials.x, awx.plugins.credentials.y
+# name = "awx.plugins.credentials.x"  # import awx.plugins.credentials.x
+# name = "awx.plugins.credentials.y"  # import awx.plugins.credentials.y
+# version = 
+dependencies = [  # runtime deps  # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-optional-dependencies
+  # GUIDANCE: only add things that this project imports directly
+  # GUIDANCE: only set lower version bounds
+  # "awx.plugins.base_interface.api",  # keep `__init__.py` empty
+]
+dynamic = [
+  "version",  # let `setuptools-scm` populate this
+]
+
+# awx calls `importlib.metadata.entry_points(group='awx.credential_plugins')` to discover and later enable any plugins present in the same env  # this should replace pkg_resources
+[project.entry-points."awx.credential_plugins"]  # current name, could be awx.plugins.credentials etc.
+x = "awx.plugins.credentials.x.api:x_plugin"
+# https://github.com/ansible/awx/blob/cb2ad41d8d21b23895345d58b107476696ee1de1/setup.cfg#L16-L25
+# https://github.com/pytest-dev/pytest-xdist/blob/master/pyproject.toml#L48-L50
+# https://github.com/ansible-community/ansible-pygments/blob/2ffb109/pyproject.toml#L29-L35
+# https://github.com/ansible-community/sphinx_ansible_theme/blob/645f414/pyproject.toml#L53-L54
+# conjur = awx.main.credential_plugins.conjur:conjur_plugin
+
+# PLUGIN ACTIVATION GUIDANCE (UX):
+# `pip install awx.plugins.credentials.x`  would auto-activate any plugins the packaged project ships
+
+[tool.setuptools_scm]  # this section presence is a feature-flag to activate `setuptools-scm`
