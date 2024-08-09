@@ -26,7 +26,7 @@ https://github.com/ansible/awx-plugins/actions/workflows/ci-cd.yml/badge.svg?bra
 [Code of Conduct]: https://docs.ansible.com/ansible/latest/community/code_of_conduct.html
 
 [Apache v2 License Badge]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
-[Apache v2 License]: https://github.com/ansible/awx-plugins/blob/devel/LICENSE.md
+[Apache v2 License]: https://github.com/ansible/awx-plugins/blob/devel/LICENSE
 
 [Ansible Matrix Badge]:
 https://img.shields.io/badge/matrix-Ansible%20Community-blueviolet.svg?logo=matrix

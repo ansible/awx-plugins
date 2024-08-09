@@ -1,0 +1,3 @@
+[codespell]
+ignore-words = docs/spelling_wordlist.txt
+ignore-words-list = THIRDPARTY

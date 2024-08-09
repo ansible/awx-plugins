@@ -1,0 +1,8 @@
+# -r tests.in  # `sphinxcontrib-autodoc` will import all the files
+
+furo  # modern Sphinx theme
+myst-parser[linkify]  # Markdown documents support w/ in-text link detector
+Sphinx  # main docs framework
+sphinx-issues  # Sphinx roles providing support for linking GitHub
+sphinx-tabs  # Sphinx directives providing support for HTML tabs
+sphinxcontrib-apidoc  # automatic API pages generator

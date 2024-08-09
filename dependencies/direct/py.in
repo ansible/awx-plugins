@@ -1,0 +1,8 @@
+-c py-constraints.in  # limits known broken versions
+
+covdefaults
+coverage  # accessed directly from tox
+coverage-enable-subprocess
+pytest
+pytest-cov
+pytest-xdist
