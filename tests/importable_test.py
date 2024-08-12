@@ -1,10 +1,16 @@
+"""Smoke tests related to loading entry points."""
+
 from subprocess import check_call as _invoke_command
 from sys import executable as _current_runtime
 from importlib.metadata import entry_points as _discover_entry_points
 
 
 def test_entry_points_exposed():
-    """Verify the plugin entry point is discoverable."""
+    """Verify the plugin entry point is discoverable.
+
+    This check relies on the plugin-declaring distribution package
+    to be pre-installed.
+    """
     entry_points = _discover_entry_points(group='awx.credential_plugins')
     assert 'x' in entry_points.names
 
