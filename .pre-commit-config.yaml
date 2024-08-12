@@ -165,7 +165,7 @@ repos:
   - id: flake8
     additional_dependencies:
     - flake8-docstrings ~= 1.7.0
-    # - flake8-docstrings-complete ~= 1.3.0
+    - flake8-docstrings-complete ~= 1.3.0
     - flake8-length ~= 0.3.1
     - flake8-pytest-style ~= 2.0.0
     - wemake-python-styleguide ~= 0.19.2
@@ -177,10 +177,8 @@ repos:
   - id: pylint
     additional_dependencies:
     - pylint-pytest ~= 1.1.8
-    # - pyOpenSSL  # needed by pylint-pytest since it picks up pytest's args
     # - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
     # - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
-    # - trustme  # needed by pylint-pytest since it picks up pytest's args
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
   rev: v1.11.1
@@ -191,14 +189,7 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
-    # - Sphinx >= 3.1.2
-    # - types-colorama
-    # - types-Pillow
-    # - types-Pygments
-    # - types-pytz
-    # - types-setuptools
     args:
-    # - --namespace-packages
     - --python-version=3.13
     - --txt-report=.tox/.tmp/.mypy/python-3.13
     - --cobertura-xml-report=.tox/.tmp/.mypy/python-3.13
@@ -210,14 +201,7 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
-    - Sphinx >= 3.1.2
-    # - types-colorama
-    # - types-Pillow
-    # - types-Pygments
-    # - types-pytz
-    # - types-setuptools
     args:
-    # - --namespace-packages
     - --python-version=3.12
     - --txt-report=.tox/.tmp/.mypy/python-3.12
     - --cobertura-xml-report=.tox/.tmp/.mypy/python-3.12
@@ -229,14 +213,7 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
-    - Sphinx >= 3.1.2
-    # - types-colorama
-    # - types-Pillow
-    # - types-Pygments
-    # - types-pytz
-    # - types-setuptools
     args:
-    # - --namespace-packages
     - --python-version=3.11
     - --txt-report=.tox/.tmp/.mypy/python-3.11
     - --cobertura-xml-report=.tox/.tmp/.mypy/python-3.11
