@@ -1,8 +1,8 @@
 """Smoke tests related to loading entry points."""
 
+from importlib.metadata import entry_points as _discover_entry_points
 from subprocess import check_call as _invoke_command
 from sys import executable as _current_runtime
-from importlib.metadata import entry_points as _discover_entry_points
 
 import pytest
 
