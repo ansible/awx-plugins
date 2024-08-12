@@ -4,14 +4,23 @@ from subprocess import check_call as _invoke_command
 from sys import executable as _current_runtime
 from importlib.metadata import entry_points as _discover_entry_points
 
+import pytest
 
-def test_entry_points_exposed():
+
+@pytest.mark.parametrize(
+    'entry_points_group',
+    (
+        'awx.credential_plugins',
+        'awx.plugins.credentials',
+    ),
+)
+def test_entry_points_exposed(entry_points_group):
     """Verify the plugin entry point is discoverable.
 
     This check relies on the plugin-declaring distribution package
     to be pre-installed.
     """
-    entry_points = _discover_entry_points(group='awx.credential_plugins')
+    entry_points = _discover_entry_points(group=entry_points_group)
     assert 'x' in entry_points.names
 
     callable_ref_spec = entry_points['x'].value
