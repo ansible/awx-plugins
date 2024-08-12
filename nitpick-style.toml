@@ -1,0 +1,127 @@
+[nitpick.styles]
+include = [
+  'py://nitpick/resources/any/pre-commit-hooks',
+]
+
+[".editorconfig"]
+root = true
+
+[".editorconfig"."*"]
+charset = 'utf-8'
+end_of_line = 'lf'
+indent_size = 4
+indent_style = 'space'
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[".editorconfig"."*.{bat,cmd,ps1}"]
+end_of_line = 'crlf'
+
+[".editorconfig"."*.{js,json,json5,yml,yaml,md,rb}"]
+indent_size = 2
+
+[".editorconfig".Makefile]
+indent_style = 'tab'
+
+[".flake8".flake8]
+# Print the total number of errors:
+count = true
+
+# https://wemake-python-stylegui.de/en/latest/pages/usage/formatter.html
+format = 'wemake'
+
+# Let's not overcomplicate the code:
+max-complexity = 10
+
+# Accessibility/large fonts and PEP8 friendly.
+# This is being flexibly extended through the `flake8-length`:
+max-line-length = 79
+
+# Count the number of occurrences of each error/warning code and print a report:
+statistics = true
+
+# ## Plugin-provided settings: ##
+
+# flake8-eradicate
+# E800:
+eradicate-whitelist-extend = 'isort:\s+\w+|Ref:\s+https?:\/\/'
+
+# flake8-pytest-style
+# PT001:
+pytest-fixture-no-parentheses = true
+# PT006:
+pytest-parametrize-names-type = 'tuple'
+# PT007:
+pytest-parametrize-values-type = 'tuple'
+pytest-parametrize-values-row-type = 'tuple'
+# PT023:
+pytest-mark-no-parentheses = true
+
+# wemake-python-styleguide
+show-source = true
+
+[".isort.cfg".settings]
+combine_as_imports = true
+default_section = 'THIRDPARTY'
+honor_noqa = true
+include_trailing_comma = true
+indent = 4
+known_frameworks = 'awx, django'
+known_testing = 'pytest'
+line_length = 79
+lines_after_imports = 2
+# https://pycqa.github.io/isort/#multi-line-output-modes
+multi_line_output = 3
+no_lines_before = 'LOCALFOLDER'
+sections = 'FUTURE, STDLIB, TESTING, FRAMEWORKS, THIRDPARTY, FIRSTPARTY, LOCALFOLDER'
+use_parentheses = true
+verbose = true
+
+[".mypy.ini".mypy]
+color_output = true
+error_summary = true
+
+check_untyped_defs = true
+
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+
+enable_error_code = "\nignore-without-code"
+
+follow_imports = 'normal'
+
+pretty = true
+
+warn_no_return = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+# [nitpick.files.".mypy.ini"]
+# comma_separated_values = [
+#   'mypy.enable_error_code',
+# ]
+
+[".pylintrc.toml".tool.pylint.format]
+max-line-length = 79
+
+[".codecov.yml".codecov]
+require_ci_to_pass = false
+[".codecov.yml".codecov.notify]
+wait_for_ci = false
+[".codecov.yml".codecov.notify.after_n_builds]
+[".codecov.yml".codecov.token]
+[".codecov.yml".comment]
+require_changes = true
+[".codecov.yml".coverage]
+range = '100..100'
+[".codecov.yml".coverage.status.project.default]
+target = '100%'
+[".codecov.yml".coverage.status.project.lib]
+target = '100%'
+[".codecov.yml".coverage.status.project.tests]
+target = '100%'
+[".codecov.yml".coverage.status.project.typing]
+target = '100%'
+[".codecov.yml".coverage.status.project.typing-stubs]
+target = '100%'
