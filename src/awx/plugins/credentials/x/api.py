@@ -1,1 +1,2 @@
-x_plugin = object()
+class x_plugin:
+    ...
