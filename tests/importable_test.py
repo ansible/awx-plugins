@@ -17,8 +17,8 @@ import pytest
 def test_entry_points_exposed(entry_points_group):
     """Verify the plugin entry point is discoverable.
 
-    This check relies on the plugin-declaring distribution package
-    to be pre-installed.
+    This check relies on the plugin-declaring distribution package to be
+    pre-installed.
     """
     entry_points = _discover_entry_points(group=entry_points_group)
     assert 'x' in entry_points.names
