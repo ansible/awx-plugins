@@ -151,8 +151,9 @@ per-file-ignores =
   # also, using fixtures looks like shadowing the outer scope (WPS442);
   # furthermore, we should be able to import and test private attributes
   # (WPS450) and modules (WPS436), and finally it's impossible to
-  # have <= members in tests (WPS202), including many local vars (WPS210):
-  tests/**.py: S101, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
+  # have <= members in tests (WPS202), including many local vars (WPS210),
+  # additionally test docstrings don't need param lists (DCO020):
+  tests/**.py: DCO020, S101, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
 
 
 # Count the number of occurrences of each error/warning code and print a report:
