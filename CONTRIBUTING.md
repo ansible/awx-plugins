@@ -27,8 +27,8 @@ We are very happy to receive contributions from the community in any form!
 
 Please use a GitHub pull request to submit your contributions. If you have a
 question or are unsure if a contribution is wanted, please join us in
-[TBD](#channel-name-here) on Matrix to discuss your change or on the Ansible forum 
-using the TBD tag if you prefer async discussion. 
+[TBD](#channel-name-here) on Matrix to discuss your change or on the Ansible forum
+using the TBD tag if you prefer async discussion.
 Open a GitHub issue to report bugs or request features.
 
 ## Governance
@@ -42,7 +42,7 @@ The Ansible PROJECTNAME uses the following governance model:
 ---
 - All Contributions MUST be done using the GitHub PR process.
 - Any Contributor MAY submit any patches they feel are suitable for inclusion.
-- Any Contributor MAY review the patches of other Contributors. 
+- Any Contributor MAY review the patches of other Contributors.
 - Any Contributor who makes correct patches, writes good reviews, who clearly
   understands the project goals, and the process SHOULD be invited to become a
   Member of the WWG.

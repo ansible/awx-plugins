@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 name = "awx.plugins-core"  # import awx.plugins.credentials.x, awx.plugins.credentials.y
 # name = "awx.plugins.credentials.x"  # import awx.plugins.credentials.x
 # name = "awx.plugins.credentials.y"  # import awx.plugins.credentials.y
-# version = 
+# version =
 dependencies = [  # runtime deps  # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-optional-dependencies
   # GUIDANCE: only add things that this project imports directly
   # GUIDANCE: only set lower version bounds
