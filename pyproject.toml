@@ -30,11 +30,11 @@ dynamic = [
 # PLUGIN ACTIVATION GUIDANCE (UX):
 # `pip install awx.plugins.credentials.x`  would auto-activate any plugins the packaged project ships
 [project.entry-points."awx.plugins.credentials"]  # new entry points group name
-x = "awx.plugins.credentials.x.api:x_plugin"
+x = "awx.plugins.credentials.x.api:XPlugin"
 
 # awx calls `importlib.metadata.entry_points(group='awx.credential_plugins')` to discover and later enable any plugins present in the same env
 [project.entry-points."awx.credential_plugins"]  # pre-existing entry points group name
-x = "awx.plugins.credentials.x.api:x_plugin"
+x = "awx.plugins.credentials.x.api:XPlugin"
 # conjur = awx.main.credential_plugins.conjur:conjur_plugin
 
 [tool.setuptools_scm]  # this section presence is a feature-flag to activate `setuptools-scm`
