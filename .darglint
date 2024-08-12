@@ -6,5 +6,4 @@
 # * https://github.com/wemake-services/wemake-python-styleguide/issues/2287
 docstring_style = sphinx
 enable = DAR104
-#strictness = long
 strictness = full
