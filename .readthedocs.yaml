@@ -1,5 +1,6 @@
 # Read the Docs configuration file
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+---
 
 version: 2
 
@@ -24,3 +25,5 @@ build:
     PYTHONWARNINGS=error
     "${READTHEDOCS_VIRTUALENV_PATH}"/bin/python -Im
     tox -e docs --skip-pkg-install -q -- _readthedocs/html/ -b dirhtml
+
+...
