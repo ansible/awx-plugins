@@ -14,7 +14,7 @@ import pytest
         'awx.plugins.credentials',
     ),
 )
-def test_entry_points_exposed(entry_points_group):
+def test_entry_points_exposed(entry_points_group: str) -> None:
     """Verify the plugin entry point is discoverable.
 
     This check relies on the plugin-declaring distribution package to be
