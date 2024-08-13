@@ -11,7 +11,7 @@ import pytest
     'entry_points_group',
     (
         'awx.credential_plugins',
-        'awx.plugins.credentials',
+        'awx_plugins.credentials',
     ),
 )
 def test_entry_points_exposed(entry_points_group: str) -> None:
