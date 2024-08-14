@@ -23,15 +23,13 @@ def test_entry_points_exposed(entry_points_group: str) -> None:
     entry_points = _discover_entry_points(group=entry_points_group)
     assert 'x' in entry_points.names
 
-    callable_ref_spec = entry_points['x'].value
-    import_ref, callable_sep, callable_ref = callable_ref_spec.partition(':')
-    assert callable_sep
+    assert entry_points['x'].value == 'awx_plugins.credentials.x.api:XPlugin'
 
     test_is_importable_callable_cmd = (
         _current_runtime,
         '-c',
-        f'from sys import exit; '
-        f'from {import_ref} import {callable_ref}; '
-        f'exit(not callable({callable_ref}))',
+        'from importlib.metadata import entry_points; '
+        'from sys import exit; '
+        f'exit(not callable(entry_points(group="{entry_points_group}")["x"].load()))',
     )
     _invoke_command(test_is_importable_callable_cmd)
