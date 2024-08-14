@@ -1,0 +1,24 @@
+---
+    name: CI
+    env:
+      LC_ALL: "C.UTF-8" # prevent ERROR: Ansible could not initialize the preferred locale: unsupported locale setting
+      CI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DEV_DOCKER_OWNER: ${{ github.repository_owner }}
+      COMPOSE_TAG: ${{ github.base_ref || 'devel' }}
+    on:
+      pull_request:
+    jobs:
+      common-tests:
+        name: ${{ matrix.tests.name }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 60
+        permissions:
+          packages: write
+          contents: read
+        strategy:
+          fail-fast: false
+        steps:
+          - run: echo "Hello World!"
+          - uses: actions/checkout@v4
+            with:
+              show-progress: false
