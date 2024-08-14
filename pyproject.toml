@@ -21,7 +21,7 @@ dynamic = [
 
 # Example entry point declarations:
 # * https://github.com/ansible/awx/blob/cb2ad41/setup.cfg#L16-L25
-# * https://github.com/pytest-dev/pytest-xdist/blob/master/pyproject.toml#L48-L50
+# * https://github.com/pytest-dev/pytest-xdist/blob/649cca5/pyproject.toml#L48-L50
 # * https://github.com/ansible-community/ansible-pygments/blob/2ffb109/pyproject.toml#L29-L35
 # * https://github.com/ansible-community/sphinx_ansible_theme/blob/645f414/pyproject.toml#L53-L54
 # awx calls `importlib.metadata.entry_points(group='awx_plugins.credentials')` to discover and later enable any plugins present in the same env
