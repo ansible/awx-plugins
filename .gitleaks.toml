@@ -1,5 +1,0 @@
-[allowlist]
-description = "Documentation contains example secrets and passwords"
-paths = [
-  "docs/docsite/rst/administration/oauth2_token_auth.rst",
-]
