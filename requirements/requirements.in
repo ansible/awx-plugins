@@ -1,8 +1,7 @@
-requests
-azure-identity
-azure-keyvault
-boto3
-msrestazure
-python-dsv-sdk>=1.0.4
-python-tss-sdk>=1.2.1
-python-thycotic
+requests    # aim, centrify_vault, conjur, hashivault
+azure-identity  # azure_kv
+azure-keyvault  # azure_kv
+boto3   # awx_secretsmanager
+msrestazure # azure_kv
+python-dsv-sdk>=1.0.4   # thycotic_dsv
+python-tss-sdk>=1.2.1   # thycotic_tss
