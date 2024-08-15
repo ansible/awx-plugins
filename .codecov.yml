@@ -1,0 +1,45 @@
+---
+
+codecov:
+  notify:
+    # after_n_builds: 24  # Number of test matrix+lint jobs uploading coverage
+    wait_for_ci: false
+
+  require_ci_to_pass: false
+
+  token: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  # repo-scoped
+
+comment:
+  require_changes: true
+
+coverage:
+  range: 100..100
+  status:
+    project:
+      default:
+        target: 100%
+      lib:
+        flags:
+        - pytest
+        paths:
+        - src/awx/plugins/credentials/**/*.py
+        target: 100%
+      tests:
+        flags:
+        - pytest
+        paths:
+        - tests/
+        target: 100%
+      typing:
+        flags:
+        - MyPy
+        target: 100%
+      typing-stubs:
+        flags:
+        - MyPy
+        paths:
+        - >-
+          **/*.pyi
+        target: 100%
+
+...

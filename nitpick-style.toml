@@ -1,0 +1,92 @@
+[nitpick.styles]
+include = [
+  "py://nitpick/resources/any/pre-commit-hooks",
+]
+
+[".editorconfig"]
+root = true
+
+[".editorconfig"."*"]
+charset = "utf-8"
+end_of_line = "lf"
+indent_size = 4
+indent_style = "space"
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[".editorconfig"."*.{bat,cmd,ps1}"]
+end_of_line = "crlf"
+
+[".editorconfig"."*.{js,json,json5,yml,yaml,md,rb}"]
+indent_size = 2
+
+[".editorconfig".Makefile]
+indent_style = "tab"
+
+# [".flake8".flake8]
+# max-line-length = 79
+
+[".isort.cfg".settings]
+default_section = "THIRDPARTY"
+honor_noqa = true
+include_trailing_comma = true
+indent = 4
+known_frameworks = "awx, django"
+known_testing = "pytest"
+line_length = 79
+lines_after_imports = 2
+# https://pycqa.github.io/isort/#multi-line-output-modes
+multi_line_output = 5
+no_lines_before = "LOCALFOLDER"
+sections = "STDLIB, TESTING, FRAMEWORKS, THIRDPARTY, FIRSTPARTY, LOCALFOLDER"
+use_parentheses = true
+verbose = true
+
+[".mypy.ini".mypy]
+color_output = true
+error_summary = true
+
+check_untyped_defs = true
+
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+
+# enable_error_code = "\n  ignore-without-code"
+
+follow_imports = "normal"
+
+pretty = true
+
+warn_no_return = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+# [nitpick.files.".mypy.ini"]
+# comma_separated_values = [
+#   "mypy.enable_error_code",
+# ]
+
+[".pylintrc.toml".tool.pylint.format]
+max-line-length = 79
+
+[".codecov.yml".codecov]
+require_ci_to_pass = false
+[".codecov.yml".codecov.notify]
+wait_for_ci = false
+[".codecov.yml".codecov.notify.after_n_builds]
+[".codecov.yml".codecov.token]
+[".codecov.yml".comment]
+require_changes = true
+[".codecov.yml".coverage]
+range = "100..100"
+[".codecov.yml".coverage.status.project.default]
+target = "100%"
+[".codecov.yml".coverage.status.project.lib]
+target = "100%"
+[".codecov.yml".coverage.status.project.tests]
+target = "100%"
+[".codecov.yml".coverage.status.project.typing]
+target = "100%"
+[".codecov.yml".coverage.status.project.typing-stubs]
+target = "100%"
