@@ -17,12 +17,7 @@ skip_covered = true
 skip_empty = true
 show_missing = true
 exclude_also =
-  \#\s*pragma: no cover
-  ^\s*raise AssertionError\b
-  ^\s*raise NotImplementedError\b
-  ^\s*return NotImplemented\b
-  ^\s*raise$
-  ^if __name__ == ['"]__main__['"]:$
+  ^\s*@pytest\.mark\.xfail
 
 [run]
 branch = true
