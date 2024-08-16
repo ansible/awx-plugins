@@ -179,8 +179,8 @@ repos:
   - id: pylint
     additional_dependencies:
     - pylint-pytest ~= 1.1.8
-    # - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
-    # - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
+    - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
+    - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
   rev: v1.11.1
