@@ -20,7 +20,7 @@ build:
   - >-
     PYTHONWARNINGS=error
     "${READTHEDOCS_VIRTUALENV_PATH}"/bin/python -Im
-    tox -e docs --notest -vvvvv
+    tox -e build-docs --notest -vvvvv
   - >-
     PYTHONWARNINGS=error
     "${READTHEDOCS_VIRTUALENV_PATH}"/bin/python -Im
