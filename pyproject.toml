@@ -74,12 +74,29 @@ name = "Ansible maintainers and contributors"
 # PLUGIN ACTIVATION GUIDANCE (UX):
 # `pip install awx_plugins.credentials.x`  would auto-activate any plugins the packaged project ships
 [project.entry-points."awx_plugins.credentials"]  # new entry points group name
-x = "awx_plugins.credentials.x.api:XPlugin"
+conjur = "awx_plugins.credentials.conjur:conjur_plugin"
+hashivault_kv = "awx_plugins.credentials.hashivault:hashivault_kv_plugin"
+hashivault_ssh = "awx_plugins.credentials.hashivault:hashivault_ssh_plugin"
+azure_kv = "awx_plugins.credentials.azure_kv:azure_keyvault_plugin"
+aim = "awx_plugins.credentials.aim:aim_plugin"
+centrify_vault_kv = "awx_plugins.credentials.centrify_vault:centrify_plugin"
+thycotic_dsv = "awx_plugins.credentials.dsv:dsv_plugin"
+thycotic_tss = "awx_plugins.credentials.tss:tss_plugin"
+aws_secretsmanager_credential = "awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin"
 
-# awx calls `importlib.metadata.entry_points(group='awx.credential_plugins')` to discover and later enable any plugins present in the same env
-[project.entry-points."awx.credential_plugins"]  # pre-existing entry points group name
-x = "awx_plugins.credentials.x.api:XPlugin"
-# conjur = awx.main.credential_plugins.conjur:conjur_plugin
+[project.entry-points."awx_plugins.inventory"]  # new entry points group name
+azure-rm = "awx_plugins.inventory.plugins:azure_rm"
+ec2 = "awx_plugins.inventory.plugins:ec2"
+gce = "awx_plugins.inventory.plugins:gce"
+vmware = "awx_plugins.inventory.plugins:vmware"
+openstack = "awx_plugins.inventory.plugins:openstack"
+rhv = "awx_plugins.inventory.plugins:rhv"
+satellite6 = "awx_plugins.inventory.plugins:satellite6"
+terraform = "awx_plugins.inventory.plugins:terraform"
+controller = "awx_plugins.inventory.plugins:controller"
+insights = "awx_plugins.inventory.plugins:insights"
+openshift_virtualization = "awx_plugins.inventory.plugins:openshift_virtualization"
+constructed = "awx_plugins.inventory.plugins:constructed"
 
 [project.license]
 file = "LICENSE"
