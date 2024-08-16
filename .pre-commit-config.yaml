@@ -178,6 +178,7 @@ repos:
   hooks:
   - id: pylint
     additional_dependencies:
+    - covdefaults  # needed by pylint-pytest due to pytest-cov loading coverage
     - pylint-pytest ~= 1.1.8
     - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
     - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
