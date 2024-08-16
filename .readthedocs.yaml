@@ -24,6 +24,8 @@ build:
   - >-
     PYTHONWARNINGS=error
     "${READTHEDOCS_VIRTUALENV_PATH}"/bin/python -Im
-    tox -e build-docs --skip-pkg-install -q -- "${READTHEDOCS_OUTPUT}"/html -b dirhtml
+    tox -e build-docs --skip-pkg-install -q
+    --
+    "${READTHEDOCS_OUTPUT}"/html -b dirhtml
 
 ...
