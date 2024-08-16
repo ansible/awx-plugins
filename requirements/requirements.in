@@ -1,0 +1,7 @@
+requests  # credentials.aim, credentials.centrify_vault, credentials.conjur, credentials.hashivault
+azure-identity  # credentials.azure_kv
+azure-keyvault  # credentials.azure_kv
+boto3  # credentials.awx_secretsmanager
+msrestazure  # credentials.azure_kv
+python-dsv-sdk >= 1.0.4  # credentials.thycotic_dsv
+python-tss-sdk >= 1.2.1  # credentials.thycotic_tss
