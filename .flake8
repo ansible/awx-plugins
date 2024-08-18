@@ -92,7 +92,6 @@ per-file-ignores =
   # additionally test docstrings don't need param lists (DAR, DCO020):
   tests/**.py: DAR, DCO020, S101, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
 
-
 # Count the number of occurrences of each error/warning code and print a report:
 statistics = true
 
