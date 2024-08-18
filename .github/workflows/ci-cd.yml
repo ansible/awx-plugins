@@ -556,6 +556,7 @@ jobs:
         - pre-commit
         - metadata-validation
         - build-docs
+        - coverage-docs
         - doctest-docs
         - linkcheck-docs
         - spellcheck-docs
