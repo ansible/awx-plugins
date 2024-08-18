@@ -46,7 +46,7 @@ extend-ignore =
   WPS305,
   # An opposite consistency expectation is currently enforced
   # by pylint via: useless-object-inheritance (R0205):
-  # WPS306: "Found class without a base class: *" -- we have metaclass shims
+  # WPS306: "Found class without a base class: *" -- nothing bad about this
   WPS306,
   # WPS317 enforces weird indents
   WPS317,
