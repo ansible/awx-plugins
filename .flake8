@@ -65,12 +65,6 @@ extend-ignore =
   # LN002: doc/comment line is too long
   LN002,
 
-  # FIXME: These `flake8-spellcheck` errors need fixing and removal
-  # SC100: Possibly misspelt word / comments
-  SC100,
-  # SC200: Possibly misspelt word / names
-  SC200,
-
   # FIXME: DAR101 Missing parameter(s) in Docstring: - classifiers
   DAR101,
   # FIXME: DAR201 Missing "Returns" in Docstring: - return
