@@ -92,9 +92,6 @@ per-file-ignores =
   # If other ignores are added for a specific file in the section following this,
   # these will need to be added to that line as well.
 
-  # Sphinx builds aren't supposed to be run under Python 2:
-  docs/conf.py: WPS305
-
   # There are multiple `assert`s (S101)
   # and subprocesses (import – S404; call – S603) in tests;
   # also, using fixtures looks like shadowing the outer scope (WPS442);
