@@ -60,12 +60,21 @@ class SpellingNoOpDirective(SphinxDirective):
     has_content = True
 
     def run(self: 'SpellingNoOpDirective') -> list[nodes.Node]:
-        """Generate nothing in place of the directive."""
+        """Generate nothing in place of the directive.
+
+        :returns: An empty list of nodes.
+        """
         return []
 
 
-def setup(app: Sphinx) -> None:
-    """Initialize the extension."""
+def setup(app: Sphinx) -> dict[str, bool | str]:
+    """Initialize the extension.
+
+    :param app: A Sphinx application object.
+    :type app: Sphinx
+
+    :returns: Extension metadata as a dict.
+    """
     if _EnchantTokenizeFilterBase is object:
         app.add_directive('spelling', SpellingNoOpDirective)
     else:
@@ -73,5 +82,6 @@ def setup(app: Sphinx) -> None:
 
     return {
         'parallel_read_safe': True,
+        'parallel_write_safe': True,
         'version': app.config.release,
     }
