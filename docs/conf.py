@@ -3,7 +3,7 @@
 
 import os
 import sys
-from importlib.metadata import version
+from importlib.metadata import version as _retrieve_metadata_version_for
 from pathlib import Path
 
 
@@ -44,7 +44,7 @@ copyright = author  # pylint: disable=redefined-builtin
 release = (
     # pylint: disable-next=used-before-assignment
     'unversioned' if tags.has('is_unversioned')  # noqa: F821
-    else version('awx-plugins-core')
+    else _retrieve_metadata_version_for('awx-plugins-core')
 )
 
 # The short X.Y version
