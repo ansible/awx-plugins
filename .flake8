@@ -59,14 +59,6 @@ extend-ignore =
   # WPS422: "Found future import: *" -- we need these for multipython
   WPS422,
 
-  # FIXME: DAR101 Missing parameter(s) in Docstring: - classifiers
-  DAR101,
-  # FIXME: DAR201 Missing "Returns" in Docstring: - return
-  DAR201,
-  # FIXME: DAR301 Missing "Yields" in Docstring: - yield
-  DAR301,
-  # FIXME: DAR401 Missing exception(s) in Raises section: -r LookupError
-  DAR401,
   # FIXME: PT006: wrong name(s) type in @pytest.mark.parametrize, expected tuple
   # FIXME: PT022: no teardown in fixture tmp_git_repo, use return instead of yield
   PT006,
@@ -109,8 +101,8 @@ per-file-ignores =
   # furthermore, we should be able to import and test private attributes
   # (WPS450) and modules (WPS436), and finally it's impossible to
   # have <= members in tests (WPS202), including many local vars (WPS210),
-  # additionally test docstrings don't need param lists (DCO020):
-  tests/**.py: DCO020, S101, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
+  # additionally test docstrings don't need param lists (DAR, DCO020):
+  tests/**.py: DAR, DCO020, S101, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
 
 
 # Count the number of occurrences of each error/warning code and print a report:
