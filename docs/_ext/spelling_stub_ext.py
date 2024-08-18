@@ -1,7 +1,5 @@
 """Sphinx extension for making the spelling directive noop."""
 
-from typing import List
-
 from sphinx.application import Sphinx
 from sphinx.config import Config as _SphinxConfig
 from sphinx.util import logging
@@ -21,11 +19,12 @@ logger = logging.getLogger(__name__)
 
 
 def _configure_spelling_ext(app: Sphinx, config: _SphinxConfig) -> None:
+    # pylint: disable-next=too-few-public-methods
     class VersionFilter(_EnchantTokenizeFilterBase):  # noqa: WPS431
         # NOTE: It's nested because we need to reference the config by closure.
         """Filter for treating version words as known."""
 
-        def _skip(self, word: str) -> bool:
+        def _skip(self, word: str) -> bool:  # pylint: disable=no-self-use
             # NOTE: Only accessing the config values in the method since they
             # NOTE: aren't yet populated when the config-inited event happens.
             known_version_words = {
