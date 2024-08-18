@@ -38,8 +38,6 @@ extend-ignore =
   E501,
   # W505: "doc line too long", its function is replaced by `flake8-length`
   W505,
-  # I: flake8-isort is drunk + we have isort integrated into pre-commit
-  # I,
   # S101: MyPy requires `asserts`, plus they're not bad if cooked well
   S101,
   # WPS300: "Found local folder import" -- nothing bad about this
