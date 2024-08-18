@@ -47,7 +47,8 @@ def _configure_spelling_ext(app: Sphinx, config: _SphinxConfig) -> None:
 
     app.config.spelling_filters = [VersionFilter]
     app.setup_extension('sphinxcontrib.spelling')
-    del app.config.spelling_filters  # suppress unpicklable value warnings
+    # suppress unpicklable value warnings:
+    del app.config.spelling_filters  # noqa: WPS420
 
 
 class SpellingNoOpDirective(SphinxDirective):
