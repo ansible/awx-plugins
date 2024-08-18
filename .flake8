@@ -59,28 +59,6 @@ extend-ignore =
   # WPS422: "Found future import: *" -- we need these for multipython
   WPS422,
 
-  # FIXME: These `flake8-annotations` errors need fixing and removal
-  # ANN001: Missing type annotation for function argument 'argv'
-  ANN001,
-  # ANN002: Missing type annotation for *exceptions
-  ANN002,
-  # ANN003: Missing type annotation for **kwargs
-  ANN003,
-  # ANN101: Missing type annotation for self in method
-  ANN101,
-  # ANN102: Missing type annotation for cls in classmethod
-  ANN102,
-  # ANN201: Missing return type annotation for public function
-  ANN201,
-  # ANN202: Missing return type annotation for protected function
-  ANN202,
-  # ANN204: Missing return type annotation for special method
-  ANN204,
-  # ANN205: Missing return type annotation for staticmethod
-  ANN205,
-  # ANN206: Missing return type annotation for classmethod
-  ANN206,
-
   # FIXME: These `flake8-length` errors need fixing and removal
   # LN001: code line is too long
   LN001,

@@ -24,7 +24,10 @@ def _configure_spelling_ext(app: Sphinx, config: _SphinxConfig) -> None:
         # NOTE: It's nested because we need to reference the config by closure.
         """Filter for treating version words as known."""
 
-        def _skip(self, word: str) -> bool:  # pylint: disable=no-self-use
+        def _skip(  # pylint: disable=no-self-use
+            self: 'VersionFilter',
+            word: str,
+        ) -> bool:
             # NOTE: Only accessing the config values in the method since they
             # NOTE: aren't yet populated when the config-inited event happens.
             known_version_words = {
@@ -56,7 +59,7 @@ class SpellingNoOpDirective(SphinxDirective):
 
     has_content = True
 
-    def run(self) -> list[nodes.Node]:
+    def run(self: 'SpellingNoOpDirective') -> list[nodes.Node]:
         """Generate nothing in place of the directive."""
         return []
 
