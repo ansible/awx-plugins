@@ -160,7 +160,7 @@ statistics = true
 
 # flake8-eradicate
 # E800:
-eradicate-whitelist-extend = isort:\s+\w+
+eradicate-whitelist-extend = isort:\s+\w+|Ref:\s+https?:\/\/
 
 # flake8-pytest-style
 # PT001:
