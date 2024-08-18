@@ -116,8 +116,11 @@ run-name: >-
 jobs:
   pre-setup:
     name: ⚙️ Pre-set global build settings
+
     runs-on: ubuntu-latest
+
     timeout-minutes: 1
+
     defaults:
       run:
         shell: python
@@ -639,6 +642,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    timeout-minutes: 1
+
     steps:
     - name: Decide whether the needed jobs succeeded or failed
       uses: re-actors/alls-green@release/v1
@@ -660,7 +665,10 @@ jobs:
       always()
       && needs.check.result == 'success'
       && fromJSON(needs.pre-setup.outputs.release-requested)
+
     runs-on: ubuntu-latest
+
+    timeout-minutes: 1
 
     environment:
       name: pypi
@@ -696,7 +704,10 @@ jobs:
         fromJSON(needs.pre-setup.outputs.is-untagged-devel)
         || fromJSON(needs.pre-setup.outputs.release-requested)
       )
+
     runs-on: ubuntu-latest
+
+    timeout-minutes: 1
 
     environment:
       name: testpypi

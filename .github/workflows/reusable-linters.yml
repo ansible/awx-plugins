@@ -88,6 +88,8 @@ jobs:
 
     runs-on: ${{ inputs.runner-vm-os }}
 
+    timeout-minutes: 3
+
     env:
       TOXENV: ${{ inputs.toxenv }}
 

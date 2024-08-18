@@ -118,7 +118,10 @@ jobs:
       }} @ ${{
           inputs.runner-vm-os
       }}
+
     runs-on: ${{ inputs.runner-vm-os }}
+
+    timeout-minutes: 5
 
     continue-on-error: >-
       ${{
