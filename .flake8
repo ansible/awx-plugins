@@ -85,8 +85,6 @@ extend-ignore =
   PT022,
   # FIXME: LN002: doc/comment line is too long
   LN002,
-  # FIXME: Temporary `flake8-logging` ignore
-  G200,
   # FIXME: D401: First line should be in imperative mood; try rephrasing
   D401,
 
