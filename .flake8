@@ -161,6 +161,10 @@ statistics = true
 
 # ## Plugin-provided settings: ##
 
+# flake8-docstrings-complete
+docstrings-complete-test-filename-pattern = .*_test\.py
+docstrings-complete-test-function-pattern = .*_test
+
 # flake8-eradicate
 # E800:
 eradicate-whitelist-extend = isort:\s+\w+
