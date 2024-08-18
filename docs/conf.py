@@ -1,6 +1,4 @@
-#! /usr/bin/env python3
-# Requires Python 3.6+
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name  # <-- demands all settings to be uppercase
 """Configuration of Sphinx documentation generator."""
 
 import os
@@ -92,7 +90,7 @@ html_theme = 'furo'
 
 master_doc = 'index'
 
-# -- Options for myst_parser extension ------------------------------------------
+# -- Options for myst_parser extension ---------------------------------------
 
 myst_enable_extensions = [
     'colon_fence',  # allow to optionally use ::: instead of ```
@@ -179,7 +177,7 @@ issues_github_path = 'ansible/awx_plugins'
 # * https://github.com/djungelorm/sphinx-tabs/issues/26#issuecomment-422160463
 sphinx_tabs_valid_builders = ['linkcheck']  # prevent linkcheck warning
 
-# -- Options enforcing strict mode ------------------------------------------
+# -- Options enforcing strict mode -------------------------------------------
 
 # Ref: https://github.com/python-attrs/attrs/pull/571/files\
 #      #diff-85987f48f1258d9ee486e3191495582dR82
