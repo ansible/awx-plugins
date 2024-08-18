@@ -8,6 +8,7 @@ from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.nodes import nodes
 
+
 try:
     from enchant.tokenize import (  # noqa: WPS433
         Filter as _EnchantTokenizeFilterBase,
@@ -55,7 +56,7 @@ class SpellingNoOpDirective(SphinxDirective):
 
     has_content = True
 
-    def run(self) -> List[nodes.Node]:
+    def run(self) -> list[nodes.Node]:
         """Generate nothing in place of the directive."""
         return []
 

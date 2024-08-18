@@ -8,6 +8,7 @@ import sys
 from importlib.metadata import version
 from pathlib import Path
 
+
 # -- Path setup --------------------------------------------------------------
 
 DOCS_ROOT_DIR = Path(__file__).parent.resolve()
@@ -149,7 +150,6 @@ linkcheck_ignore = [
     r'https?://localhost:\d+/',  # local URLs
     r'https://codecov\.io/gh(/[^/]+){2}/branch/master/graph/badge\.svg',
     r'https://github\.com(/[^/]+){2}/actions',  # 404 if no auth
-
     r'^https://chat\.ansible\.im/#',  # these render fully on front-end
     r'^https://matrix\.to/#',  # these render fully on front-end from anchors
 
