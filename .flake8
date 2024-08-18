@@ -59,16 +59,6 @@ extend-ignore =
   # WPS422: "Found future import: *" -- we need these for multipython
   WPS422,
 
-  # FIXME: These `flake8-logging-format` errors need fixing and removal
-  # G010: Logging statement uses 'warn' instead of 'warning'
-  G010,
-
-  # FIXME: These `flake8-length` errors need fixing and removal
-  # LN001: code line is too long
-  LN001,
-  # LN002: doc/comment line is too long
-  LN002,
-
   # FIXME: These `flake8-annotations` errors need fixing and removal
   # ANN001: Missing type annotation for function argument 'argv'
   ANN001,
@@ -90,6 +80,16 @@ extend-ignore =
   ANN205,
   # ANN206: Missing return type annotation for classmethod
   ANN206,
+
+  # FIXME: These `flake8-length` errors need fixing and removal
+  # LN001: code line is too long
+  LN001,
+  # LN002: doc/comment line is too long
+  LN002,
+
+  # FIXME: These `flake8-logging-format` errors need fixing and removal
+  # G010: Logging statement uses 'warn' instead of 'warning'
+  G010,
 
   # FIXME: These `flake8-spellcheck` errors need fixing and removal
   # SC100: Possibly misspelt word / comments
