@@ -3,6 +3,7 @@
 [![CI/CD Badge]][CI/CD]
 [![PyPI Badge]][PyPI]
 [![PyPI Supported Versions Badge]][PyPI Supported Versions]
+[![Codecov Badge]][Codecov]
 [![Code of Conduct Badge]][Code of Conduct]
 [![Apache v2 License Badge]][Apache v2 License]
 [![Ansible Matrix Badge]][Ansible Matrix]
