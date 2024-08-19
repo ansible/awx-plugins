@@ -20,7 +20,7 @@ https://github.com/ansible/awx-plugins/actions/workflows/ci-cd.yml/badge.svg?bra
 [PyPI Supported Versions]: https://pypi.org/p/awx-plugins-core
 
 [Codecov Badge]: https://codecov.io/gh/ansible/awx-plugins/branch/devel/graph/badge.svg
-[Codecov]: https://codecov.io/gh/ansible/awx-plugins
+[Codecov]: https://app.codecov.io/gh/ansible/awx-plugins
 
 [Code of Conduct Badge]: https://img.shields.io/badge/code%20of%20conduct-Ansible-yellow.svg
 [Code of Conduct]: https://docs.ansible.com/ansible/latest/community/code_of_conduct.html
