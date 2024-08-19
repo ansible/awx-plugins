@@ -60,6 +60,11 @@ repos:
     args:
     - --in-place
 
+- repo: https://github.com/hhatto/autopep8.git
+  rev: v2.3.1
+  hooks:
+  - id: autopep8
+
 - repo: https://github.com/Lucas-C/pre-commit-hooks.git
   rev: v1.5.5
   hooks:
