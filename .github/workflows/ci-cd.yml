@@ -86,6 +86,7 @@ env:
     PYTHONIOENCODING
     PYTHONLEGACYWINDOWSSTDIO
     PYTHONUTF8
+  UPSTREAM_REPOSITORY_ID: 836873755
 
 run-name: >-
   ${{
@@ -581,6 +582,7 @@ jobs:
       timeout-minutes: 3
       toxenv: >-
         ${{ matrix.toxenv }}
+      upstream-repository-id: ${{ env.UPSTREAM_REPOSITORY_ID }}
       yolo: >-
         ${{ fromJSON(needs.pre-setup.outputs.is-yolo-mode) }}
     secrets:
@@ -626,6 +628,7 @@ jobs:
         ${{ matrix.runner-vm-os }}
       source-tarball-name: >-
         ${{ needs.pre-setup.outputs.sdist-artifact-name }}
+      timeout-minutes: 5
       toxenv: >-
         ${{ matrix.toxenv }}
       tox-run-posargs: >-
@@ -639,7 +642,7 @@ jobs:
         --no-cov
         -vvvvv
         --lf
-      timeout-minutes: 5
+      upstream-repository-id: ${{ env.UPSTREAM_REPOSITORY_ID }}
       yolo: >-
         ${{ fromJSON(needs.pre-setup.outputs.is-yolo-mode) }}
     secrets:
@@ -678,6 +681,7 @@ jobs:
       always()
       && needs.check.result == 'success'
       && fromJSON(needs.pre-setup.outputs.release-requested)
+      && env.UPSTREAM_REPOSITORY_ID == github.repository_id
 
     runs-on: ubuntu-latest
 
@@ -717,6 +721,7 @@ jobs:
         fromJSON(needs.pre-setup.outputs.is-untagged-devel)
         || fromJSON(needs.pre-setup.outputs.release-requested)
       )
+      && env.UPSTREAM_REPOSITORY_ID == github.repository_id
 
     runs-on: ubuntu-latest
 
