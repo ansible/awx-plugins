@@ -283,11 +283,18 @@ jobs:
         paths: >-
           ${{ steps.tox-run.outputs.test-result-files }}
     - name: Produce markdown test summary from Cobertura XML
+      # NOTE: MyPy is temporarily excluded because it produces incomplete XML
+      # NOTE: files that `irongut/CodeCoverageSummary` can't stomach.
+      # Refs:
+      # * https://github.com/irongut/CodeCoverageSummary/issues/324
+      # * https://github.com/python/mypy/issues/17689
+      # FIXME: Revert the exclusion once upstream fixes the bug.
       if: >-
         !cancelled()
         && runner.os == 'Linux'
         && steps.tox-run.outputs.cov-report-files != ''
         && steps.tox-run.outputs.test-result-files == ''
+        && steps.tox-run.outputs.codecov-flags != 'MyPy'
       uses: irongut/CodeCoverageSummary@v1.3.0
       with:
         badge: true
@@ -302,6 +309,7 @@ jobs:
         && runner.os == 'Linux'
         && steps.tox-run.outputs.cov-report-files != ''
         && steps.tox-run.outputs.test-result-files == ''
+        && steps.tox-run.outputs.codecov-flags != 'MyPy'
       run: >-
         cat code-coverage-results.md >> "${GITHUB_STEP_SUMMARY}"
     - name: Re-run the failing tests with maximum verbosity
