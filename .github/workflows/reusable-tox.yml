@@ -106,7 +106,7 @@ jobs:
 
     runs-on: ${{ inputs.runner-vm-os }}
 
-    timeout-minutes: ${{ inputs.timeout-minutes }}
+    timeout-minutes: ${{ fromJSON(inputs.timeout-minutes) }}
 
     continue-on-error: >-
       ${{
