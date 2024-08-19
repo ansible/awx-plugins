@@ -56,6 +56,10 @@ on:
         description: Positional arguments to pass to the re-attempted tox run
         required: false
         type: string
+      upstream-repository-id:
+        description: ID of the upstream GitHub Repository
+        required: true
+        type: string
       yolo:
         required: true
         type: string
@@ -92,7 +96,6 @@ env:
     PYTHONIOENCODING
     PYTHONLEGACYWINDOWSSTDIO
     PYTHONUTF8
-  UPSTREAM_REPOSITORY_ID: 836873755
 
 jobs:
   tox:
@@ -340,7 +343,7 @@ jobs:
             steps.python-install.outputs.python-version
           }}
         fail_ci_if_error: >-
-          ${{ toJSON(env.UPSTREAM_REPOSITORY_ID == github.repository_id) }}
+          ${{ toJSON(inputs.upstream-repository-id == github.repository_id) }}
     - name: Upload test results to Codecov
       if: >-
         !cancelled()
