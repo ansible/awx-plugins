@@ -181,7 +181,7 @@ repos:
   - id: pylint
     additional_dependencies:
     - covdefaults  # needed by pylint-pytest due to pytest-cov loading coverage
-    - pylint-pytest ~= 1.1.8
+    - pylint-pytest ~= 2.0.0a0
     - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
     - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
     - Sphinx  # needed by the Sphinx extension stub
