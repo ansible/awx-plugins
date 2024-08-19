@@ -156,6 +156,7 @@ jobs:
       sdist-artifact-name: ${{ steps.artifact-name.outputs.sdist }}
       wheel-artifact-name: ${{ steps.artifact-name.outputs.wheel }}
       upstream-repository-id: ${{ env.UPSTREAM_REPOSITORY_ID }}
+      publishing-to-testpypi-enabled: ${{ env.PUBLISHING_TO_TESTPYPI_ENABLED }}
     steps:
     - name: Switch to using Python 3.11 by default
       uses: actions/setup-python@v5
@@ -724,7 +725,7 @@ jobs:
         || fromJSON(needs.pre-setup.outputs.release-requested)
       )
       && needs.pre-setup.outputs.upstream-repository-id == github.repository_id
-      && fromJSON(env.PUBLISHING_TO_TESTPYPI_ENABLED)
+      && fromJSON(needs.pre-setup.outputs.publishing-to-testpypi-enabled)
 
     runs-on: ubuntu-latest
 
