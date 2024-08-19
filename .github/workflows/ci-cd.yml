@@ -71,7 +71,6 @@ env:
   PY_COLORS: 1  # Recognized by the `py` package, dependency of `pytest`
   PYTHONIOENCODING: utf-8
   PYTHONUTF8: 1
-  SNAKE_CASE_PROJECT_NAME: awx_plugins_core
   TOX_PARALLEL_NO_SPINNER: 1
   TOX_TESTENV_PASSENV: >-  # Make tox-wrapped tools see color requests
     FORCE_COLOR
@@ -343,11 +342,12 @@ jobs:
 
         FILE_APPEND_MODE = 'a'
 
+        dist_file_prj_base_name = '${{ env.PROJECT_NAME }}'.replace('-', '_')
         with Path(environ['GITHUB_OUTPUT']).open(
                 mode=FILE_APPEND_MODE,
         ) as outputs_file:
             print(
-                "sdist=${{ env.SNAKE_CASE_PROJECT_NAME }}-${{
+                f"sdist={dist_file_prj_base_name !s}-${{
                     steps.request-check.outputs.release-requested == 'true'
                     && github.event.inputs.release-version
                     || steps.scm-version.outputs.dist-version
@@ -355,7 +355,7 @@ jobs:
                 file=outputs_file,
             )
             print(
-                "wheel=${{ env.SNAKE_CASE_PROJECT_NAME }}-${{
+                f"wheel={dist_file_prj_base_name !s}-${{
                     steps.request-check.outputs.release-requested == 'true'
                     && github.event.inputs.release-version
                     || steps.scm-version.outputs.dist-version
