@@ -154,7 +154,6 @@ jobs:
       sdist-artifact-name: ${{ steps.artifact-name.outputs.sdist }}
       wheel-artifact-name: ${{ steps.artifact-name.outputs.wheel }}
     steps:
-    - run: echo ${{ github.repository_id }}
     - name: Switch to using Python 3.11 by default
       uses: actions/setup-python@v5
       with:
