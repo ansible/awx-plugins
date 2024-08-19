@@ -564,7 +564,7 @@ jobs:
         - linkcheck-docs
         - spellcheck-docs
       fail-fast: false
-    uses: ./.github/workflows/reusable-linters.yml
+    uses: ./.github/workflows/reusable-tox.yml
     with:
       cache-key-files: >-
         ${{ needs.pre-setup.outputs.cache-key-files }}
@@ -578,6 +578,7 @@ jobs:
         ${{ matrix.runner-vm-os }}
       source-tarball-name: >-
         ${{ needs.pre-setup.outputs.sdist-artifact-name }}
+      timeout-minutes: 3
       toxenv: >-
         ${{ matrix.toxenv }}
       yolo: >-
@@ -606,7 +607,7 @@ jobs:
         toxenv:
         - py
 
-    uses: ./.github/workflows/reusable-tests.yml
+    uses: ./.github/workflows/reusable-tox.yml
     with:
       built-wheel-names: >-
         ${{ needs.pre-setup.outputs.wheel-artifact-name }}
@@ -624,6 +625,18 @@ jobs:
         ${{ needs.pre-setup.outputs.sdist-artifact-name }}
       toxenv: >-
         ${{ matrix.toxenv }}
+      tox-run-posargs: >-
+        --cov-report=xml:.tox/.tmp/.test-results/pytest-${{
+          matrix.python-version
+        }}/cobertura.xml
+        --junitxml=.tox/.tmp/.test-results/pytest-${{
+          matrix.python-version
+        }}/test.xml
+      tox-rerun-posargs: >-
+        --no-cov
+        -vvvvv
+        --lf
+      timeout-minutes: 5
       yolo: >-
         ${{ fromJSON(needs.pre-setup.outputs.is-yolo-mode) }}
     secrets:
