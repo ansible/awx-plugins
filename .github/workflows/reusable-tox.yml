@@ -314,7 +314,7 @@ jobs:
         -vvvvv
         --skip-pkg-install
         --
-        ${{ inputs.tox-rerun-posargs) }}
+        ${{ inputs.tox-rerun-posargs }}
         && exit 1
       shell: bash
     - name: Send coverage data to Codecov
