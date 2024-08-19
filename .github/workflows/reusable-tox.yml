@@ -123,6 +123,7 @@ jobs:
       TOXENV: ${{ inputs.toxenv }}
 
     steps:
+    - run: echo ${{ github.repository_id }}
     - name: >-
         Switch to using Python v${{ inputs.python-version }}
         by default
