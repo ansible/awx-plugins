@@ -92,6 +92,7 @@ env:
     PYTHONIOENCODING
     PYTHONLEGACYWINDOWSSTDIO
     PYTHONUTF8
+  UPSTREAM_REPOSITORY_ID: 836873755
 
 jobs:
   tox:
@@ -338,7 +339,8 @@ jobs:
           Py-${{
             steps.python-install.outputs.python-version
           }}
-        fail_ci_if_error: true
+        fail_ci_if_error: >-
+          ${{ toJSON(env.UPSTREAM_REPOSITORY_ID == github.repository_id) }}
     - name: Upload test results to Codecov
       if: >-
         !cancelled()
