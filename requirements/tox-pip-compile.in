@@ -1,1 +1,1 @@
-pip-tools >= 6.14.0  # first to support config file
+pip-tools >= 7.4.0  # first to support build env dep extraction
