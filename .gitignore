@@ -325,3 +325,6 @@ pip-selfcheck.json
 
 # setuptools-scm
 !.git_archival.txt
+
+# lockfile scripts
+!/bin/
