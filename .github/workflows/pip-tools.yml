@@ -86,13 +86,43 @@ jobs:
         - macos-13
         - windows-2019
         lock-file-env:
+        - build-dists
+        - build-docs
+        - linkcheck-docs
+        - metadata-validation
+        - pip-compile
+        - pip-compile-build-lock
+        - pip-compile-tox-env-lock
+        - pre-commit
         - py
         - tox
+        - spellcheck-docs
         lock-file-extra-input:
         - pyproject.toml
+        - ''
         exclude:
+        - lock-file-env: build-dists
+          lock-file-extra-input: pyproject.toml
+        - lock-file-env: build-docs
+          lock-file-extra-input: ''
+        - lock-file-env: linkcheck-docs
+          lock-file-extra-input: ''
+        - lock-file-env: metadata-validation
+          lock-file-extra-input: pyproject.toml
+        - lock-file-env: pip-compile
+          lock-file-extra-input: pyproject.toml
+        - lock-file-env: pip-compile-build-lock
+          lock-file-extra-input: pyproject.toml
+        - lock-file-env: pip-compile-tox-env-lock
+          lock-file-extra-input: pyproject.toml
+        - lock-file-env: pre-commit
+          lock-file-extra-input: pyproject.toml
+        - lock-file-env: py
+          lock-file-extra-input: ''
         - lock-file-env: tox
           lock-file-extra-input: pyproject.toml
+        - lock-file-env: spellcheck-docs
+          lock-file-extra-input: ''
 
     env:
       TOXENV: pip-compile-tox-env-lock
