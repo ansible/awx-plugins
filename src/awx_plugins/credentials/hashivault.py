@@ -36,7 +36,8 @@ base_inputs = {'fields': [{'id': 'url',
                            'label': _('AppRole role_id'),
                            'type': 'string',
                            'multiline': False,
-                           'help_text': _('The Role ID for AppRole Authentication')},
+                           'help_text': _('The Role ID for AppRole Authentication'),
+                           },
                           {'id': 'secret_id',
                            'label': _('AppRole secret_id'),
                            'type': 'string',
@@ -120,7 +121,8 @@ base_inputs = {'fields': [{'id': 'url',
                              },
                             ],
                'required': ['url',
-                            'secret_path'],
+                            'secret_path',
+                            ],
                }
 
 hashi_kv_inputs = copy.deepcopy(base_inputs)
@@ -160,7 +162,8 @@ hashi_ssh_inputs['metadata'] = ([{'id': 'public_key',
                                  ] + hashi_ssh_inputs['metadata'] + [{'id': 'role',
                                                                       'label': _('Role Name'),
                                                                       'type': 'string',
-                                                                      'help_text': _('The name of the role used to sign.')},
+                                                                      'help_text': _('The name of the role used to sign.'),
+                                                                      },
                                                                      {'id': 'valid_principals',
                                                                       'label': _('Valid Principals'),
                                                                       'type': 'string',
@@ -184,7 +187,8 @@ def handle_auth(**kwargs):
         token = method_auth(**kwargs, auth_param=client_cert_auth(**kwargs))
     else:
         raise Exception(
-            'Token, Username/Password, AppRole, Kubernetes, or TLS authentication parameters must be set')
+            'Token, Username/Password, AppRole, Kubernetes, or TLS authentication parameters must be set',
+        )
     return token
 
 
@@ -198,7 +202,8 @@ def approle_auth(**kwargs):
 
 def kubernetes_auth(**kwargs):
     jwt_file = pathlib.Path(
-        '/var/run/secrets/kubernetes.io/serviceaccount/token')
+        '/var/run/secrets/kubernetes.io/serviceaccount/token',
+    )
     with jwt_file.open('r') as jwt_fo:
         jwt = jwt_fo.read().rstrip()
     return {'role': kwargs['kubernetes_role'], 'jwt': jwt}
@@ -232,7 +237,8 @@ def method_auth(**kwargs):
         request_kwargs['verify'] = cert
         # TLS client certificate support
         if kwargs.get('client_cert_public') and kwargs.get(
-                'client_cert_private'):
+                'client_cert_private',
+        ):
             # Add client cert to requests Session before making call
             with CertFiles(kwargs['client_cert_public'], key=kwargs['client_cert_private']) as client_cert:
                 sess.cert = client_cert
@@ -308,7 +314,8 @@ def kv_backend(**kwargs):
     if secret_key:
         try:
             if (secret_key != 'data') and (
-                    secret_key not in json['data']) and ('data' in json['data']):
+                    secret_key not in json['data']
+            ) and ('data' in json['data']):
                 return json['data']['data'][secret_key]
             return json['data'][secret_key]
         except KeyError:
@@ -360,9 +367,11 @@ def ssh_backend(**kwargs):
 hashivault_kv_plugin = CredentialPlugin(
     'HashiCorp Vault Secret Lookup',
     inputs=hashi_kv_inputs,
-    backend=kv_backend)
+    backend=kv_backend,
+)
 
 hashivault_ssh_plugin = CredentialPlugin(
     'HashiCorp Vault Signed SSH',
     inputs=hashi_ssh_inputs,
-    backend=ssh_backend)
+    backend=ssh_backend,
+)

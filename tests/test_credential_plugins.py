@@ -39,7 +39,8 @@ def test_hashivault_kubernetes_auth():
         mock.mock_open(path_mock.return_value.open, read_data='the_jwt')
         res = hashivault.kubernetes_auth(**kwargs)
         path_mock.assert_called_with(
-            '/var/run/secrets/kubernetes.io/serviceaccount/token')
+            '/var/run/secrets/kubernetes.io/serviceaccount/token',
+        )
         assert res == expected_res
 
 
@@ -103,7 +104,9 @@ def test_hashivault_handle_auth_kubernetes():
                 **kwargs,
                 auth_param={
                     'role': 'the_kubernetes_role',
-                    'jwt': 'the_jwt'})
+                    'jwt': 'the_jwt',
+                },
+            )
             assert token == 'the_token'
 
 
@@ -146,6 +149,7 @@ class TestDelineaImports:
                 DomainPasswordGrantAuthorizer,
                 PasswordGrantAuthorizer,
                 SecretServer,
-                ServerSecret):
+                ServerSecret,
+        ):
             # assert this module as opposed to older thycotic.secrets.server
             assert cls.__module__ == 'delinea.secrets.server'

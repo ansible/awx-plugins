@@ -122,7 +122,8 @@ def aim_backend(**kwargs):
         object_property = 'Address'
     elif object_property not in res:
         raise KeyError(
-            f'Property {object_property} not found in object, available properties: Username, Password and Address')
+            f'Property {object_property} not found in object, available properties: Username, Password and Address',
+        )
     else:
         object_property = object_property.capitalize()
 
@@ -132,4 +133,5 @@ def aim_backend(**kwargs):
 aim_plugin = CredentialPlugin(
     'CyberArk Central Credential Provider Lookup',
     inputs=aim_inputs,
-    backend=aim_backend)
+    backend=aim_backend,
+)

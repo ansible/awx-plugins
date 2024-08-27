@@ -7,7 +7,9 @@ from requests.exceptions import HTTPError
 
 CredentialPlugin = namedtuple(
     'CredentialPlugin', [
-        'name', 'inputs', 'backend'])
+        'name', 'inputs', 'backend',
+    ],
+)
 
 
 try:

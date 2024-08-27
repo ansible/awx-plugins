@@ -53,7 +53,8 @@ tss_inputs = {'fields': [{'id': 'server_url',
                            'username',
                            'password',
                            'secret_id',
-                           'secret_field'],
+                           'secret_field',
+                           ],
               }
 
 
@@ -67,7 +68,8 @@ def tss_backend(**kwargs):
         )
     else:
         authorizer = PasswordGrantAuthorizer(
-            kwargs['server_url'], kwargs['username'], kwargs['password'])
+            kwargs['server_url'], kwargs['username'], kwargs['password'],
+        )
     secret_server = SecretServer(kwargs['server_url'], authorizer)
     secret_dict = secret_server.get_secret(kwargs['secret_id'])
     secret = ServerSecret(**secret_dict)

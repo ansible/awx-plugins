@@ -16,7 +16,8 @@ dsv_inputs = {'fields': [{'id': 'tenant',
                           'choices': ['ca',
                                       'com',
                                       'com.au',
-                                      'eu'],
+                                      'eu',
+                                      ],
                           'default': 'com',
                           },
                          {'id': 'client_id',
@@ -43,7 +44,8 @@ dsv_inputs = {'fields': [{'id': 'tenant',
                             'label': _('Should the secret be base64 decoded?'),
                             'help_text': _('Specify whether the secret should be base64 decoded, typically used for storing files, such as SSH keys'),
                             'choices': ['No Decoding',
-                                        'Decode Base64'],
+                                        'Decode Base64',
+                                        ],
                             'type': 'string',
                             'default': 'No Decoding',
                             },
@@ -53,7 +55,8 @@ dsv_inputs = {'fields': [{'id': 'tenant',
                            'client_secret',
                            'path',
                            'secret_field',
-                           'secret_decoding'],
+                           'secret_decoding',
+                           ],
               }
 
 if settings.DEBUG:
@@ -71,7 +74,8 @@ def dsv_backend(**kwargs):
     tenant_name = kwargs['tenant']
     tenant_tld = kwargs.get('tld', 'com')
     tenant_url_template = kwargs.get(
-        'url_template', 'https://{}.secretsvaultcloud.{}')
+        'url_template', 'https://{}.secretsvaultcloud.{}',
+    )
     client_id = kwargs['client_id']
     client_secret = kwargs['client_secret']
     secret_path = kwargs['path']
@@ -96,4 +100,5 @@ def dsv_backend(**kwargs):
 dsv_plugin = CredentialPlugin(
     name='Thycotic DevOps Secrets Vault',
     inputs=dsv_inputs,
-    backend=dsv_backend)
+    backend=dsv_backend,
+)

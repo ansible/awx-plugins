@@ -50,7 +50,8 @@ pas_inputs = {'fields': [{'id': 'url',
                            'account-name',
                            'system-name',
                            'client_id',
-                           'client_password'],
+                           'client_password',
+                           ],
               }
 
 
@@ -59,17 +60,21 @@ pas_inputs = {'fields': [{'id': 'url',
 def handle_auth(**kwargs):
     post_data = {
         'grant_type': 'client_credentials',
-        'scope': kwargs['oauth_scope']}
+        'scope': kwargs['oauth_scope'],
+    }
     response = requests.post(
         kwargs['endpoint'],
         data=post_data,
         auth=(
             kwargs['client_id'],
-            kwargs['client_password']),
+            kwargs['client_password'],
+        ),
         verify=True,
         timeout=(
             5,
-            30))
+            30,
+        ),
+    )
     raise_for_status(response)
     try:
         return response.json()['access_token']
@@ -81,21 +86,26 @@ def handle_auth(**kwargs):
 def get_ID(**kwargs):
     endpoint = urljoin(kwargs['url'], '/Redrock/query')
     name = " Name='{}' and User='{}'".format(
-        kwargs['system_name'], kwargs['acc_name'])
+        kwargs['system_name'], kwargs['acc_name'],
+    )
     query = f'Select ID from VaultAccount where {name}'
     post_headers = {
         'Authorization': 'Bearer ' +
         kwargs['access_token'],
-        'X-CENTRIFY-NATIVE-CLIENT': 'true'}
+        'X-CENTRIFY-NATIVE-CLIENT': 'true',
+    }
     response = requests.post(
         endpoint,
         json={
-            'Script': query},
+            'Script': query,
+        },
         headers=post_headers,
         verify=True,
         timeout=(
             5,
-            30))
+            30,
+        ),
+    )
     raise_for_status(response)
     try:
         result_str = response.json()['Result']['Results']
@@ -110,16 +120,20 @@ def get_passwd(**kwargs):
     post_headers = {
         'Authorization': 'Bearer ' +
         kwargs['access_token'],
-        'X-CENTRIFY-NATIVE-CLIENT': 'true'}
+        'X-CENTRIFY-NATIVE-CLIENT': 'true',
+    }
     response = requests.post(
         endpoint,
         json={
-            'ID': kwargs['acc_id']},
+            'ID': kwargs['acc_id'],
+        },
         headers=post_headers,
         verify=True,
         timeout=(
             5,
-            30))
+            30,
+        ),
+    )
     raise_for_status(response)
     try:
         return response.json()['Result']['Password']
@@ -141,13 +155,16 @@ def centrify_backend(**kwargs):
         'client_password': client_password,
         'oauth_scope': kwargs.get(
             'oauth_scope',
-            'awx')}
+            'awx',
+        ),
+    }
     token = handle_auth(**endpoint)
     get_id_args = {
         'system_name': system_name,
         'acc_name': acc_name,
         'url': url,
-        'access_token': token}
+        'access_token': token,
+    }
     acc_id = get_ID(**get_id_args)
     get_pwd_args = {'url': url, 'acc_id': acc_id, 'access_token': token}
     return get_passwd(**get_pwd_args)
@@ -156,4 +173,5 @@ def centrify_backend(**kwargs):
 centrify_plugin = CredentialPlugin(
     'Centrify Vault Credential Provider Lookup',
     inputs=pas_inputs,
-    backend=centrify_backend)
+    backend=centrify_backend,
+)

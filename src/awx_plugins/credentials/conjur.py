@@ -33,7 +33,8 @@ conjur_inputs = {'fields': [{'id': 'url',
                             {'id': 'cacert',
                              'label': _('Public Key Certificate'),
                              'type': 'string',
-                             'multiline': True},
+                             'multiline': True,
+                             },
                             ],
                  'metadata': [{'id': 'secret_path',
                                'label': _('Secret Identifier'),
@@ -49,14 +50,18 @@ conjur_inputs = {'fields': [{'id': 'url',
                  'required': ['url',
                               'api_key',
                               'account',
-                              'username'],
+                              'username',
+                              ],
                  }
 
 
 def _is_base64(s: str) -> bool:
     try:
-        return base64.b64encode(base64.b64decode(
-            s.encode('utf-8'))) == s.encode('utf-8')
+        return base64.b64encode(
+            base64.b64decode(
+                s.encode('utf-8'),
+            ),
+        ) == s.encode('utf-8')
     except binascii.Error:
         return False
 
@@ -80,12 +85,18 @@ def conjur_backend(**kwargs):
         # https://www.conjur.org/api.html#authentication-authenticate-post
         auth_kwargs['verify'] = cert
         try:
-            resp = requests.post(urljoin(
-                url, '/'.join(['authn', account, username, 'authenticate'])), **auth_kwargs)
+            resp = requests.post(
+                urljoin(
+                    url, '/'.join(['authn', account, username, 'authenticate']),
+                ), **auth_kwargs,
+            )
             resp.raise_for_status()
         except requests.exceptions.HTTPError:
-            resp = requests.post(urljoin(
-                url, '/'.join(['api', 'authn', account, username, 'authenticate'])), **auth_kwargs)
+            resp = requests.post(
+                urljoin(
+                    url, '/'.join(['api', 'authn', account, username, 'authenticate']),
+                ), **auth_kwargs,
+            )
     raise_for_status(resp)
     token = resp.content.decode('utf-8')
 
@@ -93,15 +104,20 @@ def conjur_backend(**kwargs):
         'headers': {
             'Authorization': 'Token token="{}"'.format(
                 token if _is_base64(token) else base64.b64encode(
-                    token.encode('utf-8')).decode('utf-8'))},
+                    token.encode('utf-8'),
+                ).decode('utf-8'),
+            ),
+        },
         'allow_redirects': False,
     }
 
     # https://www.conjur.org/api.html#secrets-retrieve-a-secret-get
     path = urljoin(
-        url, '/'.join(['secrets', account, 'variable', secret_path]))
+        url, '/'.join(['secrets', account, 'variable', secret_path]),
+    )
     path_conjurcloud = urljoin(
-        url, '/'.join(['api', 'secrets', account, 'variable', secret_path]))
+        url, '/'.join(['api', 'secrets', account, 'variable', secret_path]),
+    )
     if version:
         ver = f"version={version}"
         path = '?'.join([path, ver])
@@ -121,4 +137,5 @@ def conjur_backend(**kwargs):
 conjur_plugin = CredentialPlugin(
     'CyberArk Conjur Secrets Manager Lookup',
     inputs=conjur_inputs,
-    backend=conjur_backend)
+    backend=conjur_backend,
+)
