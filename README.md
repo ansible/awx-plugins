@@ -48,3 +48,5 @@ https://readthedocs.org/projects/awx-plugins-core/badge/?version=latest
 <!-- DO-NOT-REMOVE-docs-intro-START -->
 Credential plugins moved out of AWX.
 <!-- DO-NOT-REMOVE-docs-intro-END -->
+
+small change
