@@ -1,11 +1,15 @@
-from .plugin import CredentialPlugin, CertFiles, raise_for_status
-
-from urllib.parse import urljoin, quote
-
-from .plugin import translate_function as _
-import requests
 import base64
 import binascii
+from urllib.parse import quote, urljoin
+
+import requests
+
+from .plugin import (
+    CertFiles,
+    CredentialPlugin,
+    raise_for_status,
+    translate_function as _,
+)
 
 
 conjur_inputs = {
@@ -32,29 +36,48 @@ conjur_inputs = {
             'label': _('Username'),
             'type': 'string',
         },
-        {'id': 'cacert', 'label': _('Public Key Certificate'), 'type': 'string', 'multiline': True},
+        {
+            'id': 'cacert',
+            'label': _('Public Key Certificate'),
+            'type': 'string',
+            'multiline': True,
+        },
     ],
     'metadata': [
         {
             'id': 'secret_path',
             'label': _('Secret Identifier'),
             'type': 'string',
-            'help_text': _('The identifier for the secret e.g., /some/identifier'),
+            'help_text': _(
+                'The identifier for the secret e.g., /some/identifier',
+            ),
         },
         {
             'id': 'secret_version',
             'label': _('Secret Version'),
             'type': 'string',
-            'help_text': _('Used to specify a specific secret version (if left empty, the latest version will be used).'),
+            'help_text': _(
+                'Used to specify a specific secret version (if left empty, '
+                'the latest version will be used).',
+            ),
         },
     ],
-    'required': ['url', 'api_key', 'account', 'username'],
+    'required': [
+        'url',
+        'api_key',
+        'account',
+        'username',
+    ],
 }
 
 
 def _is_base64(s: str) -> bool:
     try:
-        return base64.b64encode(base64.b64decode(s.encode("utf-8"))) == s.encode("utf-8")
+        return base64.b64encode(
+            base64.b64decode(
+                s.encode('utf-8'),
+            ),
+        ) == s.encode('utf-8')
     except binascii.Error:
         return False
 
@@ -78,23 +101,41 @@ def conjur_backend(**kwargs):
         # https://www.conjur.org/api.html#authentication-authenticate-post
         auth_kwargs['verify'] = cert
         try:
-            resp = requests.post(urljoin(url, '/'.join(['authn', account, username, 'authenticate'])), **auth_kwargs)
+            resp = requests.post(
+                urljoin(
+                    url, '/'.join(['authn', account, username, 'authenticate']),
+                ), **auth_kwargs,
+            )
             resp.raise_for_status()
         except requests.exceptions.HTTPError:
-            resp = requests.post(urljoin(url, '/'.join(['api', 'authn', account, username, 'authenticate'])), **auth_kwargs)
+            resp = requests.post(
+                urljoin(
+                    url, '/'.join(['api', 'authn', account, username, 'authenticate']),
+                ), **auth_kwargs,
+            )
     raise_for_status(resp)
     token = resp.content.decode('utf-8')
 
     lookup_kwargs = {
-        'headers': {'Authorization': 'Token token="{}"'.format(token if _is_base64(token) else base64.b64encode(token.encode('utf-8')).decode('utf-8'))},
+        'headers': {
+            'Authorization': 'Token token="{}"'.format(
+                token if _is_base64(token) else base64.b64encode(
+                    token.encode('utf-8'),
+                ).decode('utf-8'),
+            ),
+        },
         'allow_redirects': False,
     }
 
     # https://www.conjur.org/api.html#secrets-retrieve-a-secret-get
-    path = urljoin(url, '/'.join(['secrets', account, 'variable', secret_path]))
-    path_conjurcloud = urljoin(url, '/'.join(['api', 'secrets', account, 'variable', secret_path]))
+    path = urljoin(
+        url, '/'.join(['secrets', account, 'variable', secret_path]),
+    )
+    path_conjurcloud = urljoin(
+        url, '/'.join(['api', 'secrets', account, 'variable', secret_path]),
+    )
     if version:
-        ver = "version={}".format(version)
+        ver = f"version={version}"
         path = '?'.join([path, ver])
         path_conjurcloud = '?'.join([path_conjurcloud, ver])
 
@@ -109,4 +150,8 @@ def conjur_backend(**kwargs):
     return resp.text
 
 
-conjur_plugin = CredentialPlugin('CyberArk Conjur Secrets Manager Lookup', inputs=conjur_inputs, backend=conjur_backend)
+conjur_plugin = CredentialPlugin(
+    'CyberArk Conjur Secrets Manager Lookup',
+    inputs=conjur_inputs,
+    backend=conjur_backend,
+)
