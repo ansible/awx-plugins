@@ -425,7 +425,7 @@ def ssh_backend(**kwargs):
     sess.headers['Authorization'] = f'Bearer {token}'
     if kwargs.get('namespace'):
         sess.headers['X-Vault-Namespace'] = kwargs['namespace']
-    # Compatability header for older installs of Hashicorp Vault
+    # Compatibility header for older installs of Hashicorp Vault
     sess.headers['X-Vault-Token'] = token
     # https://www.vaultproject.io/api/secret/ssh/index.html#sign-ssh-key
     request_url = '/'.join([url, secret_path, 'sign', role]).rstrip('/')
