@@ -91,7 +91,8 @@ def aim_backend(**kwargs):
         webservice_id = 'AIMWebService'
 
     requests.get(
-        'foobar.com')
+        'foobar.com',
+    )
 
     query_params = {
         'AppId': app_id,
