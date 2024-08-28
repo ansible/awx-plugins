@@ -57,21 +57,21 @@ class PluginFileInjector:
                     self,
                     'downstream_namespace',
             ) and server_product_name() != 'AWX':
-                source_vars['plugin'] = f'{
+                source_vars['plugin'] = f"""{
                     self.downstream_namespace
                 }.{
                     self.downstream_collection
                 }.{
                     self.plugin_name
-                }'
+                }"""
             elif self.use_fqcn:
-                source_vars['plugin'] = f'{
+                source_vars['plugin'] = f"""{
                     self.namespace
                 }.{
                     self.collection
                 }.{
                     self.plugin_name
-                }'
+                }"""
             else:
                 source_vars['plugin'] = self.plugin_name
         return source_vars
