@@ -135,7 +135,7 @@ def conjur_backend(**kwargs):
         url, '/'.join(['api', 'secrets', account, 'variable', secret_path]),
     )
     if version:
-        ver = f"version={version}"
+        ver = f'version={version}'
         path = '?'.join([path, ver])
         path_conjurcloud = '?'.join([path_conjurcloud, ver])
 
