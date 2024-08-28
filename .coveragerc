@@ -31,4 +31,4 @@ relative_files = true
 source =
   tests
 source_pkgs =
-  awx_plugins.credentials.x.api
+  awx_plugins
