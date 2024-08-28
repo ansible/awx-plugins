@@ -1,8 +1,7 @@
 import boto3
 from botocore.exceptions import ClientError
 
-from .plugin import CredentialPlugin
-from .plugin import translate_function as _
+from .plugin import CredentialPlugin, translate_function as _
 
 
 secrets_manager_inputs = {
@@ -32,7 +31,12 @@ secrets_manager_inputs = {
             'type': 'string',
         },
     ],
-    'required': ['aws_access_key', 'aws_secret_key', 'region_name', 'secret_name'],
+    'required': [
+        'aws_access_key',
+        'aws_secret_key',
+        'region_name',
+        'secret_name',
+    ],
 }
 
 
@@ -44,15 +48,21 @@ def aws_secretsmanager_backend(**kwargs):
 
     session = boto3.session.Session()
     client = session.client(
-        service_name='secretsmanager', region_name=region_name, aws_secret_access_key=aws_secret_access_key, aws_access_key_id=aws_access_key_id
+        service_name='secretsmanager',
+        region_name=region_name,
+        aws_secret_access_key=aws_secret_access_key,
+        aws_access_key_id=aws_access_key_id,
     )
 
     try:
-        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name,
+        )
     except ClientError as e:
         raise e
     # Secrets Manager decrypts the secret value using the associated KMS CMK
-    # Depending on whether the secret was a string or binary, only one of these fields will be populated
+    # Depending on whether the secret was a string or binary, only one of
+    # these fields will be populated
     if 'SecretString' in get_secret_value_response:
         secret = get_secret_value_response['SecretString']
 
@@ -62,4 +72,8 @@ def aws_secretsmanager_backend(**kwargs):
     return secret
 
 
-aws_secretmanager_plugin = CredentialPlugin('AWS Secrets Manager lookup', inputs=secrets_manager_inputs, backend=aws_secretsmanager_backend)
+aws_secretmanager_plugin = CredentialPlugin(
+    'AWS Secrets Manager lookup',
+    inputs=secrets_manager_inputs,
+    backend=aws_secretsmanager_backend,
+)

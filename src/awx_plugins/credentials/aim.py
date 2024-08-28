@@ -1,9 +1,14 @@
-from .plugin import CredentialPlugin, CertFiles, raise_for_status
-
 from urllib.parse import quote, urlencode, urljoin
 
-from .plugin import translate_function as _
 import requests
+
+from .plugin import (
+    CertFiles,
+    CredentialPlugin,
+    raise_for_status,
+    translate_function as _,
+)
+
 
 aim_inputs = {
     'fields': [
@@ -116,11 +121,17 @@ def aim_backend(**kwargs):
     elif object_property.lower() == 'address':
         object_property = 'Address'
     elif object_property not in res:
-        raise KeyError('Property {} not found in object, available properties: Username, Password and Address'.format(object_property))
+        raise KeyError(
+            f'Property {object_property} not found in object, available properties: Username, Password and Address',
+        )
     else:
         object_property = object_property.capitalize()
 
     return res.json()[object_property]
 
 
-aim_plugin = CredentialPlugin('CyberArk Central Credential Provider Lookup', inputs=aim_inputs, backend=aim_backend)
+aim_plugin = CredentialPlugin(
+    'CyberArk Central Credential Provider Lookup',
+    inputs=aim_inputs,
+    backend=aim_backend,
+)

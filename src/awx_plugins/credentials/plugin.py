@@ -1,11 +1,15 @@
 import os
 import tempfile
-
 from collections import namedtuple
 
 from requests.exceptions import HTTPError
 
-CredentialPlugin = namedtuple('CredentialPlugin', ['name', 'inputs', 'backend'])
+
+CredentialPlugin = namedtuple(
+    'CredentialPlugin', [
+        'name', 'inputs', 'backend',
+    ],
+)
 
 
 try:
@@ -30,9 +34,8 @@ def raise_for_status(resp):
 
 
 class CertFiles:
-    """
-    A context manager used for writing a certificate and (optional) key
-    to $TMPDIR, and cleaning up afterwards.
+    """A context manager used for writing a certificate and (optional) key to
+    $TMPDIR, and cleaning up afterwards.
 
     This is particularly useful as a shared resource for credential plugins
     that want to pull cert/key data out of the database and persist it

@@ -1,17 +1,31 @@
-from .plugin import CredentialPlugin
-from .plugin import translate_function as _
+from .plugin import CredentialPlugin, translate_function as _
+
 
 try:
-    from delinea.secrets.server import DomainPasswordGrantAuthorizer, PasswordGrantAuthorizer, SecretServer, ServerSecret
+    from delinea.secrets.server import (
+        DomainPasswordGrantAuthorizer,
+        PasswordGrantAuthorizer,
+        SecretServer,
+        ServerSecret,
+    )
 except ImportError:
-    from thycotic.secrets.server import DomainPasswordGrantAuthorizer, PasswordGrantAuthorizer, SecretServer, ServerSecret
+    from thycotic.secrets.server import (
+        DomainPasswordGrantAuthorizer,
+        PasswordGrantAuthorizer,
+        SecretServer,
+        ServerSecret,
+    )
 
 tss_inputs = {
     'fields': [
         {
             'id': 'server_url',
             'label': _('Secret Server URL'),
-            'help_text': _('The Base URL of Secret Server e.g. https://myserver/SecretServer or https://mytenant.secretservercloud.com'),
+            'help_text': _(
+                'The Base URL of Secret Server e.g. '
+                'https://myserver/SecretServer or '
+                'https://mytenant.secretservercloud.com',
+            ),
             'type': 'string',
         },
         {
@@ -48,17 +62,28 @@ tss_inputs = {
             'type': 'string',
         },
     ],
-    'required': ['server_url', 'username', 'password', 'secret_id', 'secret_field'],
+    'required': [
+        'server_url',
+        'username',
+        'password',
+        'secret_id',
+        'secret_field',
+    ],
 }
 
 
 def tss_backend(**kwargs):
-    if kwargs.get("domain"):
+    if kwargs.get('domain'):
         authorizer = DomainPasswordGrantAuthorizer(
-            base_url=kwargs['server_url'], username=kwargs['username'], domain=kwargs['domain'], password=kwargs['password']
+            base_url=kwargs['server_url'],
+            username=kwargs['username'],
+            domain=kwargs['domain'],
+            password=kwargs['password'],
         )
     else:
-        authorizer = PasswordGrantAuthorizer(kwargs['server_url'], kwargs['username'], kwargs['password'])
+        authorizer = PasswordGrantAuthorizer(
+            kwargs['server_url'], kwargs['username'], kwargs['password'],
+        )
     secret_server = SecretServer(kwargs['server_url'], authorizer)
     secret_dict = secret_server.get_secret(kwargs['secret_id'])
     secret = ServerSecret(**secret_dict)
