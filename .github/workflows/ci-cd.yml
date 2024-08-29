@@ -394,7 +394,6 @@ jobs:
       TOXENV: cleanup-dists,build-dists
 
     outputs:
-      dists-artifact-name: python-package-distributions
       dists-base64-hash: ${{ steps.dist-hashes.outputs.combined-hash }}
 
     steps:
