@@ -136,6 +136,9 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
 
 
 def test_aws_assumerole_with_accesssecret():
+    '''
+    Test that the aws_assumerole_backend function call returns a token given the access_key and secret_key.
+    '''
     kwargs = {
         'access_key': 'my_access_key',
         'secret_key': 'my_secret_key',
@@ -169,6 +172,9 @@ def test_aws_assumerole_with_accesssecret():
 
 
 def test_aws_assumerole_with_arnonly():
+    '''
+    Test backend function with only the role ARN provided.
+    '''
     kwargs = {
         'role_arn': 'the_arn',
         'identifier': 'access_token',
