@@ -1,9 +1,12 @@
-import boto3
-import hashlib
 import datetime
+import hashlib
+
+from django.utils.translation import gettext_lazy as _
+
+import boto3
 
 from .plugin import CredentialPlugin
-from django.utils.translation import gettext_lazy as _
+
 
 try:
     from botocore.exceptions import ClientError
@@ -13,55 +16,59 @@ except ImportError:
 _aws_cred_cache = {}
 
 
-assume_role_inputs = {
-    'fields': [
-        {
-            'id': 'access_key',
-            'label': _('AWS Access Key'),
-            'type': 'string',
-            'secret': True,
-            'help_text': _('The optional AWS access key for the user who will assume the role'),
-        },
-        {
-            'id': 'secret_key',
-            'label': 'AWS Secret Key',
-            'type': 'string',
-            'secret': True,
-            'help_text': _('The optional AWS secret key for the user who will assume the role'),
-        },
-        {
-            'id': 'external_id',
-            'label': 'External ID',
-            'type': 'string',
-            'help_text': _('The optional External ID which will be provided to the assume role API'),
-        },
-        {'id': 'role_arn', 'label': 'AWS ARN Role Name', 'type': 'string', 'secret': True, 'help_text': _('The ARN Role Name to be assumed in AWS')},
-    ],
-    'metadata': [
-        {
-            'id': 'identifier',
-            'label': 'Identifier',
-            'type': 'string',
-            'help_text': _('The name of the key in the assumed AWS role to fetch [AccessKeyId | SecretAccessKey | SessionToken].'),
-        },
-    ],
-    'required': ['role_arn'],
-}
+assume_role_inputs = {'fields': [{'id': 'access_key',
+                                  'label': _('AWS Access Key'),
+                                  'type': 'string',
+                                  'secret': True,
+                                  'help_text': _('The optional AWS access key for the user who will assume the role'),
+                                  },
+                                 {'id': 'secret_key',
+                                  'label': 'AWS Secret Key',
+                                  'type': 'string',
+                                  'secret': True,
+                                  'help_text': _('The optional AWS secret key for the user who will assume the role'),
+                                  },
+                                 {'id': 'external_id',
+                                  'label': 'External ID',
+                                  'type': 'string',
+                                  'help_text': _('The optional External ID which will be provided to the assume role API'),
+                                  },
+                                 {'id': 'role_arn',
+                                  'label': 'AWS ARN Role Name',
+                                  'type': 'string',
+                                  'secret': True,
+                                  'help_text': _('The ARN Role Name to be assumed in AWS')},
+                                 ],
+                      'metadata': [{'id': 'identifier',
+                                    'label': 'Identifier',
+                                    'type': 'string',
+                                    'help_text': _('The name of the key in the assumed AWS role to fetch [AccessKeyId | SecretAccessKey | SessionToken].'),
+                                    },
+                                   ],
+                      'required': ['role_arn'],
+                      }
 
 
 def aws_assumerole_getcreds(access_key, secret_key, role_arn, external_id):
-    if (access_key is None or len(access_key) == 0) and (secret_key is None or len(secret_key) == 0):
+    if (access_key is None or len(access_key) == 0) and (
+            secret_key is None or len(secret_key) == 0):
         # Connect using credentials in the EE
-        connection = boto3.client(service_name="sts")
+        connection = boto3.client(service_name='sts')
     else:
         # Connect to AWS using provided credentials
-        connection = boto3.client(service_name="sts", aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+        connection = boto3.client(
+            service_name='sts',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key)
     try:
-        response = connection.assume_role(RoleArn=role_arn, RoleSessionName='AAP_AWS_Role_Session1', ExternalId=external_id)
+        response = connection.assume_role(
+            RoleArn=role_arn,
+            RoleSessionName='AAP_AWS_Role_Session1',
+            ExternalId=external_id)
     except ClientError as ce:
         raise ValueError(f'Got a bad client response from AWS: {ce.msg}.')
 
-    credentials = response.get("Credentials", {})
+    credentials = response.get('Credentials', {})
 
     return credentials
 
@@ -79,7 +86,8 @@ def aws_assumerole_backend(**kwargs):
     # separate credentials, and should allow the same user to request
     # multiple roles.
     #
-    credential_key_hash = hashlib.sha256((str(access_key or '') + role_arn).encode('utf-8'))
+    credential_key_hash = hashlib.sha256(
+        (str(access_key or '') + role_arn).encode('utf-8'))
     credential_key = credential_key_hash.hexdigest()
 
     credentials = _aws_cred_cache.get(credential_key, None)
@@ -87,9 +95,11 @@ def aws_assumerole_backend(**kwargs):
     # If there are no credentials for this user/ARN *or* the credentials
     # we have in the cache have expired, then we need to contact AWS again.
     #
-    if (credentials is None) or (credentials['Expiration'] < datetime.datetime.now(credentials['Expiration'].tzinfo)):
+    if (credentials is None) or (credentials['Expiration'] < datetime.datetime.now(
+            credentials['Expiration'].tzinfo)):
 
-        credentials = aws_assumerole_getcreds(access_key, secret_key, role_arn, external_id)
+        credentials = aws_assumerole_getcreds(
+            access_key, secret_key, role_arn, external_id)
 
         _aws_cred_cache[credential_key] = credentials
 
@@ -101,4 +111,7 @@ def aws_assumerole_backend(**kwargs):
     raise ValueError(f'Could not find a value for {identifier}.')
 
 
-aws_assumerole_plugin = CredentialPlugin('AWS Assume Role Plugin', inputs=assume_role_inputs, backend=aws_assumerole_backend)
+aws_assumerole_plugin = CredentialPlugin(
+    'AWS Assume Role Plugin',
+    inputs=assume_role_inputs,
+    backend=aws_assumerole_backend)

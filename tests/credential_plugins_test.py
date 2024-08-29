@@ -1,13 +1,12 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="no-untyped-call"
 
+import datetime
 from unittest import mock
 
-import datetime
 import pytest
 
-from awx_plugins.credentials import hashivault
-from awx_plugins.credentials import aws_assumerole
+from awx_plugins.credentials import aws_assumerole, hashivault
 
 
 def test_imported_azure_cloud_sdk_vars() -> None:
@@ -135,6 +134,7 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
     with pytest.raises(Exception):
         hashivault.handle_auth()
 
+
 def test_aws_assumerole_with_accesssecret():
     kwargs = {
         'access_key': 'my_access_key',
@@ -150,7 +150,11 @@ def test_aws_assumerole_with_accesssecret():
             'Expiration': datetime.datetime.today() + datetime.timedelta(days=1),
         }
         token = aws_assumerole.aws_assumerole_backend(**kwargs)
-        method_mock.assert_called_with(kwargs.get('access_key'), kwargs.get('secret_key'), kwargs.get('role_arn'), None)
+        method_mock.assert_called_with(
+            kwargs.get('access_key'),
+            kwargs.get('secret_key'),
+            kwargs.get('role_arn'),
+            None)
         assert token == 'the_access_token'
         kwargs['identifier'] = 'secret_key'
         method_mock.reset_mock()
@@ -177,7 +181,8 @@ def test_aws_assumerole_with_arnonly():
             'Expiration': datetime.datetime.today() + datetime.timedelta(days=1),
         }
         token = aws_assumerole.aws_assumerole_backend(**kwargs)
-        method_mock.assert_called_with(None, None, kwargs.get('role_arn'), None)
+        method_mock.assert_called_with(
+            None, None, kwargs.get('role_arn'), None)
         assert token == 'the_access_token'
         kwargs['identifier'] = 'secret_key'
         method_mock.reset_mock()
