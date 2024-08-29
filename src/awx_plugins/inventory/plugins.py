@@ -1,9 +1,13 @@
 import os.path
 import stat
 import tempfile
+from contextlib import suppress as _suppress_exception
 
-from awx.main.utils.execution_environments import to_container_path
-from awx.main.utils.licensing import server_product_name
+
+with _suppress_exception(ImportError):
+    # FIXME: stop suppressing once the circular dependency is untangled
+    from awx.main.utils.execution_environments import to_container_path
+    from awx.main.utils.licensing import server_product_name
 
 import yaml
 
