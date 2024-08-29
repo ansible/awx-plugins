@@ -39,12 +39,12 @@ class CertFiles:
 
     This is particularly useful as a shared resource for credential plugins
     that want to pull cert/key data out of the database and persist it
-    temporarily to the file system so that it can loaded into the openssl
+    temporarily to the file system so that it can loaded into the OpenSSL
     certificate chain (generally, for HTTPS requests plugins make via the
     Python requests library)
 
     with CertFiles(cert_data, key_data) as cert:
-        # cert is string representing a path to the cert or pemfile
+        # cert is string representing a path to the certificate or PEM file
         # temporarily written to disk
         requests.post(..., cert=cert)
     """
