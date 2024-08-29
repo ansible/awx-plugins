@@ -18,6 +18,15 @@ dependencies = [  # runtime deps  # https://packaging.python.org/en/latest/guide
   # GUIDANCE: only add things that this project imports directly
   # GUIDANCE: only set lower version bounds
   # "awx_plugins.base_interface.api",  # keep `__init__.py` empty
+  "Django",  # <- credentials.injectors (and inventory.plugins indirectly)
+  "PyYAML",  # credentials.injectors, inventory.plugins
+  "azure-identity",  # credentials.azure_kv
+  "azure-keyvault",  # credentials.azure_kv
+  "boto3",  # credentials.awx_secretsmanager
+  "msrestazure",  # credentials.azure_kv
+  "python-dsv-sdk >= 1.0.4",  # credentials.thycotic_dsv
+  "python-tss-sdk >= 1.2.1",  # credentials.thycotic_tss
+  "requests",  # credentials.aim, credentials.centrify_vault, credentials.conjur, credentials.hashivault
 ]
 classifiers = [  # Allowlist: https://pypi.org/classifiers/
   "Development Status :: 1 - Planning",
