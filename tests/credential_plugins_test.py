@@ -55,7 +55,7 @@ def test_hashivault_client_cert_auth_explicit_role():
     assert res == expected_res
 
 
-def test_hashivault_client_cert_auth_no_role():
+def test_hashivault_client_cert_auth_no_role() -> None:
     kwargs = {}
     expected_res = {
         'name': None,
