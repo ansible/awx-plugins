@@ -44,7 +44,7 @@ def test_hashivault_kubernetes_auth():
         assert res == expected_res
 
 
-def test_hashivault_client_cert_auth_explicit_role():
+def test_hashivault_client_cert_auth_explicit_role() -> None:
     kwargs = {
         'client_cert_role': 'test-cert-1',
     }
