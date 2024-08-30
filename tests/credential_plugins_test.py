@@ -142,7 +142,7 @@ class TestDelineaImports:
         # assert this module as opposed to older thycotic.secrets.vault
         assert SecretsVault.__module__ == 'delinea.secrets.vault'
 
-    def test_tss_import(self):
+    def test_tss_import(self) -> None:
         from awx_plugins.credentials.tss import DomainPasswordGrantAuthorizer, PasswordGrantAuthorizer, SecretServer, ServerSecret  # noqa
 
         for cls in (
