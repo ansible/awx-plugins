@@ -27,7 +27,7 @@ def test_hashivault_approle_auth():
     assert res == expected_res
 
 
-def test_hashivault_kubernetes_auth():
+def test_hashivault_kubernetes_auth() -> None:
     kwargs = {
         'kubernetes_role': 'the_kubernetes_role',
     }
