@@ -137,7 +137,7 @@ class TestDelineaImports:
     library, so these tests are designed to fail if these wind up using the
     fallback import."""
 
-    def test_dsv_import(self):
+    def test_dsv_import(self) -> None:
         from awx_plugins.credentials.dsv import SecretsVault  # noqa
         # assert this module as opposed to older thycotic.secrets.vault
         assert SecretsVault.__module__ == 'delinea.secrets.vault'
