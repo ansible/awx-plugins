@@ -110,7 +110,7 @@ def test_hashivault_handle_auth_kubernetes() -> None:
             assert token == 'the_token'
 
 
-def test_hashivault_handle_auth_client_cert():
+def test_hashivault_handle_auth_client_cert() -> None:
     kwargs = {
         'client_cert_public': 'foo',
         'client_cert_private': 'bar',
