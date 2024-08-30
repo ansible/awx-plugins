@@ -126,7 +126,7 @@ def test_hashivault_handle_auth_client_cert():
         assert token == 'the_token'
 
 
-def test_hashivault_handle_auth_not_enough_args():
+def test_hashivault_handle_auth_not_enough_args() -> None:
     with pytest.raises(Exception):
         hashivault.handle_auth()
 
