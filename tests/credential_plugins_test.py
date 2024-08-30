@@ -5,7 +5,7 @@ import pytest
 from awx_plugins.credentials import hashivault
 
 
-def test_imported_azure_cloud_sdk_vars():
+def test_imported_azure_cloud_sdk_vars() -> None:
     from awx_plugins.credentials import azure_kv
 
     assert len(azure_kv.clouds) > 0
