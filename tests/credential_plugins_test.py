@@ -14,7 +14,7 @@ def test_imported_azure_cloud_sdk_vars():
     assert all([hasattr(c.suffixes, 'keyvault_dns') for c in azure_kv.clouds])
 
 
-def test_hashivault_approle_auth():
+def test_hashivault_approle_auth() -> None:
     kwargs = {
         'role_id': 'the_role_id',
         'secret_id': 'the_secret_id',
