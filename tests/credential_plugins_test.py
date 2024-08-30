@@ -91,7 +91,7 @@ def test_hashivault_handle_auth_approle():
         assert token == 'the_token'
 
 
-def test_hashivault_handle_auth_kubernetes():
+def test_hashivault_handle_auth_kubernetes() -> None:
     kwargs = {
         'kubernetes_role': 'the_kubernetes_role',
     }
