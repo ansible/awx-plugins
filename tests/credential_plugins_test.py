@@ -79,7 +79,7 @@ def test_hashivault_handle_auth_token():
     assert token == kwargs['token']
 
 
-def test_hashivault_handle_auth_approle():
+def test_hashivault_handle_auth_approle() -> None:
     kwargs = {
         'role_id': 'the_role_id',
         'secret_id': 'the_secret_id',
