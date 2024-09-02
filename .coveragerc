@@ -1,5 +1,4 @@
 [html]
-directory = .test-results/pytest/cov/
 show_contexts = true
 skip_covered = false
 
