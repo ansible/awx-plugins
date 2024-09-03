@@ -27,7 +27,7 @@ coverage:
         flags:
         - pytest
         paths:
-        - src/awx/plugins/credentials/**/*.py
+        - src/
         target: 100%
       tests:
         flags:
