@@ -134,5 +134,3 @@ target = '100%'
 target = '100%'
 [".codecov.yml".coverage.status.project.typing]
 target = '100%'
-[".codecov.yml".coverage.status.project.typing-stubs]
-target = '100%'
