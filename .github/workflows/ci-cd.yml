@@ -556,7 +556,12 @@ jobs:
     - name: Generate dist hashes to be used for provenance
       id: dist-hashes
       run: >-
-        echo "combined-hash=$(sha256sum * | base64 -w0)"
+        echo "combined-hash=$(
+          sha256sum
+          '${{ needs.pre-setup.outputs.sdist-artifact-name }}'
+          '${{ needs.pre-setup.outputs.wheel-artifact-name }}'
+          | base64 -w0
+        )"
         >> "${GITHUB_OUTPUT}"
       working-directory: dist
     - name: Store the distribution packages
