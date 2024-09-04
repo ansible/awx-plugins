@@ -60,7 +60,9 @@ on:
         description: ID of the upstream GitHub Repository
         required: true
         type: string
-      yolo:
+      voting:
+        description: >-
+          Whether the run outcomes contribute to the failing CI status
         required: true
         type: string
     secrets:
@@ -115,7 +117,7 @@ jobs:
     continue-on-error: >-
       ${{
           (
-            fromJSON(inputs.yolo) ||
+            fromJSON(inputs.voting) ||
             (
               startsWith(inputs.python-version, '~')
             ) ||

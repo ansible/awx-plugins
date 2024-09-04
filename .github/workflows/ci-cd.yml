@@ -622,7 +622,7 @@ jobs:
         ${{ matrix.toxenv }}
       upstream-repository-id: >-
         ${{ needs.pre-setup.outputs.upstream-repository-id }}
-      yolo: >-
+      voting: >-
         ${{ fromJSON(needs.pre-setup.outputs.is-yolo-mode) }}
     secrets:
       codecov-token: ${{ secrets.CODECOV_TOKEN }}
@@ -680,7 +680,7 @@ jobs:
         --lf
       upstream-repository-id: >-
         ${{ needs.pre-setup.outputs.upstream-repository-id }}
-      yolo: >-
+      voting: >-
         ${{ fromJSON(needs.pre-setup.outputs.is-yolo-mode) }}
     secrets:
       codecov-token: ${{ secrets.CODECOV_TOKEN }}
