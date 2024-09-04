@@ -225,10 +225,16 @@ repos:
   hooks:
   - id: pylint
     additional_dependencies:
+    - azure-identity  # needed by credentials.azure_kv
+    - azure-keyvault  # needed by credentials.azure_kv
+    - boto3  # needed by credentials.awx_secretsmanager
     - covdefaults  # needed by pylint-pytest due to pytest-cov loading coverage
+    - msrestazure  # needed by credentials.azure_kv
     - pylint-pytest ~= 2.0.0a0
     - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
     - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
+    - python-dsv-sdk  # needed by credentials.dsv, credentials.thycotic_dsv
+    - PyYAML  # needed by credentials.injectors, inventory.plugins
     - Sphinx  # needed by the Sphinx extension stub
 
 ...
