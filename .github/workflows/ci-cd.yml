@@ -602,6 +602,8 @@ jobs:
         - doctest-docs
         - linkcheck-docs
         - spellcheck-docs
+        tox-run-posargs:
+        - ''
         xfail:
         - false
       fail-fast: false
@@ -622,6 +624,8 @@ jobs:
       timeout-minutes: 3
       toxenv: >-
         ${{ matrix.toxenv }}
+      tox-run-posargs: >-
+        ${{ matrix.tox-run-posargs }}
       upstream-repository-id: >-
         ${{ needs.pre-setup.outputs.upstream-repository-id }}
       voting: >-
