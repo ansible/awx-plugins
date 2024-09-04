@@ -603,11 +603,49 @@ jobs:
         - linkcheck-docs
         - spellcheck-docs
         environment-variables:
-        - ''
+        - >-  # only affects pre-commit, set for all for simplicity:
+          SKIP=flake8,mypy,pylint,python-check-blanket-noqa
         tox-run-posargs:
         - ''
         xfail:
         - false
+        include:
+        - runner-vm-os: ubuntu-lates
+          python-version: 3.11
+          toxenv: pre-commit
+          environment-variables: ''
+          tox-run-posargs: python-check-blanket-noqa --all-files
+          xfail: true
+        - runner-vm-os: ubuntu-lates
+          python-version: 3.11
+          toxenv: pre-commit
+          environment-variables: ''
+          tox-run-posargs: flake8 --all-files
+          xfail: true
+        - runner-vm-os: ubuntu-lates
+          python-version: 3.11
+          toxenv: pre-commit
+          environment-variables: ''
+          tox-run-posargs: mypy-py313 --all-files
+          xfail: true
+        - runner-vm-os: ubuntu-lates
+          python-version: 3.11
+          toxenv: pre-commit
+          environment-variables: ''
+          tox-run-posargs: mypy-py312 --all-files
+          xfail: true
+        - runner-vm-os: ubuntu-lates
+          python-version: 3.11
+          toxenv: pre-commit
+          environment-variables: ''
+          tox-run-posargs: mypy-py311 --all-files
+          xfail: true
+        - runner-vm-os: ubuntu-lates
+          python-version: 3.11
+          toxenv: pre-commit
+          environment-variables: ''
+          tox-run-posargs: pylint --all-files
+          xfail: true
       fail-fast: false
     uses: ./.github/workflows/reusable-tox.yml
     with:
