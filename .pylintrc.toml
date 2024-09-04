@@ -61,7 +61,13 @@ ignore-patterns = ["^\\.#"]
 # This patch injects the project directory into the import path so that the
 # local `pytest` plugin can be imported when `pylint-pytest` invokes it when
 # exploring the fixtures available:
-init-hook = "import os, sys; sys.path[:0] = [os.getcwd()]; os.environ['PYTHONPATH'] = sys.path[0]"
+init-hook = """
+import os, pathlib, sys
+repo_root_path = pathlib.Path.cwd()
+src_path = repo_root_path / 'src'
+sys.path[:0] = [str(src_path if src_path.exists() else repo_root_path)]
+os.environ['PYTHONPATH'] = sys.path[0]
+"""
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
