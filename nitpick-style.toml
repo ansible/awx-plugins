@@ -129,8 +129,17 @@ flags = [
 [".codecov.yml".coverage.status.project.default]
 target = '100%'
 [".codecov.yml".coverage.status.project.lib]
+flags = [
+  'pytest',
+]
 target = '100%'
 [".codecov.yml".coverage.status.project.tests]
+flags = [
+  'pytest',
+]
 target = '100%'
 [".codecov.yml".coverage.status.project.typing]
+flags = [
+  'MyPy',
+]
 target = '100%'
