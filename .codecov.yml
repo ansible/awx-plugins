@@ -18,6 +18,8 @@ coverage:
     patch:
       default:
         target: 100%
+      pytest:
+        target: 100%
         flags:
         - pytest
       typing:
