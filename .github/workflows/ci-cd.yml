@@ -792,4 +792,95 @@ jobs:
         attestations: true
         repository-url: https://test.pypi.org/legacy/
 
+  post-release-repo-update:
+    name: >-
+      Publish post-release Git tag
+      for ${{ needs.pre-setup.outputs.git-tag }}
+    needs:
+    - publish-pypi
+    - pre-setup  # transitive, for accessing settings
+    if: >-
+      always()
+      && needs.publish-pypi.result == 'success'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Mandatory for `git push` to work
+      pull-requests: write
+
+    steps:
+    - name: Fetch the src snapshot  # IMPORTANT: Must be before the tag check
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+        ref: ${{ github.event.inputs.release-committish }}
+    - name: >-
+        Check if the requested tag ${{ needs.pre-setup.outputs.git-tag }}
+        is present and is pointing at the required commit ${{
+          github.event.inputs.release-committish
+        }}
+      id: existing-remote-tag-check
+      run: |
+        set -eEuo pipefail
+
+        REMOTE_TAGGED_COMMIT_SHA="$(
+          git ls-remote --tags --refs $(git remote get-url origin) '${{
+            needs.pre-setup.outputs.git-tag
+          }}' | awk '{print $1}'
+        )"
+
+        if [[ "${REMOTE_TAGGED_COMMIT_SHA}" == '' ]]
+        then
+          LAST_HUMAN_COMMIT_SHA=
+        else
+          LAST_HUMAN_COMMIT_SHA=$(git rev-parse "${REMOTE_TAGGED_COMMIT_SHA}"^)
+        fi
+
+        RELEASE_REQUEST_COMMIT_SHA=$(git rev-parse '${{
+          github.event.inputs.release-committish || 'HEAD'
+        }}')
+
+        if [[ "${LAST_HUMAN_COMMIT_SHA}" == "${RELEASE_REQUEST_COMMIT_SHA}" ]]
+        then
+          echo "already-exists=true" >> "${GITHUB_OUTPUT}"
+        fi
+
+    - name: Setup git user as [bot]
+      if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
+      # Refs:
+      # * https://github.community/t/github-actions-bot-email-address/17204/6
+      # * https://github.com/actions/checkout/issues/13#issuecomment-724415212
+      uses: fregante/setup-git-user@v2
+
+    - name: >-
+        Tag the release in the local Git repo
+        as ${{ needs.pre-setup.outputs.git-tag }}
+      if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
+      run: >-
+        git tag
+        -m '${{ needs.pre-setup.outputs.git-tag }}'
+        -m 'Published at https://pypi.org/project/${{
+          env.PROJECT_NAME
+        }}/${{
+          needs.pre-setup.outputs.dist-version
+        }}'
+        -m 'This release has been produced by the following workflow run: ${{
+          github.server_url
+        }}/${{
+          github.repository
+        }}/actions/runs/${{
+          github.run_id
+        }}'
+        '${{ needs.pre-setup.outputs.git-tag }}'
+        --
+        ${{ github.event.inputs.release-committish }}
+
+    - name: >-
+        Push ${{ needs.pre-setup.outputs.git-tag }} tag corresponding
+        to the just published release back to GitHub
+      if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
+      run: >-
+        git push --atomic origin
+        '${{ needs.pre-setup.outputs.git-tag }}'
+
 ...
