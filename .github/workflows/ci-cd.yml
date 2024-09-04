@@ -936,4 +936,137 @@ jobs:
           dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}
           dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}
 
+  publish-github-release:
+    name: >-
+      Publish a GitHub Release for
+      ${{ needs.pre-setup.outputs.git-tag }}
+    needs:
+    - post-release-repo-update
+    - pre-setup  # transitive, for accessing settings
+    - publish-github-attestations
+    - slsa-provenance
+    if: >-
+      always()
+      && needs.post-release-repo-update.result == 'success'
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 3
+
+    permissions:
+      contents: write
+      discussions: write
+      id-token: write  # IMPORTANT: mandatory for Sigstore signing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: >-
+          ${{ needs.pre-setup.outputs.dists-artifact-name }}
+        path: dist/
+    - name: Download SLSA provenance in-toto files
+      uses: actions/download-artifact@v4
+      with:
+        name: >-
+          ${{ steps.slsa-provenance.outputs.provenance-name }}
+        path: >-
+          ${{ steps.slsa-provenance.outputs.provenance-name }}
+
+    - name: Figure out if the current version is a pre-release
+      id: release-maturity-check
+      run: |
+        from os import environ
+        from pathlib import Path
+
+        release_version = '${{
+          needs.pre-setup.outputs.dist-version
+        }}'
+
+        FILE_APPEND_MODE = 'a'
+
+        is_pre_release = any(
+            hint_char in release_version
+            for hint_char in {'a', 'b', 'd', 'r'}
+        )
+
+        with Path(environ['GITHUB_OUTPUT']).open(
+                mode=FILE_APPEND_MODE,
+        ) as outputs_file:
+            print(
+                f'is-pre-release={is_pre_release !s}'.lower(),
+                file=outputs_file,
+            )
+      shell: python
+    - name: Prepare the release notes file for the GitHub Releases
+      run: |
+        echo '## 📝 Release notes' | tee -a release-notes.md
+        echo | tee -a release-notes.md
+        echo | tee -a release-notes.md
+        echo '📦 PyPI page: https://pypi.org/project/${{
+          env.PROJECT_NAME
+        }}/${{
+          needs.pre-setup.outputs.dist-version
+        }}' | tee -a release-notes.md
+        echo | tee -a release-notes.md
+        echo | tee -a release-notes.md
+        echo '${{
+          steps.release-maturity-check.outputs.is-pre-release == 'true'
+          && format(
+            '🚧 {0} is marked as a pre-release.',
+            needs.pre-setup.outputs.git-tag
+          )
+          || format(
+            '🌱 {0} is marked as a stable release.',
+            needs.pre-setup.outputs.git-tag
+          )
+        }}' | tee -a release-notes.md
+        echo | tee -a release-notes.md
+        echo | tee -a release-notes.md
+        echo '🔗 This release has been produced by ' \
+        'the following workflow run: ${{
+          github.server_url
+        }}/${{
+          github.repository
+        }}/actions/runs/${{
+          github.run_id
+        }}' | tee -a release-notes.md
+        echo | tee -a release-notes.md
+        echo | tee -a release-notes.md
+      shell: bash
+
+    - name: Sign the dists with Sigstore
+      uses: sigstore/gh-action-sigstore-python@v3.0.0
+      with:
+        inputs: >-
+          dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}
+          dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}
+
+    - name: >-
+        Publish a GitHub Release for
+        ${{ needs.pre-setup.outputs.git-tag }}
+        with Sigstore-signed artifacts
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: false
+        artifactErrorsFailBuild: false
+        artifacts: |
+          dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}
+          dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}.sigstore.json
+          dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}
+          dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}.sigstore.json
+        artifactContentType: raw  # Because whl and tgz are of different types
+        bodyFile: release-notes.md
+        discussionCategory: Announcements
+        draft: false
+        name: ${{ needs.pre-setup.outputs.git-tag }}
+        omitBodyDuringUpdate: true
+        omitName: false
+        omitNameDuringUpdate: true
+        omitPrereleaseDuringUpdate: true
+        prerelease: ${{ steps.release-maturity-check.outputs.is-pre-release }}
+        removeArtifacts: false
+        replacesArtifacts: false
+        tag: ${{ needs.pre-setup.outputs.git-tag }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+
 ...
