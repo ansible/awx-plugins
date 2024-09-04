@@ -22,6 +22,12 @@ on:
         description: Workflow artifact name containing dists
         required: true
         type: string
+      environment-variables:
+        description: >-
+          A newline-delimited blob of text with environment variables
+          to be set using `${GITHUB_ENV}`
+        required: false
+        type: string
       python-version:
         description: Python version to provision in the VM
         required: true
@@ -129,6 +135,12 @@ jobs:
       TOXENV: ${{ inputs.toxenv }}
 
     steps:
+    - name: Export requested job-global environment variables
+      if: inputs.environment-variables != ''
+      run: >-
+        echo '${{ inputs.environment-variables }}'
+        >> "${GITHUB_ENV}"
+
     - name: >-
         Switch to using Python v${{ inputs.python-version }}
         by default
