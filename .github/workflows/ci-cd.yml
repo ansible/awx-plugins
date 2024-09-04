@@ -557,10 +557,10 @@ jobs:
       id: dist-hashes
       run: >-
         echo "combined-hash=$(
-          sha256sum
-          '${{ needs.pre-setup.outputs.sdist-artifact-name }}'
-          '${{ needs.pre-setup.outputs.wheel-artifact-name }}'
-          | base64 -w0
+        sha256sum
+        '${{ needs.pre-setup.outputs.sdist-artifact-name }}'
+        '${{ needs.pre-setup.outputs.wheel-artifact-name }}'
+        | base64 -w0
         )"
         >> "${GITHUB_OUTPUT}"
       working-directory: dist
