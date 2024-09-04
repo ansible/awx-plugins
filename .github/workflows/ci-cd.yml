@@ -602,6 +602,8 @@ jobs:
         - doctest-docs
         - linkcheck-docs
         - spellcheck-docs
+        xfail:
+        - false
       fail-fast: false
     uses: ./.github/workflows/reusable-tox.yml
     with:
@@ -623,7 +625,10 @@ jobs:
       upstream-repository-id: >-
         ${{ needs.pre-setup.outputs.upstream-repository-id }}
       voting: >-
-        ${{ fromJSON(needs.pre-setup.outputs.is-yolo-mode) }}
+        ${{
+          fromJSON(needs.pre-setup.outputs.is-yolo-mode)
+          || fromJSON(matrix.xfail)
+        }}
     secrets:
       codecov-token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -647,6 +652,8 @@ jobs:
         - macos-13
         toxenv:
         - py
+        xfail:
+        - false
 
     uses: ./.github/workflows/reusable-tox.yml
     with:
@@ -681,7 +688,10 @@ jobs:
       upstream-repository-id: >-
         ${{ needs.pre-setup.outputs.upstream-repository-id }}
       voting: >-
-        ${{ fromJSON(needs.pre-setup.outputs.is-yolo-mode) }}
+        ${{
+          fromJSON(needs.pre-setup.outputs.is-yolo-mode)
+          || fromJSON(matrix.xfail)
+        }}
     secrets:
       codecov-token: ${{ secrets.CODECOV_TOKEN }}
 
