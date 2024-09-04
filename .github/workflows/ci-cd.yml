@@ -610,37 +610,37 @@ jobs:
         xfail:
         - false
         include:
-        - runner-vm-os: ubuntu-lates
+        - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: python-check-blanket-noqa --all-files
           xfail: true
-        - runner-vm-os: ubuntu-lates
+        - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: flake8 --all-files
           xfail: true
-        - runner-vm-os: ubuntu-lates
+        - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: mypy-py313 --all-files
           xfail: true
-        - runner-vm-os: ubuntu-lates
+        - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: mypy-py312 --all-files
           xfail: true
-        - runner-vm-os: ubuntu-lates
+        - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: mypy-py311 --all-files
           xfail: true
-        - runner-vm-os: ubuntu-lates
+        - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
