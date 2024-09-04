@@ -12,6 +12,8 @@ source =
   *\Lib\site-packages
 
 [report]
+# `fail_under` is set here temporarily until it can be dropped:
+fail_under = 39.27
 skip_covered = true
 skip_empty = true
 show_missing = true
