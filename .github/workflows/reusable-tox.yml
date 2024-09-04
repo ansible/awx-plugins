@@ -8,15 +8,15 @@ name: >-
 on:
   workflow_call:
     inputs:
-      cache-key-files:
-        description: Dependency files cache
-        required: true
-        type: string
       built-wheel-names:
         description: >-
           A glob for the built distributions in the artifact
           to test (is installed into tox env if passed)
         required: false
+        type: string
+      cache-key-files:
+        description: Dependency files cache
+        required: true
         type: string
       dists-artifact-name:
         description: Workflow artifact name containing dists
