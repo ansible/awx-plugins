@@ -7,8 +7,8 @@ Secret Management System
    single: credentials
    pair: credential; plugins
    pair: secret management; credential
-   
-Users and admins upload machine and cloud credentials so that automation can access machines and external services on their behalf. By default, sensitive credential values (such as SSH passwords, SSH private keys, API tokens for cloud services) are stored in the database after being encrypted. With external credentials backed by credential plugins, you can map credential fields (like a password or an SSH Private key) to values stored in a :term:`secret management system` instead of providing them to AWX directly. AWX provides a secret management system that include integrations for:
+
+Users and admins upload machine and cloud credentials so that automation can access machines and external services on their behalf. By default, sensitive credential values (such as SSH passwords, SSH private keys, API tokens for cloud services) are stored in the database after being encrypted. With external credentials backed by credential plugins, you can map credential fields (like a password or an SSH Private key) to values stored in a secret management system instead of providing them to AWX directly. AWX provides a secret management system that include integrations for:
 
 - :ref:`ug_credentials_aws_lookup`
 - :ref:`ug_credentials_centrify`
@@ -20,24 +20,22 @@ Users and admins upload machine and cloud credentials so that automation can acc
 - :ref:`ug_credentials_thycoticvault`
 - :ref:`ug_credentials_thycoticserver`
 
-These external secret values will be fetched prior to running a playbook that needs them. For more information on specifying these credentials in the User Interface, see :ref:`ug_credentials`.
+These external secret values will be fetched prior to running a playbook that needs them.
 
 Configure and link secret lookups
 -----------------------------------
 
-When configuring AWX to pull a secret from a 3rd-party system, it is in essence linking credential fields to external systems. To link a credential field to a value stored in an external system, select the external credential corresponding to that system and provide :term:`metadata` to look up the desired value. The metadata input fields are part of the :term:`external credential type` definition of the :term:`source credential`. 
+When configuring AWX to pull a secret from a 3rd-party system, it is in essence linking credential fields to external systems. To link a credential field to a value stored in an external system, select the external credential corresponding to that system and provide metadata to look up the desired value. The metadata input fields are part of the external credential type definition of the source credential.
 
-AWX provides a :term:`credential plugin` interface for developers, integrators, admins, and power-users with the ability to add new external credential types to extend it to support other secret management systems. For more detail, see the `development docs for credential plugins`_.
+AWX provides a credential plugin interface for developers, integrators, admins, and power-users with the ability to add new external credential types to extend it to support other secret management systems. For more detail, see the `development docs for credential plugins`_.
 
 .. _`development docs for credential plugins`: https://github.com/ansible/awx/blob/devel/docs/credentials/credential_plugins.md
 
 
-Use the AWX User Interface to configure and use each of the supported 3-party secret management systems. 
+Use the AWX User Interface to configure and use each of the supported 3-party secret management systems.
 
-1. First, create an external credential for authenticating with the secret management system. At minimum, provide a name for the external credential and select one of the following for the **Credential Type**:
+1. First, create an external credential for authenticating with the secret management system. At minimum, provide a name for the external credential and select your desired secret lookup from the **Credential Type** drop-down menu.
 
-.. contents::
-    :local:
 
 2. Navigate to the credential form of the target credential and link one or more input fields to the external credential along with metadata for locating the secret in the external system. In this example, the *Demo Credential* is the target credential.
 
@@ -45,9 +43,10 @@ Use the AWX User Interface to configure and use each of the supported 3-party se
 
 3. For any of the fields below the **Type Details** area that you want to link to the external credential, click the |key| button of the input field. You are prompted to set the input source to use to retrieve your secret information.
 
-.. |key| image:: ../common/images/key-mgmt-button.png
+.. |key| image:: _static/images/key-mgmt-button.png
    :alt: Icon for managing external credentials
-.. image:: ../common/images/credentials-link-credential-prompt.png 
+
+.. image:: _static/images/credentials-link-credential-prompt.png
    :alt: Credential section of the external secret management system dialog
 
 4. Select the credential you want to link to, and click **Next**. This takes you to the **Metadata** tab of the input source. Metadata is specific to the input source you select:
@@ -57,28 +56,28 @@ Use the AWX User Interface to configure and use each of the supported 3-party se
    :width: 1400px
    :header-rows: 1
 
-   * - Input Source 
+   * - Input Source
      - Metadata
      - Description
    * - *AWS Secrets Manager*
      - AWS Secrets Manager Region (required)
      - The region where the secrets manager is located.
-   * - 
+   * -
      - AWS Secret Name (Required)
      - Specify the AWS secret name that was generated by the AWS access key.
    * - *Centrify Vault Credential Provider Lookup*
      - Account Name (Required)
      - Name of the system account or domain associated with Centrify Vault.
-   * - 
+   * -
      - System Name
      - Specify the name used by the Centrify portal.
    * - *CyberArk Central Credential Provider Lookup*
      - Object Query (Required)
      - Lookup query for the object.
-   * - 
+   * -
      - Object Query Format
      - Select ``Exact`` for a specific secret name, or ``Regexp`` for a secret that has a dynamically generated name.
-   * - 
+   * -
      - Object Property
      - Specifies the name of the property to return (e.g., ``UserName``, ``Address``, etc.) other than the default of ``Content``.
    * -
@@ -87,19 +86,19 @@ Use the AWX User Interface to configure and use each of the supported 3-party se
    * - *CyberArk Conjur Secrets Lookup*
      - Secret Identifier
      - The identifier for the secret.
-   * - 
+   * -
      - Secret Version
      - Specify a version of the secret, if necessary, otherwise, leave it empty to use the latest version.
    * - *HashiVault Secret Lookup*
      - Name of Secret Backend
      - Specify the name of the KV backend to use. Leave it blank to use the first path segment of the **Path to Secret** field instead.
-   * - 
+   * -
      - Path to Secret (required)
      - Specify the path to where the secret information is stored; for example, ``/path/username``.
-   * - 
+   * -
      - Key Name (required)
      - Specify the name of the key to look up the secret information.
-   * - 
+   * -
      - Secret Version (V2 Only)
      - Specify a version if necessary, otherwise, leave it empty to use the latest version.
    * - *HashiCorp Signed SSH*
@@ -108,16 +107,16 @@ Use the AWX User Interface to configure and use each of the supported 3-party se
    * -
      - Path to Secret (required)
      - Specify the path to where the secret information is stored; for example, ``/path/username``.
-   * - 
+   * -
      - Role Name (required)
      - A role is a collection of SSH settings and parameters that are stored in Hashi vault. Typically, you can specify a couple of them with different privileges, timeouts, etc. So you could have a role that is allowed to get a cert signed for root, and other less privileged ones, for example.
-   * - 
+   * -
      - Valid Principals
-     - Specify a user (or users) other than the default, that you are requesting vault to authorize the cert for the stored key. Hashi vault has a default user for whom it signs (e.g., ec2-user).
+     - Specify a user (or users) other than the default, that you are requesting vault to authorize the cert for the stored key. Hashi vault has a default user for whom it signs (e.g., ``ec2-user``).
    * - *Azure KMS*
      - Secret Name (required)
      - The actual name of the secret as it is referenced in Azure's Key vault app.
-   * - 
+   * -
      - Secret Version
      - Specify a version of the secret, if necessary, otherwise, leave it empty to use the latest version.
    * - *Thycotic DevOps Secrets Vault*
@@ -126,24 +125,24 @@ Use the AWX User Interface to configure and use each of the supported 3-party se
    * - *Thycotic Secret Server*
      - Secret ID (required)
      - The identifier for the secret.
-   * - 
+   * -
      - Secret Field
      - Specify the field to be used from the secret.
 
-This example shows the Metadata prompt for HashiVault Secret Lookup.  
+This example shows the Metadata prompt for HashiVault Secret Lookup.
 
-.. image:: ../common/images/credentials-link-metadata-prompt.png
+.. image:: _static/images/credentials-link-metadata-prompt.png
    :alt: Metadata section of the external secret management system dialog
 
 
 5. Click **Test** to verify connection to the secret management system. If the lookup is unsuccessful, an error message like this one displays:
 
-.. image:: ../common/images/credentials-link-metadata-test-error.png
+.. image:: _static/images/credentials-link-metadata-test-error.png
    :alt: Example exception dialog for credentials lookup
-   
+
 6. When done, click **OK**. This closes the prompt window and returns you to the Details screen of your target credential. **Repeat these steps**, starting with :ref:`step 3 above <ag_credential_plugins_link_step>` to complete the remaining input fields for the target credential. By linking the information in this manner, AWX retrieves sensitive information, such as username, password, keys, certificates, and tokens from the 3rd-party management systems and populates that data into the remaining fields of the target credential form.
 
-7. If necessary, supply any information manually for those fields that do not use linking as a way of retrieving sensitive information. Refer to the appropriate :ref:`ug_credentials_cred_types` for more detail about each of the fields.
+7. If necessary, supply any information manually for those fields that do not use linking as a way of retrieving sensitive information.
 
 8. Click **Save** when done.
 
@@ -155,7 +154,7 @@ AWS Secrets Manager Lookup
 .. index::
    pair: credential types; AWS
 
-This plugin allows AWS to be used as a credential input source to pull secrets from AWS SecretsManager. `AWS Secrets Manager <https://aws.amazon.com/secrets-manager/>`_ provides similar service to :ref:`ug_credentials_azurekeyvault`, and the AWS collection provides a lookup plugin for it. 
+This plugin allows AWS to be used as a credential input source to pull secrets from AWS SecretsManager. `AWS Secrets Manager <https://aws.amazon.com/secrets-manager/>`_ provides similar service to :ref:`ug_credentials_azurekeyvault`, and the AWS collection provides a lookup plugin for it.
 
 When **AWS Secrets Manager lookup** is selected for **Credential Type**, provide the following attributes to properly configure your lookup:
 
@@ -165,7 +164,7 @@ When **AWS Secrets Manager lookup** is selected for **Credential Type**, provide
 
 Below shows an example of a configured AWS Secret Manager credential.
 
-.. image:: ../common/images/credentials-create-aws-secret-credential.png
+.. image:: _static/images/credentials-create-aws-secret-credential.png
    :width: 1400px
    :alt: Example new AWS Secret Manager credential lookup dialog
 
@@ -188,7 +187,7 @@ You need the Centrify Vault web service running to store secrets in order for th
 
 Below shows an example of a configured CyberArk AIM credential.
 
-.. image:: ../common/images/credentials-create-centrify-vault-credential.png 
+.. image:: _static/images/credentials-create-centrify-vault-credential.png
    :alt: Example new centrify vault credential lookup dialog
 
 .. _ug_credentials_cyberarkccp:
@@ -210,7 +209,7 @@ You need the CyberArk Central Credential Provider web service running to store s
 
 Below shows an example of a configured CyberArk CCP credential.
 
-.. image:: ../common/images/credentials-create-cyberark-ccp-credential.png 
+.. image:: _static/images/credentials-create-cyberark-ccp-credential.png
    :alt: Example new CyberArk vault credential lookup dialog
 
 .. _ug_credentials_cyberarkconjur:
@@ -233,7 +232,7 @@ When **CyberArk Conjur Secrets Manager Lookup** is selected for **Credential Typ
 
 Below shows an example of a configured CyberArk Conjur credential.
 
-.. image:: ../common/images/credentials-create-cyberark-conjur-credential.png
+.. image:: _static/images/credentials-create-cyberark-conjur-credential.png
    :alt: Example new CyberArk Conjur Secret lookup dialog
 
 .. _ug_credentials_hashivault:
@@ -274,12 +273,12 @@ For more detail about the TLS certificate auth method and its fields, refer to t
 
 Below shows an example of a configured HashiCorp Vault Secret Lookup  credential for LDAP.
 
-.. image:: ../common/images/credentials-create-hashicorp-kv-credential.png 
+.. image:: _static/images/credentials-create-hashicorp-kv-credential.png
    :alt: Example new HashiCorp Vault Secret lookup dialog
 
 To test the lookup, create another credential that uses the HashiCorp Vault lookup. The example below shows the attributes for a machine credential configured to look up HashiCorp Vault secret credentials:
 
-.. image:: ../common/images/credentials-machine-test-hashicorp-metadata.png 
+.. image:: _static/images/credentials-machine-test-hashicorp-metadata.png
    :alt: Example machine credential lookup metadata for HashiCorp Vault.
 
 
@@ -315,7 +314,7 @@ For more detail about the TLS certificate auth method and its fields, refer to t
 
 Below shows an example of a configured HashiCorp SSH Secrets Engine credential.
 
-.. image:: ../common/images/credentials-create-hashicorp-ssh-credential.png 
+.. image:: _static/images/credentials-create-hashicorp-ssh-credential.png
    :alt: Example new HashiCorp Vault Signed SSH credential lookup dialog
 
 .. _ug_credentials_azurekeyvault:
@@ -337,7 +336,7 @@ When **Microsoft Azure Key Vault** is selected for **Credential Type**, provide 
 
 Below shows an example of a configured Microsoft Azure KMS credential.
 
-.. image:: ../common/images/credentials-create-azure-kms-credential.png
+.. image:: _static/images/credentials-create-azure-kms-credential.png
    :alt: Example new Microsoft Azure Key Vault credential lookup dialog
 
 .. _ug_credentials_thycoticvault:
@@ -357,7 +356,7 @@ When **Thycotic DevOps Secrets Vault** is selected for **Credential Type**, prov
 
 Below shows an example of a configured Thycotic DevOps Secrets Vault credential.
 
-.. image:: ../common/images/credentials-create-thycotic-devops-credential.png
+.. image:: _static/images/credentials-create-thycotic-devops-credential.png
    :alt: Example new Thycotic DevOps Secrets Vault credential lookup dialog
 
 
@@ -378,7 +377,5 @@ When **Thycotic Secrets Server** is selected for **Credential Type**, provide th
 
 Below shows an example of a configured Thycotic Secret Server credential.
 
-.. image:: ../common/images/credentials-create-thycotic-server-credential.png
+.. image:: _static/images/credentials-create-thycotic-server-credential.png
    :alt: Example new Thycotic Secret Server credential lookup dialog
-
-
