@@ -1,6 +1,7 @@
 <!-- DO-NOT-REMOVE-docs-badges-START -->
 
 [![CI/CD Badge]][CI/CD]
+[![pre-commit.ci Badge]][pre-commit.ci]
 [![PyPI Badge]][PyPI]
 [![PyPI Supported Versions Badge]][PyPI Supported Versions]
 [![Codecov Badge]][Codecov]
@@ -12,6 +13,9 @@
 [CI/CD Badge]:
 https://github.com/ansible/awx-plugins/actions/workflows/ci-cd.yml/badge.svg?branch=devel
 [CI/CD]: https://github.com/ansible/awx-plugins/actions/workflows/ci-cd.yml
+
+[pre-commit.ci Badge](https://results.pre-commit.ci/badge/github/ansible/awx-plugins/devel.svg)
+[pre-commit.ci](https://results.pre-commit.ci/latest/github/ansible/awx-plugins/devel)
 
 [PyPI Badge]: https://img.shields.io/pypi/v/awx-plugins-core
 [PyPI]: https://pypi.org/p/awx-plugins-core
