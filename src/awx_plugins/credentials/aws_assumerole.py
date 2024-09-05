@@ -11,9 +11,7 @@ from .plugin import CredentialPlugin
 try:
     from botocore.exceptions import ClientError
 except ImportError:
-    """
-    caught by AnsibleAWSModule
-    """
+    """Caught by AnsibleAWSModule."""
 
 _aws_cred_cache = {}
 
