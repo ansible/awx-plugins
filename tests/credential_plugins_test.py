@@ -156,7 +156,8 @@ def test_aws_assumerole_with_accesssecret(monkeypatch):
     monkeypatch.setattr(
         aws_assumerole,
         'aws_assumerole_getcreds',
-        mock_getcreds)
+        mock_getcreds,
+    )
 
     token = aws_assumerole.aws_assumerole_backend(**kwargs)
     assert token == 'the_access_token'
@@ -189,7 +190,8 @@ def test_aws_assumerole_with_arnonly(monkeypatch):
     monkeypatch.setattr(
         aws_assumerole,
         'aws_assumerole_getcreds',
-        mock_getcreds)
+        mock_getcreds,
+    )
 
     token = aws_assumerole.aws_assumerole_backend(**kwargs)
     assert token == 'the_access_token'
