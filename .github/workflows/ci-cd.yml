@@ -609,6 +609,8 @@ jobs:
         - ''
         xfail:
         - false
+        check-name:
+        - ''
         include:
         - runner-vm-os: ubuntu-latest
           python-version: 3.11
@@ -616,41 +618,49 @@ jobs:
           environment-variables: ''
           tox-run-posargs: python-check-blanket-noqa --all-files
           xfail: true
+          check-name: python-check-blanket-noqa
         - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: flake8 --all-files
           xfail: true
+          check-name: flake8
         - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: mypy-py313 --all-files
           xfail: true
+          check-name: MyPy @ Python 3.13
         - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: mypy-py312 --all-files
           xfail: true
+          check-name: MyPy @ Python 3.12
         - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: mypy-py311 --all-files
           xfail: true
+          check-name: MyPy @ Python 3.11
         - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
           environment-variables: ''
           tox-run-posargs: pylint --all-files
           xfail: true
+          check-name: PyLint
       fail-fast: false
     uses: ./.github/workflows/reusable-tox.yml
     with:
       cache-key-files: >-
         ${{ needs.pre-setup.outputs.cache-key-files }}
+      check-name: >-
+        ${{ matrix.check-name }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       environment-variables: >-

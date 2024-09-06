@@ -18,6 +18,10 @@ on:
         description: Dependency files cache
         required: true
         type: string
+      check-name:
+        description: A custom name for the Checks API-reported status
+        required: false
+        type: string
       dists-artifact-name:
         description: Workflow artifact name containing dists
         required: true
@@ -109,11 +113,14 @@ jobs:
   tox:
     name: >-
       ${{
-        inputs.toxenv
-      }}@🐍${{
-        inputs.python-version
-      }}@${{
-        inputs.runner-vm-os
+        inputs.check-name
+        && inputs.check-name
+        || format(
+             '{0}@🐍{1}@{2}',
+             inputs.toxenv,
+             inputs.python-version,
+             inputs.runner-vm-os
+           )
       }}
 
     runs-on: ${{ inputs.runner-vm-os }}
