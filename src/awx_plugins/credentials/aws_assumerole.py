@@ -16,38 +16,53 @@ except ImportError:
 _aws_cred_cache = {}
 
 
-assume_role_inputs = {'fields': [{'id': 'access_key',
-                                  'label': _('AWS Access Key'),
-                                  'type': 'string',
-                                  'secret': True,
-                                  'help_text': _('The optional AWS access key for the user who will assume the role'),
-                                  },
-                                 {'id': 'secret_key',
-                                  'label': 'AWS Secret Key',
-                                  'type': 'string',
-                                  'secret': True,
-                                  'help_text': _('The optional AWS secret key for the user who will assume the role'),
-                                  },
-                                 {'id': 'external_id',
-                                  'label': 'External ID',
-                                  'type': 'string',
-                                  'help_text': _('The optional External ID which will be provided to the assume role API'),
-                                  },
-                                 {'id': 'role_arn',
-                                  'label': 'AWS ARN Role Name',
-                                  'type': 'string',
-                                  'secret': True,
-                                  'help_text': _('The ARN Role Name to be assumed in AWS'),
-                                  },
-                                 ],
-                      'metadata': [{'id': 'identifier',
-                                    'label': 'Identifier',
-                                    'type': 'string',
-                                    'help_text': _('The name of the key in the assumed AWS role to fetch [AccessKeyId | SecretAccessKey | SessionToken].'),
-                                    },
-                                   ],
-                      'required': ['role_arn'],
-                      }
+assume_role_inputs = {
+    'fields': [
+        {
+            'id': 'access_key',
+            'label': _('AWS Access Key'),
+            'type': 'string',
+            'secret': True,
+            'help_text': _(
+                'The optional AWS access key for'
+                'the user who will assume the role.',
+            ),
+        },
+        {
+            'id': 'secret_key',
+            'label': 'AWS Secret Key',
+            'type': 'string',
+            'secret': True,
+            'help_text': _(
+                'The optional AWS secret key for the'
+                'user who will assume the role.',
+            ),
+        },
+        {
+            'id': 'external_id',
+            'label': 'External ID',
+            'type': 'string',
+            'help_text': _(
+                'The optional External ID which will' 
+                'be provided to the assume role API.',
+            ),
+        },
+    ],
+    'metadata': [
+        {
+            'id': 'identifier',
+            'label': 'Identifier',
+            'type': 'string',
+            'help_text': _(
+                'The name of the key in the assumed AWS role'
+                'to fetch [AccessKeyId | SecretAccessKey | SessionToken].'
+                ),
+        },
+    ],
+    'required': [
+        'role_arn',
+        ],
+}
 
 
 def aws_assumerole_getcreds(access_key, secret_key, role_arn, external_id):
