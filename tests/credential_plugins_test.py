@@ -135,7 +135,7 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
         hashivault.handle_auth()
 
 
-def test_aws_assumerole_with_accesssecret(monkeypatch):
+def test_aws_assumerole_with_accesssecret(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test that the aws_assumerole_backend function call returns a token given
     the access_key and secret_key."""
     kwargs = {
