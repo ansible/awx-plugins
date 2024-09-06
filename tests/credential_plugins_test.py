@@ -171,7 +171,7 @@ def test_aws_assumerole_with_accesssecret(monkeypatch: pytest.MonkeyPatch) -> No
     assert token == 'the_access_key'
 
 
-def test_aws_assumerole_with_arnonly(monkeypatch):
+def test_aws_assumerole_with_arnonly(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test backend function with only the role ARN provided."""
     kwargs = {
         'role_arn': 'the_arn',
