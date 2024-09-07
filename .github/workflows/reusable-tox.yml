@@ -380,7 +380,8 @@ jobs:
         && steps.tox-run.outputs.cov-report-files != ''
       uses: codecov/codecov-action@v4
       with:
-        token: ${{ secrets.codecov-token }}
+        fail_ci_if_error: >-
+          ${{ toJSON(inputs.upstream-repository-id == github.repository_id) }}
         files: >-
           ${{ steps.tox-run.outputs.cov-report-files }},
         flags: >-
@@ -395,15 +396,13 @@ jobs:
           Py-${{
             steps.python-install.outputs.python-version
           }}
-        fail_ci_if_error: >-
-          ${{ toJSON(inputs.upstream-repository-id == github.repository_id) }}
+        token: ${{ secrets.codecov-token }}
     - name: Upload test results to Codecov
       if: >-
         !cancelled()
         && steps.tox-run.outputs.test-result-files != ''
       uses: codecov/test-results-action@v1
       with:
-        token: ${{ secrets.codecov-token }}
         files: >-
           ${{ steps.tox-run.outputs.test-result-files }}
         flags: >-
@@ -418,5 +417,6 @@ jobs:
           Py-${{
             steps.python-install.outputs.python-version
           }}
+        token: ${{ secrets.codecov-token }}
 
 ...
