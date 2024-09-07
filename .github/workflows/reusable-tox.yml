@@ -403,6 +403,8 @@ jobs:
         && steps.tox-run.outputs.test-result-files != ''
       uses: codecov/test-results-action@v1
       with:
+        fail_ci_if_error: >-
+          ${{ toJSON(inputs.upstream-repository-id == github.repository_id) }}
         files: >-
           ${{ steps.tox-run.outputs.test-result-files }}
         flags: >-
