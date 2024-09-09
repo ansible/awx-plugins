@@ -1053,9 +1053,9 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: >-
-          ${{ steps.slsa-provenance.outputs.provenance-name }}
+          ${{ needs.slsa-provenance.outputs.provenance-name }}
         path: >-
-          ${{ steps.slsa-provenance.outputs.provenance-name }}
+          ${{ needs.slsa-provenance.outputs.provenance-name }}
 
     - name: Figure out if the current version is a pre-release
       id: release-maturity-check
@@ -1139,6 +1139,7 @@ jobs:
           dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}.sigstore.json
           dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}
           dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}.sigstore.json
+          ${{ needs.slsa-provenance.outputs.provenance-name }}
         artifactContentType: raw  # Because whl and tgz are of different types
         bodyFile: release-notes.md
         discussionCategory: Announcements
