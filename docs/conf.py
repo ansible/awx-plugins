@@ -92,9 +92,9 @@ root_doc = 'index'
 
 html_static_path = ['_static']
 html_theme = 'furo'
+html_logo = '_static/images/Ansible-Mark-RGB_Pool.svg'
 html_theme_options = {
-    'dark_logo': 'images/Ansible-Mark-RGB_White.svg',
-    'light_logo': 'images/Ansible-Mark-RGB_Black.svg',
+
 }
 
 # -- Options for myst_parser extension ---------------------------------------
