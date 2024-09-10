@@ -12,7 +12,7 @@ on:
 
 run-name: >-
   🌃
-  Nightly tun of
+  Nightly run of
   ${{
       github.event.pull_request.number && 'PR' || ''
   }}${{
