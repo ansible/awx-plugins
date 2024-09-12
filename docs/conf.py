@@ -94,7 +94,12 @@ html_static_path = ['_static']
 html_theme = 'furo'
 html_logo = '_static/images/Ansible-Mark-RGB_Pool.svg'
 html_theme_options = {
-
+   "light_css_variables": {
+        "color-background-secondary": "#dee3ed", # for navigation + ToC
+    },   
+    "dark_css_variables": {
+        "color-background-secondary": "#1d1e20", # for navigation + ToC
+    },
 }
 
 # -- Options for myst_parser extension ---------------------------------------
