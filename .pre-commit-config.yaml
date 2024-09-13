@@ -189,6 +189,10 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
+    # The following dependency is used in `credentials.aim`,
+    # `credentials.centrify_vault`, `credentials.conjur`
+    # and `credentials.hashivault`:
+    - types-requests
     args:
     - --python-version=3.13
     - --txt-report=.tox/.tmp/.test-results/mypy--py-3.13
@@ -201,6 +205,10 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
+    # The following dependency is used in `credentials.aim`,
+    # `credentials.centrify_vault`, `credentials.conjur`
+    # and `credentials.hashivault`:
+    - types-requests
     args:
     - --python-version=3.12
     - --txt-report=.tox/.tmp/.test-results/mypy--py-3.12
@@ -213,6 +221,10 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
+    # The following dependency is used in `credentials.aim`,
+    # `credentials.centrify_vault`, `credentials.conjur`
+    # and `credentials.hashivault`:
+    - types-requests
     args:
     - --python-version=3.11
     - --txt-report=.tox/.tmp/.test-results/mypy--py-3.11

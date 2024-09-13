@@ -5,7 +5,7 @@ import pytest
 from awx_plugins.credentials import hashivault
 
 
-def test_imported_azure_cloud_sdk_vars():
+def test_imported_azure_cloud_sdk_vars() -> None:
     from awx_plugins.credentials import azure_kv
 
     assert len(azure_kv.clouds) > 0
@@ -14,7 +14,7 @@ def test_imported_azure_cloud_sdk_vars():
     assert all([hasattr(c.suffixes, 'keyvault_dns') for c in azure_kv.clouds])
 
 
-def test_hashivault_approle_auth():
+def test_hashivault_approle_auth() -> None:
     kwargs = {
         'role_id': 'the_role_id',
         'secret_id': 'the_secret_id',
@@ -27,7 +27,7 @@ def test_hashivault_approle_auth():
     assert res == expected_res
 
 
-def test_hashivault_kubernetes_auth():
+def test_hashivault_kubernetes_auth() -> None:
     kwargs = {
         'kubernetes_role': 'the_kubernetes_role',
     }
@@ -44,7 +44,7 @@ def test_hashivault_kubernetes_auth():
         assert res == expected_res
 
 
-def test_hashivault_client_cert_auth_explicit_role():
+def test_hashivault_client_cert_auth_explicit_role() -> None:
     kwargs = {
         'client_cert_role': 'test-cert-1',
     }
@@ -55,8 +55,8 @@ def test_hashivault_client_cert_auth_explicit_role():
     assert res == expected_res
 
 
-def test_hashivault_client_cert_auth_no_role():
-    kwargs = {}
+def test_hashivault_client_cert_auth_no_role() -> None:
+    kwargs: dict[str, str] = {}
     expected_res = {
         'name': None,
     }
@@ -64,14 +64,14 @@ def test_hashivault_client_cert_auth_no_role():
     assert res == expected_res
 
 
-def test_hashivault_userpass_auth():
+def test_hashivault_userpass_auth() -> None:
     kwargs = {'username': 'the_username', 'password': 'the_password'}
     expected_res = {'username': 'the_username', 'password': 'the_password'}
     res = hashivault.userpass_auth(**kwargs)
     assert res == expected_res
 
 
-def test_hashivault_handle_auth_token():
+def test_hashivault_handle_auth_token() -> None:
     kwargs = {
         'token': 'the_token',
     }
@@ -79,7 +79,7 @@ def test_hashivault_handle_auth_token():
     assert token == kwargs['token']
 
 
-def test_hashivault_handle_auth_approle():
+def test_hashivault_handle_auth_approle() -> None:
     kwargs = {
         'role_id': 'the_role_id',
         'secret_id': 'the_secret_id',
@@ -91,7 +91,7 @@ def test_hashivault_handle_auth_approle():
         assert token == 'the_token'
 
 
-def test_hashivault_handle_auth_kubernetes():
+def test_hashivault_handle_auth_kubernetes() -> None:
     kwargs = {
         'kubernetes_role': 'the_kubernetes_role',
     }
@@ -110,7 +110,7 @@ def test_hashivault_handle_auth_kubernetes():
             assert token == 'the_token'
 
 
-def test_hashivault_handle_auth_client_cert():
+def test_hashivault_handle_auth_client_cert() -> None:
     kwargs = {
         'client_cert_public': 'foo',
         'client_cert_private': 'bar',
@@ -126,7 +126,7 @@ def test_hashivault_handle_auth_client_cert():
         assert token == 'the_token'
 
 
-def test_hashivault_handle_auth_not_enough_args():
+def test_hashivault_handle_auth_not_enough_args() -> None:
     with pytest.raises(Exception):
         hashivault.handle_auth()
 
@@ -137,12 +137,12 @@ class TestDelineaImports:
     library, so these tests are designed to fail if these wind up using the
     fallback import."""
 
-    def test_dsv_import(self):
+    def test_dsv_import(self) -> None:
         from awx_plugins.credentials.dsv import SecretsVault  # noqa
         # assert this module as opposed to older thycotic.secrets.vault
         assert SecretsVault.__module__ == 'delinea.secrets.vault'
 
-    def test_tss_import(self):
+    def test_tss_import(self) -> None:
         from awx_plugins.credentials.tss import DomainPasswordGrantAuthorizer, PasswordGrantAuthorizer, SecretServer, ServerSecret  # noqa
 
         for cls in (

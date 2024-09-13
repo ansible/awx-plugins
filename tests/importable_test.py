@@ -16,7 +16,7 @@ class EntryPointParam:
     name: str
     spec: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render an entry-point parameter as a string.
 
         To be used as a part of parametrized test ID.
@@ -159,7 +159,7 @@ with_all_plugins = pytest.mark.parametrize(
 
 
 @with_all_plugins
-def test_entry_points_exposed(entry_point: str) -> None:
+def test_entry_points_exposed(entry_point: EntryPointParam) -> None:
     """Verify the plugin entry points are discoverable.
 
     This check relies on the plugin-declaring distribution package to be
@@ -172,7 +172,9 @@ def test_entry_points_exposed(entry_point: str) -> None:
 
 
 @with_credential_plugins
-def test_entry_points_are_credential_plugin(entry_point: str) -> None:
+def test_entry_points_are_credential_plugin(
+        entry_point: EntryPointParam,
+) -> None:
     """Ensure all exposed credential plugins are of the same class."""
     entry_points = _discover_entry_points(group=entry_point.group)
     loaded_plugin_class = entry_points[entry_point.name].load()
@@ -182,7 +184,9 @@ def test_entry_points_are_credential_plugin(entry_point: str) -> None:
 
 
 @with_inventory_plugins
-def test_entry_points_are_inventory_plugin(entry_point: str) -> None:
+def test_entry_points_are_inventory_plugin(
+        entry_point: EntryPointParam,
+) -> None:
     """Ensure all exposed inventory plugins are of the same class."""
     entry_points = _discover_entry_points(group=entry_point.group)
     loaded_plugin_class = entry_points[entry_point.name].load()
