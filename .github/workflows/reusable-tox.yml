@@ -383,7 +383,7 @@ jobs:
         fail_ci_if_error: >-
           ${{ toJSON(inputs.upstream-repository-id == github.repository_id) }}
         files: >-
-          ${{ steps.tox-run.outputs.cov-report-files }},
+          ${{ steps.tox-run.outputs.cov-report-files }}
         flags: >-
           CI-GHA,
           ${{ steps.tox-run.outputs.codecov-flags }},
