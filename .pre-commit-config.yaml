@@ -187,8 +187,15 @@ repos:
     alias: mypy-py313
     name: MyPy, for Python 3.13
     additional_dependencies:
+    - azure-identity  # needed by credentials.azure_kv
+    - azure-keyvault  # needed by credentials.azure_kv
+    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - django-stubs  # needed by credentials.injectors and inventory.plugins
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
+    - msrestazure  # needed by credentials.azure_kv
     - pytest
+    - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
+    - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
     - types-PyYAML  # needed by credentials.injectors, inventory.plugins
     # The following dependency is used in `credentials.aim`,
     # `credentials.centrify_vault`, `credentials.conjur`
@@ -204,8 +211,15 @@ repos:
     alias: mypy-py312
     name: MyPy, for Python 3.12
     additional_dependencies:
+    - azure-identity  # needed by credentials.azure_kv
+    - azure-keyvault  # needed by credentials.azure_kv
+    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - django-stubs  # needed by credentials.injectors and inventory.plugins
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
+    - msrestazure  # needed by credentials.azure_kv
     - pytest
+    - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
+    - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
     - types-PyYAML  # needed by credentials.injectors, inventory.plugins
     # The following dependency is used in `credentials.aim`,
     # `credentials.centrify_vault`, `credentials.conjur`
@@ -221,8 +235,15 @@ repos:
     alias: mypy-py311
     name: MyPy, for Python 3.11
     additional_dependencies:
+    - azure-identity  # needed by credentials.azure_kv
+    - azure-keyvault  # needed by credentials.azure_kv
+    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - django-stubs  # needed by credentials.injectors and inventory.plugins
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
+    - msrestazure  # needed by credentials.azure_kv
     - pytest
+    - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
+    - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
     - types-PyYAML  # needed by credentials.injectors, inventory.plugins
     # The following dependency is used in `credentials.aim`,
     # `credentials.centrify_vault`, `credentials.conjur`
