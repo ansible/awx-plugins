@@ -189,6 +189,7 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
+    - types-PyYAML  # needed by credentials.injectors, inventory.plugins
     # The following dependency is used in `credentials.aim`,
     # `credentials.centrify_vault`, `credentials.conjur`
     # and `credentials.hashivault`:
@@ -205,6 +206,7 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
+    - types-PyYAML  # needed by credentials.injectors, inventory.plugins
     # The following dependency is used in `credentials.aim`,
     # `credentials.centrify_vault`, `credentials.conjur`
     # and `credentials.hashivault`:
@@ -221,6 +223,7 @@ repos:
     additional_dependencies:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - pytest
+    - types-PyYAML  # needed by credentials.injectors, inventory.plugins
     # The following dependency is used in `credentials.aim`,
     # `credentials.centrify_vault`, `credentials.conjur`
     # and `credentials.hashivault`:
