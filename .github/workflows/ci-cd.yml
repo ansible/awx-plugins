@@ -605,7 +605,7 @@ jobs:
         - spellcheck-docs
         environment-variables:
         - >-  # only affects pre-commit, set for all for simplicity:
-          SKIP=flake8,mypy,pylint,python-check-blanket-noqa
+          SKIP=flake8,mypy,pylint
         tox-run-posargs:
         - ''
         xfail:
@@ -613,13 +613,6 @@ jobs:
         check-name:
         - ''
         include:
-        - runner-vm-os: ubuntu-latest
-          python-version: 3.11
-          toxenv: pre-commit
-          environment-variables: ''
-          tox-run-posargs: python-check-blanket-noqa --all-files
-          xfail: true
-          check-name: python-check-blanket-noqa
         - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
