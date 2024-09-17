@@ -157,12 +157,6 @@ linkcheck_ignore = [
     r'https://github\.com(/[^/]+){2}/actions',  # 404 if no auth
     r'^https://chat\.ansible\.im/#',  # these render fully on front-end
     r'^https://matrix\.to/#',  # these render fully on front-end from anchors
-
-    # temporary ignores:
-    'https://pypi.org/p/awx-plugins-core',
-    'https://github.com/ansible/awx-plugins/blob/devel/DCO',
-    'https://github.com/ansible/awx-plugins/blob/devel/CODE-OF-CONDUCT.md',
-    'https://github.com/ansible/awx-plugins/blob/devel/LICENSE',
 ]
 linkcheck_workers = 25
 
