@@ -19,7 +19,7 @@ on:
     - opened  # default
     - synchronize  # default
     - reopened  # default
-    - ready_for_review  # used in PRs created from the release workflow
+    - ready_for_review  # used in PRs created from GitHub Actions workflows
   workflow_call:  # a way to embed the main tests
   workflow_dispatch:
     inputs:
