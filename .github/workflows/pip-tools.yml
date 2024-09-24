@@ -386,6 +386,14 @@ jobs:
         echo 'PR URL: ${{ steps.pr.outputs.pull_request_url }}'
         | tee -a "${GITHUB_STEP_SUMMARY}"
 
+    - name: Turn the PR into a draft
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: >-
+        gh pr ready --undo
+        --repo '${{ github.repository }}'
+        '${{ steps.pr.outputs.pull_request_url }}'
+
     - name: Instruct the maintainers to trigger CI by undrafting the PR
       env:
         GITHUB_TOKEN: ${{ github.token }}
