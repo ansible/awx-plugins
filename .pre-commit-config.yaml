@@ -19,12 +19,10 @@ repos:
       (?:
         setup
         |src(?:
-          /awx(?:
-            /plugins(?:
-              /[^/]+
-            )?
+          /[^/]+(?:
+            /[^/]+
           )?
-         )?/__init__
+        )?/__init__
         |tests/__init__
       )\.py
       $
