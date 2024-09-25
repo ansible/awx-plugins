@@ -23,7 +23,7 @@ except ImportError:
         managed: bool = False
 
     def gettext_noop(_text: str) -> str:
-        """Emulate a Django-imported no-op."""
+        """Emulate a Django-imported no-op."""  # noqa: DAR201; FIXME
         return _text
 
 

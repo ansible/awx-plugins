@@ -35,12 +35,12 @@ class PluginFileInjector:
     @property
     def filename(self):
         """Inventory filename for using the inventory plugin This is created
-        dynamically, but the auto plugin requires this exact naming."""
+        dynamically, but the auto plugin requires this exact naming."""  # noqa: DAR201; FIXME
         return f'{self.plugin_name}.yml'
 
     def inventory_contents(self, inventory_update, private_data_dir):
         """Returns a string that is the content for the inventory file for the
-        inventory plugin."""
+        inventory plugin."""  # noqa: DAR101, DAR201; FIXME
         return yaml.safe_dump(
             self.inventory_as_dict(
                 inventory_update,
@@ -101,7 +101,7 @@ class PluginFileInjector:
             inventory_update,
             private_data_dir,
             private_data_files,
-    ):
+    ):  # noqa: DAR101, DAR201; FIXME
         """By default, we will apply the standard managed injectors."""
         injected_env = {}
         credential = inventory_update.get_cloud_credential()
