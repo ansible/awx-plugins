@@ -83,12 +83,13 @@ per-file-ignores =
 
   # There are multiple `assert`s (S101)
   # and subprocesses (import – S404; call – S603) in tests;
+  # there are also password checks (S105);
   # also, using fixtures looks like shadowing the outer scope (WPS442);
   # furthermore, we should be able to import and test private attributes
   # (WPS450) and modules (WPS436), and finally it's impossible to
   # have <= members in tests (WPS202), including many local vars (WPS210),
   # additionally test docstrings don't need param lists (DAR, DCO020):
-  tests/**.py: DAR, DCO020, S101, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
+  tests/**.py: DAR, DCO020, S101, S105, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
 
 # Count the number of occurrences of each error/warning code and print a report:
 statistics = true
