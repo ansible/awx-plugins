@@ -416,7 +416,40 @@ confidence = [
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable = []
+disable = [
+  # FIXME: Address and enable each of the following rules gradually.
+  # FIXME: One strategy could be moving ignores to localized places in code as
+  # FIXME: a first step, followed by addressing those over time.
+  "broad-exception-caught",
+  "broad-exception-raised",
+  "consider-using-f-string",
+  "disallowed-name",
+  "duplicate-code",
+  "fixme",
+  "import-outside-toplevel",
+  "invalid-name",
+  "line-too-long",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  "missing-timeout",
+  "no-else-return",
+  "no-member",
+  "no-self-use",
+  "pointless-string-statement",
+  "preferred-module",
+  "raise-missing-from",
+  "relative-beyond-top-level",
+  "singleton-comparison",
+  "too-few-public-methods",
+  "too-many-branches",
+  "too-many-locals",
+  "unnecessary-lambda-assignment",
+  "unused-argument",
+  "unused-import",
+  "use-a-generator",
+  "use-dict-literal",
+]
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
