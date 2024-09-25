@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="import-untyped, no-untyped-def"
+
 from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 from msrestazure import azure_cloud

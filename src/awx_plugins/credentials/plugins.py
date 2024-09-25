@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="assignment, misc, no-redef"
+
 from __future__ import annotations
 
 

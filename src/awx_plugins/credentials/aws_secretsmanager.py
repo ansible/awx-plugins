@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="no-untyped-def"
+
 import boto3
 from botocore.exceptions import ClientError
 

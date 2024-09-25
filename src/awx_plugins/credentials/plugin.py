@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="assignment, no-untyped-def"
+
 import os
 import tempfile
 from collections import namedtuple

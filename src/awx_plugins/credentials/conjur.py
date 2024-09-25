@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="arg-type, no-untyped-call, no-untyped-def"
+
 import base64
 import binascii
 from urllib.parse import quote, urljoin

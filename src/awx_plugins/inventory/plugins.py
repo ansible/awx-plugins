@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="assignment, no-untyped-call, no-untyped-def, var-annotated"
+
 import os.path
 import stat
 import tempfile

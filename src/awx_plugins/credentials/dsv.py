@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="attr-defined, import-untyped, no-untyped-def"
+
 from base64 import b64decode
 
 from delinea.secrets.vault import PasswordGrantAuthorizer, SecretsVault

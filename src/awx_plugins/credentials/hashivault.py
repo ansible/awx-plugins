@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="arg-type, no-untyped-call, no-untyped-def"
+
 import copy
 import os
 import pathlib
@@ -175,7 +178,7 @@ base_inputs = {
 }
 
 hashi_kv_inputs = copy.deepcopy(base_inputs)
-hashi_kv_inputs['fields'].append(
+hashi_kv_inputs['fields'].append(  # type: ignore[attr-defined]  # FIXME
     {
         'id': 'api_version',
         'label': _('API Version'),
@@ -188,7 +191,7 @@ hashi_kv_inputs['fields'].append(
     },
 )
 hashi_kv_inputs['metadata'] = (
-    [
+    [  # type: ignore[operator]  # FIXME
         {
             'id': 'secret_backend',
             'label': _('Name of Secret Backend'),
@@ -218,11 +221,13 @@ hashi_kv_inputs['metadata'] = (
         },
     ]
 )
-hashi_kv_inputs['required'].extend(['api_version', 'secret_key'])
+hashi_kv_inputs['required'].extend(  # type: ignore[attr-defined]  # FIXME
+    ['api_version', 'secret_key'],
+)
 
 hashi_ssh_inputs = copy.deepcopy(base_inputs)
 hashi_ssh_inputs['metadata'] = (
-    [
+    [  # type: ignore[operator]  # FIXME
         {
             'id': 'public_key',
             'label': _('Unsigned Public Key'),
@@ -249,7 +254,9 @@ hashi_ssh_inputs['metadata'] = (
         },
     ]
 )
-hashi_ssh_inputs['required'].extend(['public_key', 'role'])
+hashi_ssh_inputs['required'].extend(  # type: ignore[attr-defined]  # FIXME
+    ['public_key', 'role'],
+)
 
 
 def handle_auth(**kwargs):
@@ -356,7 +363,9 @@ def kv_backend(**kwargs):
 
     if api_version == 'v2':
         if kwargs.get('secret_version'):
-            request_kwargs['params'] = {'version': kwargs['secret_version']}
+            request_kwargs['params'] = {  # type: ignore[assignment]  # FIXME
+                'version': kwargs['secret_version'],
+            }
         if secret_backend:
             path_segments = [secret_backend, 'data', secret_path]
         else:
@@ -416,9 +425,13 @@ def ssh_backend(**kwargs):
         'allow_redirects': False,
     }
 
-    request_kwargs['json'] = {'public_key': kwargs['public_key']}
+    request_kwargs['json'] = {  # type: ignore[assignment]  # FIXME
+        'public_key': kwargs['public_key'],
+    }
     if kwargs.get('valid_principals'):
-        request_kwargs['json']['valid_principals'] = kwargs['valid_principals']
+        request_kwargs['json'][
+            'valid_principals'
+        ] = kwargs['valid_principals']  # type: ignore[index]  # FIXME
 
     sess = requests.Session()
     sess.mount(url, requests.adapters.HTTPAdapter(max_retries=5))

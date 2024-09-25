@@ -1,3 +1,6 @@
+# FIXME: the following violations must be addressed gradually and unignored
+# mypy: disable-error-code="no-untyped-call, no-untyped-def, type-var"
+
 from urllib.parse import urljoin
 
 import requests

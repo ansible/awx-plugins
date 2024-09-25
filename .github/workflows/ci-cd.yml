@@ -606,36 +606,13 @@ jobs:
         - linkcheck-docs
         - spellcheck-docs
         environment-variables:
-        - >-  # only affects pre-commit, set for all for simplicity:
-          SKIP=mypy
+        - ''
         tox-run-posargs:
         - ''
         xfail:
         - false
         check-name:
         - ''
-        include:
-        - runner-vm-os: ubuntu-latest
-          python-version: 3.11
-          toxenv: pre-commit
-          environment-variables: ''
-          tox-run-posargs: mypy-py313 --all-files
-          xfail: true
-          check-name: MyPy @ Python 3.13
-        - runner-vm-os: ubuntu-latest
-          python-version: 3.11
-          toxenv: pre-commit
-          environment-variables: ''
-          tox-run-posargs: mypy-py312 --all-files
-          xfail: true
-          check-name: MyPy @ Python 3.12
-        - runner-vm-os: ubuntu-latest
-          python-version: 3.11
-          toxenv: pre-commit
-          environment-variables: ''
-          tox-run-posargs: mypy-py311 --all-files
-          xfail: true
-          check-name: MyPy @ Python 3.11
       fail-fast: false
     uses: ./.github/workflows/reusable-tox.yml
     with:
