@@ -91,6 +91,22 @@ per-file-ignores =
   # additionally test docstrings don't need param lists (DAR, DCO020):
   tests/**.py: DAR, DCO020, S101, S105, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
 
+  # The following ignores must be fixed and the entries removed from this config:
+  src/awx_plugins/credentials/aim.py: ANN003, ANN201, B950, CCR001, D100, D103, LN001, Q003, WPS210, WPS221, WPS223, WPS226, WPS231, WPS336, WPS432
+  src/awx_plugins/credentials/aws_secretsmanager.py: ANN003, ANN201, D100, D103, WPS111, WPS210, WPS226, WPS329, WPS529
+  src/awx_plugins/credentials/azure_kv.py: ANN003, ANN201, D100, D103, WPS111, WPS226, WPS361, WPS421
+  src/awx_plugins/credentials/centrify_vault.py: ANN003, ANN201, D100, D103, N802, P101, WPS210, WPS226, WPS229
+  src/awx_plugins/credentials/conjur.py: ANN003, ANN201, B950, D100, D103, E800, P101, WPS111, WPS210, WPS226, WPS229, WPS432, WPS440
+  src/awx_plugins/credentials/dsv.py: ANN003, ANN201, D100, D103, P103, WPS210, WPS226
+  src/awx_plugins/credentials/hashivault.py: ANN003, ANN201, B950, C901, CCR001, D100, D103, LN001, N400, WPS202, WPS204, WPS210, WPS221, WPS223, WPS226, WPS229, WPS231, WPS232, WPS331, WPS336, WPS337, WPS432, WPS454
+  src/awx_plugins/credentials/injectors.py: ANN001, ANN201, ANN202, C408, D100, D103, WPS110, WPS111, WPS202, WPS210, WPS226, WPS347, WPS433, WPS440
+  src/awx_plugins/credentials/plugin.py: ANN001, ANN002, ANN101, ANN201, ANN204, B010, D100, D101, D103, D105, D107, D205, D400, E731, WPS115, WPS432, WPS433, WPS440, WPS442, WPS601
+  src/awx_plugins/credentials/plugins.py: B950,D100, D101, D103, D105, D107, D205, D400, LN001, WPS204, WPS226, WPS229, WPS433, WPS440
+  src/awx_plugins/credentials/tss.py: ANN003, ANN201, D100, D103, E712, WPS226, WPS433, WPS440, WPS503
+  src/awx_plugins/inventory/plugins.py: ANN001, ANN002, ANN003, ANN101, ANN102, ANN201, ANN202, ANN206, B950, C812, C819, D100, D101, D102, D205, D209, D400, D401, LN001, LN002, N801, WPS110, WPS111, WPS202, WPS210, WPS214, WPS226, WPS301, WPS319, WPS324, WPS331, WPS336, WPS337, WPS338, WPS347, WPS421, WPS428, WPS433, WPS450, WPS462, WPS510, WPS529
+  tests/credential_plugins_test.py: ANN101, B017, C419, D100, D102, D103, D205, D209, D400, PT011, S105, WPS111, WPS117, WPS118, WPS202, WPS226, WPS352, WPS421, WPS433, WPS507
+  tests/importable_test.py: ANN101, WPS226
+
 # Count the number of occurrences of each error/warning code and print a report:
 statistics = true
 

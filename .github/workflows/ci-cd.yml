@@ -607,7 +607,7 @@ jobs:
         - spellcheck-docs
         environment-variables:
         - >-  # only affects pre-commit, set for all for simplicity:
-          SKIP=flake8,mypy,pylint
+          SKIP=mypy,pylint
         tox-run-posargs:
         - ''
         xfail:
@@ -615,13 +615,6 @@ jobs:
         check-name:
         - ''
         include:
-        - runner-vm-os: ubuntu-latest
-          python-version: 3.11
-          toxenv: pre-commit
-          environment-variables: ''
-          tox-run-posargs: flake8 --all-files
-          xfail: true
-          check-name: flake8
         - runner-vm-os: ubuntu-latest
           python-version: 3.11
           toxenv: pre-commit
