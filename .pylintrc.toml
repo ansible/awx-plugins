@@ -445,6 +445,7 @@ disable = [
   "too-many-branches",
   "too-many-locals",
   "unnecessary-lambda-assignment",
+  "unspecified-encoding",
   "unused-argument",
   "unused-import",
   "use-a-generator",
