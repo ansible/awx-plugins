@@ -40,7 +40,9 @@ def gce(cred, env, private_data_dir):
     if 'INVENTORY_UPDATE_ID' not in env:
         env['GCE_EMAIL'] = username
         env['GCE_PROJECT'] = project
-    json_cred['token_uri'] = 'https://oauth2.googleapis.com/token'
+    json_cred['token_uri'] = (  # noqa: S105; not a password
+        'https://oauth2.googleapis.com/token'
+    )
 
     handle, path = tempfile.mkstemp(dir=os.path.join(private_data_dir, 'env'))
     f = os.fdopen(handle, 'w')

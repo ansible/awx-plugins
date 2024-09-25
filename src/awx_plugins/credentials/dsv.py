@@ -113,7 +113,7 @@ def dsv_backend(**kwargs):
 
     # files can be uploaded base64 decoded to DSV and thus decoding it only,
     # when asked for
-    if secret_decoding == 'Decode Base64':
+    if secret_decoding == 'Decode Base64':  # noqa: S105; not a password
         return b64decode(dsv_secret['data'][secret_field]).decode()
 
     return dsv_secret['data'][secret_field]

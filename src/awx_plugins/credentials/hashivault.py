@@ -394,7 +394,7 @@ def kv_backend(**kwargs):
 
     if secret_key:
         try:
-            if (secret_key != 'data') and (
+            if (secret_key != 'data') and (  # noqa: S105; not a password
                     secret_key not in json['data']
             ) and ('data' in json['data']):
                 return json['data']['data'][secret_key]
