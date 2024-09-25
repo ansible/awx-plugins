@@ -101,17 +101,27 @@ def conjur_backend(**kwargs):
         # https://www.conjur.org/api.html#authentication-authenticate-post
         auth_kwargs['verify'] = cert
         try:
-            resp = requests.post(
+            resp = requests.post(  # noqa: S113; FIXME: add a reasonable timeout
                 urljoin(
-                    url, '/'.join(['authn', account, username, 'authenticate']),
-                ), **auth_kwargs,
+                    url, '/'.join([
+                        'authn', account,
+                        username, 'authenticate',
+                    ]),
+                ),
+                # timeout=1,
+                **auth_kwargs,
             )
             resp.raise_for_status()
         except requests.exceptions.HTTPError:
-            resp = requests.post(
+            resp = requests.post(  # noqa: S113; FIXME: add a reasonable timeout
                 urljoin(
-                    url, '/'.join(['api', 'authn', account, username, 'authenticate']),
-                ), **auth_kwargs,
+                    url, '/'.join([
+                        'api', 'authn', account,
+                        username, 'authenticate',
+                    ]),
+                ),
+                # timeout=1,
+                **auth_kwargs,
             )
     raise_for_status(resp)
     token = resp.content.decode('utf-8')

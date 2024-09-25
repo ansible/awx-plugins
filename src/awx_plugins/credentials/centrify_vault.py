@@ -112,7 +112,8 @@ def get_ID(**kwargs):
     name = " Name='{}' and User='{}'".format(
         kwargs['system_name'], kwargs['acc_name'],
     )
-    query = f'Select ID from VaultAccount where {name}'
+    # FIXME: sanitize input
+    query = f'Select ID from VaultAccount where {name}'  # noqa: S608
     post_headers = {
         'Authorization': 'Bearer ' +
         kwargs['access_token'],
