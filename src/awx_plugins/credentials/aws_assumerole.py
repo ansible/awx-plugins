@@ -92,7 +92,7 @@ def aws_assumerole_getcreds(access_key, secret_key, role_arn, external_id):
     return credentials
 
 
-def aws_assumerole_backend(**kwargs):
+def aws_assumerole_backend(**kwargs) -> dict:
     """This backend function actually contacts AWS to assume a given role for
     the specified user."""
     access_key = kwargs.get('access_key')
