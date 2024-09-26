@@ -43,7 +43,7 @@ assume_role_inputs = {
             'label': 'External ID',
             'type': 'string',
             'help_text': _(
-                'The optional External ID which will' 
+                'The optional External ID which will'
                 'be provided to the assume role API.',
             ),
         },
@@ -55,13 +55,13 @@ assume_role_inputs = {
             'type': 'string',
             'help_text': _(
                 'The name of the key in the assumed AWS role'
-                'to fetch [AccessKeyId | SecretAccessKey | SessionToken].'
-                ),
+                'to fetch [AccessKeyId | SecretAccessKey | SessionToken].',
+            ),
         },
     ],
     'required': [
         'role_arn',
-        ],
+    ],
 }
 
 
