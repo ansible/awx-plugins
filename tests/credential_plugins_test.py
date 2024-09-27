@@ -135,17 +135,46 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
         hashivault.handle_auth()
 
 
-def test_aws_assumerole_with_accesssecret(
+@pytest.mark.parametrize(
+    'kwargs', [
+        {
+            'access_key': 'my_access_key',
+            'secret_key': 'my_secret_key',
+            'role_arn': 'the_arn',
+            'identifier': 'access_token',
+        },
+        {
+            'role_arn': 'the_arn',
+            'identifier': 'access_token',
+        },
+    ],
+)
+@pytest.mark.parametrize(
+    (
+        'identifier_key',
+        'expected',
+    ),
+    [
+        (
+            None,
+            'the_access_token',
+        ),
+        (
+            'access_key',
+            'the_access_key',
+        ),
+        (
+            'secret_key',
+            'the_secret_key',
+        ),
+    ],
+)
+def test_aws_assumerole_identifier(
         monkeypatch: pytest.MonkeyPatch,
+    kwargs, identifier_key, expected,
 ) -> None:
     """Test that the aws_assumerole_backend function call returns a token given
     the access_key and secret_key."""
-    kwargs = {
-        'access_key': 'my_access_key',
-        'secret_key': 'my_secret_key',
-        'role_arn': 'the_arn',
-        'identifier': 'access_token',
-    }
 
     def mock_getcreds(access_key, secret_key, role_arn, session_token):
         return {
@@ -161,50 +190,11 @@ def test_aws_assumerole_with_accesssecret(
         mock_getcreds,
     )
 
-    token = aws_assumerole.aws_assumerole_backend(**kwargs)
-    assert token == 'the_access_token'
-
-    kwargs['identifier'] = 'secret_key'
-    token = aws_assumerole.aws_assumerole_backend(**kwargs)
-    assert token == 'the_secret_key'
-
-    kwargs['identifier'] = 'access_key'
-    token = aws_assumerole.aws_assumerole_backend(**kwargs)
-    assert token == 'the_access_key'
-
-
-def test_aws_assumerole_with_arnonly(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Test backend function with only the role ARN provided."""
-    kwargs = {
-        'role_arn': 'the_arn',
-        'identifier': 'access_token',
-    }
-
-    # Define a mock function that will replace aws_assumerole_getcreds
-    def mock_getcreds(*args, **kwargs):
-        return {
-            'access_key': 'the_access_key',
-            'secret_key': 'the_secret_key',
-            'access_token': 'the_access_token',
-            'Expiration': datetime.datetime.today() + datetime.timedelta(days=1),
-        }
-
-    monkeypatch.setattr(
-        aws_assumerole,
-        'aws_assumerole_getcreds',
-        mock_getcreds,
-    )
+    if identifier_key:
+        kwargs['identifier'] = identifier_key
 
     token = aws_assumerole.aws_assumerole_backend(**kwargs)
-    assert token == 'the_access_token'
-
-    kwargs['identifier'] = 'secret_key'
-    token = aws_assumerole.aws_assumerole_backend(**kwargs)
-    assert token == 'the_secret_key'
-
-    kwargs['identifier'] = 'access_key'
-    token = aws_assumerole.aws_assumerole_backend(**kwargs)
-    assert token == 'the_access_key'
+    assert token == expected
 
 
 class TestDelineaImports:

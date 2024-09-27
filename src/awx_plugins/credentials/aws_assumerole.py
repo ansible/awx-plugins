@@ -1,11 +1,9 @@
 import datetime
 import hashlib
 
-from django.utils.translation import gettext_lazy as _
-
 import boto3
 
-from .plugin import CredentialPlugin
+from .plugin import CredentialPlugin, translate_function as _
 
 
 try:
@@ -65,19 +63,19 @@ assume_role_inputs = {
 }
 
 
-def aws_assumerole_getcreds(access_key, secret_key, role_arn, external_id):
-    if (access_key is None or len(access_key) == 0) and (
-            secret_key is None or len(secret_key) == 0
-    ):
-        # Connect using credentials in the EE
-        connection = boto3.client(service_name='sts')
-    else:
-        # Connect to AWS using provided credentials
-        connection = boto3.client(
-            service_name='sts',
-            aws_access_key_id=access_key,
-            aws_secret_access_key=secret_key,
-        )
+def aws_assumerole_getcreds(
+        access_key: str | None,
+        secret_key: str | None,
+        role_arn: str | None,
+        external_id: int,
+) -> dict:
+    explicit_credentials_empty = not access_key and not secret_key
+    credential_kwargs = {} if explicit_credentials_empty else {
+        # EE creds are read from the env
+        'aws_access_key_id': access_key,
+        'aws_secret_access_key': secret_key,
+    }
+    connection = boto3.client(service_name='sts', **credential_kwargs)
     try:
         response = connection.assume_role(
             RoleArn=role_arn,
@@ -130,10 +128,12 @@ def aws_assumerole_backend(**kwargs) -> dict:
 
     credentials = _aws_cred_cache.get(credential_key, None)
 
-    if identifier in credentials:
+    try:
         return credentials[identifier]
-
-    raise ValueError(f'Could not find a value for {identifier}.')
+    except KeyError as key_err:
+        raise ValueError(
+            f'Could not find a value for {identifier}.',
+        ) from key_err
 
 
 aws_assumerole_plugin = CredentialPlugin(
