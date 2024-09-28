@@ -11,7 +11,7 @@ click==8.1.7
 packaging==24.1
     # via build
 pip-tools==7.4.1
-    # via -r dependencies/pip-compile.in
+    # via -r dependencies/direct/pip-compile.in
 pyproject-hooks==1.1.0
     # via
     #   build
