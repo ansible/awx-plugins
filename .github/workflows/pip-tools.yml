@@ -117,7 +117,7 @@ jobs:
         - lock-file-env: pre-commit
           lock-file-extra-input: pyproject.toml
         - lock-file-env: py
-          lock-file-extra-input: ''
+          lock-file-extra-input: pyproject.toml
         - lock-file-env: tox
           lock-file-extra-input: pyproject.toml
         - lock-file-env: spellcheck-docs
