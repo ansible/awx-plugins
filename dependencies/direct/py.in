@@ -3,6 +3,7 @@
 covdefaults
 coverage  # accessed directly from tox
 coverage-enable-subprocess
+hypothesis
 pytest
 pytest-cov
 pytest-mock
