@@ -89,8 +89,9 @@ per-file-ignores =
   # furthermore, we should be able to import and test private attributes
   # (WPS450) and modules (WPS436), and finally it's impossible to
   # have <= members in tests (WPS202), including many local vars (WPS210),
+  # `pytest.raises()` allows inspecting the exception outside the CM (WPS441),
   # additionally test docstrings don't need param lists (DAR, DCO020):
-  tests/**.py: DAR, DCO020, S101, S105, S108, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
+  tests/**.py: DAR, DCO020, S101, S105, S108, S404, S603, WPS202, WPS210, WPS436, WPS441, WPS442, WPS450
 
   # The following ignores must be fixed and the entries removed from this config:
   src/awx_plugins/credentials/aim.py: ANN003, ANN201, B950, CCR001, D100, D103, LN001, Q003, WPS210, WPS221, WPS223, WPS226, WPS231, WPS336, WPS432
