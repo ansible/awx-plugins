@@ -5,4 +5,5 @@ coverage  # accessed directly from tox
 coverage-enable-subprocess
 pytest
 pytest-cov
+pytest-mock
 pytest-xdist
