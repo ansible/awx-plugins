@@ -185,6 +185,9 @@ repos:
     alias: mypy-py313
     name: MyPy, for Python 3.13
     additional_dependencies:
+    - >-  # standard interface declarations for AWX plugins
+      awx_plugins.interfaces
+      @ git+https://github.com/ansible/awx_plugins.interfaces.git
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs  # needed by credentials.awx_secretsmanager
@@ -209,6 +212,9 @@ repos:
     alias: mypy-py312
     name: MyPy, for Python 3.12
     additional_dependencies:
+    - >-  # standard interface declarations for AWX plugins
+      awx_plugins.interfaces
+      @ git+https://github.com/ansible/awx_plugins.interfaces.git
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs  # needed by credentials.awx_secretsmanager
@@ -233,6 +239,9 @@ repos:
     alias: mypy-py311
     name: MyPy, for Python 3.11
     additional_dependencies:
+    - >-  # standard interface declarations for AWX plugins
+      awx_plugins.interfaces
+      @ git+https://github.com/ansible/awx_plugins.interfaces.git
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs  # needed by credentials.awx_secretsmanager
@@ -259,6 +268,9 @@ repos:
   hooks:
   - id: pylint
     additional_dependencies:
+    - >-  # standard interface declarations for AWX plugins
+      awx_plugins.interfaces
+      @ git+https://github.com/ansible/awx_plugins.interfaces.git
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3  # needed by credentials.awx_secretsmanager

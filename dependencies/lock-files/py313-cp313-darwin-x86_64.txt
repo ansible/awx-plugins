@@ -10,6 +10,10 @@ asgiref==3.8.1
     # via django
 attrs==24.2.0
     # via hypothesis
+awx-plugins-interfaces @ git+https://github.com/ansible/awx_plugins.interfaces.git
+    # via
+    #   -c dependencies/direct/py-constraints.in
+    #   awx-plugins-core (pyproject.toml)
 azure-core==1.31.0
     # via
     #   azure-identity
