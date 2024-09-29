@@ -6,11 +6,14 @@ import stat
 import tempfile
 from contextlib import suppress as _suppress_exception
 
+from awx_plugins.interfaces._temporary_private_licensing_api import (  # noqa: WPS436
+    detect_server_product_name,
+)
+
 
 with _suppress_exception(ImportError):
     # FIXME: stop suppressing once the circular dependency is untangled
     from awx.main.utils.execution_environments import to_container_path
-    from awx.main.utils.licensing import server_product_name
 
 import yaml
 
@@ -63,7 +66,7 @@ class PluginFileInjector:
             if hasattr(
                     self,
                     'downstream_namespace',
-            ) and server_product_name() != 'AWX':
+            ) and detect_server_product_name() != 'AWX':
                 source_vars['plugin'] = f"""{
                     self.downstream_namespace
                 }.{
