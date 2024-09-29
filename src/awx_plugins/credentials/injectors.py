@@ -5,14 +5,13 @@ import json
 import os
 import stat
 import tempfile
-from contextlib import suppress as _suppress_exception
 
 from awx_plugins.interfaces._temporary_private_container_api import (  # noqa: WPS436
     get_incontainer_path,
 )
-
-with _suppress_exception(ImportError):
-    from django.conf import settings
+from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+    get_vmware_certificate_validation_setting,
+)
 
 import yaml
 
@@ -89,7 +88,9 @@ def vmware(cred, env, private_data_dir):
     env['VMWARE_USER'] = cred.get_input('username', default='')
     env['VMWARE_PASSWORD'] = cred.get_input('password', default='')
     env['VMWARE_HOST'] = cred.get_input('host', default='')
-    env['VMWARE_VALIDATE_CERTS'] = str(settings.VMWARE_VALIDATE_CERTS)
+    env['VMWARE_VALIDATE_CERTS'] = str(
+        get_vmware_certificate_validation_setting(),
+    )
 
 
 def _openstack_data(cred):

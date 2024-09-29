@@ -1,20 +1,11 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="assignment, misc, no-redef"
 
-from __future__ import annotations
-
-
-try:
-    # Django
-    from django.utils.translation import gettext_noop
-except ImportError:
-    # FIXME: stop suppressing once the circular dependency is untangled
-    # FIXME: these stubs are temporary
-    def gettext_noop(_text: str) -> str:
-        """Emulate a Django-imported no-op."""  # noqa: DAR201; FIXME
-        return _text
 from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
     ManagedCredentialType,
+)
+from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+    gettext_noop,
 )
 
 

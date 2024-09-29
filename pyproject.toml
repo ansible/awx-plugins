@@ -19,7 +19,6 @@ dependencies = [  # runtime deps  # https://packaging.python.org/en/latest/guide
   # GUIDANCE: only set lower version bounds
   # "awx_plugins.base_interface.api",  # keep `__init__.py` empty
   "awx_plugins.interfaces",  # standard interface declarations for AWX plugins
-  "Django",  # <- credentials.injectors (and inventory.plugins indirectly)
   "PyYAML",  # credentials.injectors, inventory.plugins
   "azure-identity",  # credentials.azure_kv
   "azure-keyvault",  # credentials.azure_kv

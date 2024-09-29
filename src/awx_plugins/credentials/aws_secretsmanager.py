@@ -1,10 +1,14 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="no-untyped-def"
 
+from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+    gettext_noop as _,
+)
+
 import boto3
 from botocore.exceptions import ClientError
 
-from .plugin import CredentialPlugin, translate_function as _
+from .plugin import CredentialPlugin
 
 
 secrets_manager_inputs = {

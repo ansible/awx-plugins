@@ -1,11 +1,15 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="import-untyped, no-untyped-def"
 
+from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+    gettext_noop as _,
+)
+
 from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 from msrestazure import azure_cloud
 
-from .plugin import CredentialPlugin, translate_function as _
+from .plugin import CredentialPlugin
 
 
 # https://github.com/Azure/msrestazure-for-python/blob/master/msrestazure/azure_cloud.py
