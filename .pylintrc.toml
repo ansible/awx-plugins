@@ -382,6 +382,7 @@ known-third-party = [
 
 # Couples of modules and preferred modules, separated by a comma.
 preferred-modules = [
+  "awx:awx_plugins.interfaces",
   "unittest:pytest",
 ]
 
