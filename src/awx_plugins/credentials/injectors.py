@@ -7,10 +7,11 @@ import stat
 import tempfile
 from contextlib import suppress as _suppress_exception
 
+from awx_plugins.interfaces._temporary_private_container_api import (  # noqa: WPS436
+    get_incontainer_path,
+)
 
 with _suppress_exception(ImportError):
-    # FIXME: stop suppressing once the circular dependency is untangled
-    from awx.main.utils.execution_environments import to_container_path
     from django.conf import settings
 
 import yaml
@@ -52,7 +53,7 @@ def gce(cred, env, private_data_dir):
     json.dump(json_cred, f, indent=2)
     f.close()
     os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
-    container_path = to_container_path(path, private_data_dir)
+    container_path = get_incontainer_path(path, private_data_dir)
     env['GCE_CREDENTIALS_FILE_PATH'] = container_path
     env['GCP_SERVICE_ACCOUNT_FILE'] = container_path
     env['GOOGLE_APPLICATION_CREDENTIALS'] = container_path
@@ -135,7 +136,7 @@ def openstack(cred, env, private_data_dir):
     )
     f.close()
     os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
-    env['OS_CLIENT_CONFIG_FILE'] = to_container_path(path, private_data_dir)
+    env['OS_CLIENT_CONFIG_FILE'] = get_incontainer_path(path, private_data_dir)
 
 
 def kubernetes_bearer_token(cred, env, private_data_dir):
@@ -149,7 +150,9 @@ def kubernetes_bearer_token(cred, env, private_data_dir):
         with os.fdopen(handle, 'w') as f:
             os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
             f.write(cred.get_input('ssl_ca_cert'))
-        env['K8S_AUTH_SSL_CA_CERT'] = to_container_path(path, private_data_dir)
+        env['K8S_AUTH_SSL_CA_CERT'] = get_incontainer_path(
+            path, private_data_dir,
+        )
     else:
         env['K8S_AUTH_VERIFY_SSL'] = 'False'
 
@@ -159,7 +162,9 @@ def terraform(cred, env, private_data_dir):
     with os.fdopen(handle, 'w') as f:
         os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
         f.write(cred.get_input('configuration'))
-    env['TF_BACKEND_CONFIG_FILE'] = to_container_path(path, private_data_dir)
+    env['TF_BACKEND_CONFIG_FILE'] = get_incontainer_path(
+        path, private_data_dir,
+    )
     # Handle env variables for GCP account credentials
     if 'gce_credentials' in cred.inputs:
         handle, path = tempfile.mkstemp(
@@ -168,6 +173,6 @@ def terraform(cred, env, private_data_dir):
         with os.fdopen(handle, 'w') as f:
             os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
             f.write(cred.get_input('gce_credentials'))
-        env['GOOGLE_BACKEND_CREDENTIALS'] = to_container_path(
+        env['GOOGLE_BACKEND_CREDENTIALS'] = get_incontainer_path(
             path, private_data_dir,
         )
