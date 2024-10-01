@@ -52,6 +52,10 @@ extend-ignore =
   WPS317,
   # WPS318 enforces weird indents too
   WPS318,
+  # WPS322: "Found incorrect multi-line string" -- false-positives with
+  # attribute docstrings. Ref:
+  # https://github.com/wemake-services/wemake-python-styleguide/issues/3056
+  WPS322,
   # WPS326: "Found implicit string concatenation" -- nothing bad about this
   WPS326,
   # WPS422: "Found future import: *" -- we need these for multipython
