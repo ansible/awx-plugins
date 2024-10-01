@@ -36,6 +36,8 @@ extend-ignore =
   # Legitimate cases, no need to "fix" these violations:
   # E501: "line too long", its function is replaced by `flake8-length`
   E501,
+  # I: isort-handled
+  I,
   # W505: "doc line too long", its function is replaced by `flake8-length`
   W505,
   # S101: MyPy requires `asserts`, plus they're not bad if cooked well
