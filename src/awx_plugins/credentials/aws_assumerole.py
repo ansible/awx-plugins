@@ -67,7 +67,20 @@ def aws_assumerole_getcreds(
         role_arn: str | None,
         external_id: int,
 ) -> dict:
-    """This function gets the credentials and returns them for use."""
+    """Return the credentials for use.
+
+    :param access_key: The AWS access key ID.
+    :type access_key: str
+    :param secret_key: The AWS secret access key.
+    :type secret_key: str
+    :param role_arn: The ARN received from AWS.
+    :type role_arn: str
+    :param external_id: The external ID received from AWS.
+    :type external_id: int
+    :returns: The credentials received from AWS.
+    :rtype: dict
+    :raises ValueError: If the client response is bad.
+    """
     explicit_credentials_empty = not access_key and not secret_key
     credential_kwargs = {} if explicit_credentials_empty else {
         # EE creds are read from the env
@@ -82,11 +95,9 @@ def aws_assumerole_getcreds(
             ExternalId=external_id,
         )
     except ClientError as ce:
-        raise ValueError(f'Got a bad client response from AWS: {ce.msg}.')
+        raise ValueError(f'Got a bad client response from AWS: {ce.message}.')
 
-    credentials = response.get('Credentials', {})
-
-    return credentials
+    return response.get('Credentials', {})
 
 
 def aws_assumerole_backend(
@@ -96,19 +107,26 @@ def aws_assumerole_backend(
         external_id: int,
         identifier: str,
 ) -> dict:
-    """This function contacts AWS to assume a given role for the user."""
+    """Contact AWS to assume a given role for the user.
 
-    access_key = kwargs.get('access_key')
-    secret_key = kwargs.get('secret_key')
-    role_arn = kwargs.get('role_arn')
-    external_id = kwargs.get('external_id')
-    identifier = kwargs.get('identifier')
-
+    :param access_key: The AWS access key ID.
+    :type access_key: str
+    :param secret_key: The AWS secret access key.
+    :type secret_key: str
+    :param role_arn: The ARN received from AWS.
+    :type role_arn: str
+    :param external_id: The external ID received from AWS.
+    :type external_id: int
+    :param identifier: The identifier to fetch from the assumed role.
+    :type identifier: str
+    :raises ValueError: If the identifier is not found.
+    :returns: The identifier fetched from the assumed role.
+    :rtype: dict
+    """
     # Generate a unique SHA256 hash for combo of user access key and ARN
     # This should allow two users requesting the same ARN role to have
     # separate credentials, and should allow the same user to request
     # multiple roles.
-
     credential_key_hash = hashlib.sha256(
         (str(access_key or '') + role_arn).encode('utf-8'),
     )
@@ -118,7 +136,6 @@ def aws_assumerole_backend(
 
     # If there are no credentials for this user/ARN *or* the credentials
     # we have in the cache have expired, then we need to contact AWS again.
-    #
     creds_expired = (
         (creds_expire_at := credentials.get('Expiration')) and
         creds_expire_at < datetime.now(credentials['Expiration'].tzinfo)

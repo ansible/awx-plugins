@@ -136,47 +136,54 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
 
 
 @pytest.mark.parametrize(
-    'kwargs', [
-        {
-            'access_key': 'my_access_key',
-            'secret_key': 'my_secret_key',
-            'role_arn': 'the_arn',
-            'identifier': 'access_token',
-        },
-        {
-            'role_arn': 'the_arn',
-            'identifier': 'access_token',
-        },
-    ],
+    'kwargs', (
+        (
+            {
+                'access_key': 'my_access_key',
+                'secret_key': 'my_secret_key',
+                'role_arn': 'the_arn',
+                'identifier': 'access_token',
+            },
+        ),
+        (
+            {
+                'role_arn': 'the_arn',
+                'identifier': 'access_token',
+            },
+        ),
+    ),
 )
 @pytest.mark.parametrize(
     (
         'identifier_key',
         'expected',
     ),
-    [
-        (
-            None,
-            'the_access_token',
-        ),
-        (
-            'access_key',
-            'the_access_key',
-        ),
-        (
-            'secret_key',
-            'the_secret_key',
-        ),
-    ],
-)
+    (
+        None,
+        'the_access_token',
+    ),
+    (
+        'access_key',
+        'the_access_key',
+    ),
+    (
+        'secret_key',
+        'the_secret_key',
+    ),
+    )
 def test_aws_assumerole_identifier(
-        monkeypatch: pytest.MonkeyPatch,
-    kwargs, identifier_key, expected,
+    monkeypatch: pytest.MonkeyPatch,
+    kwargs: dict, identifier_key: str, expected: dict[str, str],
 ) -> None:
     """Test that the aws_assumerole_backend function call returns a token given
     the access_key and secret_key."""
 
-    def mock_getcreds(access_key, secret_key, role_arn, session_token):
+    def mock_getcreds(
+            access_key: str | None,
+            secret_key: str | None,
+            role_arn: str | None,
+            external_id: int,
+    ) -> dict:
         return {
             'access_key': 'the_access_key',
             'secret_key': 'the_secret_key',

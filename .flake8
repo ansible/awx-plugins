@@ -111,14 +111,15 @@ per-file-ignores =
   tests/**.py: DAR, DCO020, S101, S105, S108, S404, S603, WPS202, WPS210, WPS430, WPS436, WPS441, WPS442, WPS450
 
   # The following ignores must be fixed and the entries removed from this config:
-  src/awx_plugins/credentials/aim.py: ANN003, ANN201, B950, CCR001, D100, D103, LN001, Q003, WPS210, WPS221, WPS223, WPS231, WPS336, WPS432
-  src/awx_plugins/credentials/aws_secretsmanager.py: ANN003, ANN201, D100, D103, WPS111, WPS210, WPS329, WPS529
-  src/awx_plugins/credentials/azure_kv.py: ANN003, ANN201, D100, D103, WPS111, WPS361, WPS421
-  src/awx_plugins/credentials/centrify_vault.py: ANN003, ANN201, D100, D103, N802, P101, WPS210, WPS229
-  src/awx_plugins/credentials/conjur.py: ANN003, ANN201, B950, D100, D103, E800, P101, WPS111, WPS210, WPS229, WPS432, WPS440
-  src/awx_plugins/credentials/dsv.py: ANN003, ANN201, D100, D103, P103, WPS210
-  src/awx_plugins/credentials/hashivault.py: ANN003, ANN201, B950, C901, CCR001, D100, D103, LN001, N400, WPS202, WPS204, WPS210, WPS221, WPS223, WPS229, WPS231, WPS232, WPS331, WPS336, WPS337, WPS432, WPS454
-  src/awx_plugins/credentials/injectors.py: ANN001, ANN201, ANN202, C408, D100, D103, WPS110, WPS111, WPS202, WPS210, WPS347, WPS433, WPS440
+  src/awx_plugins/credentials/aim.py: ANN003, ANN201, B950, CCR001, D100, D103, LN001, Q003, WPS210, WPS221, WPS223, WPS226, WPS231, WPS336, WPS432
+  src/awx_plugins/credentials/aws_secretsmanager.py: ANN003, ANN201, D100, D103, WPS111, WPS210, WPS226, WPS329, WPS529
+  src/awx_plugins/credentials/aws_assumerole.py: WPS226, WPS332
+  src/awx_plugins/credentials/azure_kv.py: ANN003, ANN201, D100, D103, WPS111, WPS226, WPS361, WPS421
+  src/awx_plugins/credentials/centrify_vault.py: ANN003, ANN201, D100, D103, N802, P101, WPS210, WPS226, WPS229
+  src/awx_plugins/credentials/conjur.py: ANN003, ANN201, B950, D100, D103, E800, P101, WPS111, WPS210, WPS226, WPS229, WPS432, WPS440
+  src/awx_plugins/credentials/dsv.py: ANN003, ANN201, D100, D103, P103, WPS210, WPS226
+  src/awx_plugins/credentials/hashivault.py: ANN003, ANN201, B950, C901, CCR001, D100, D103, LN001, N400, WPS202, WPS204, WPS210, WPS221, WPS223, WPS226, WPS229, WPS231, WPS232, WPS331, WPS336, WPS337, WPS432, WPS454
+  src/awx_plugins/credentials/injectors.py: ANN001, ANN201, ANN202, C408, D100, D103, WPS110, WPS111, WPS202, WPS210, WPS226, WPS347, WPS433, WPS440
   src/awx_plugins/credentials/plugin.py: ANN001, ANN002, ANN101, ANN201, ANN204, B010, D100, D101, D103, D105, D107, D205, D400, E731, WPS115, WPS432, WPS433, WPS440, WPS442, WPS601
   src/awx_plugins/credentials/plugins.py: B950,D100, D101, D103, D105, D107, D205, D400, LN001, WPS204, WPS229, WPS433, WPS440
   src/awx_plugins/credentials/tss.py: ANN003, ANN201, D100, D103, E712, WPS433, WPS440, WPS503
