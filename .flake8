@@ -164,5 +164,6 @@ rst-roles =
   event,
 
 # wemake-python-styleguide
+i-control-code = false
 show-violation-links = true
 show-source = true
