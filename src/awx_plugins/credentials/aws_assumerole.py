@@ -1,15 +1,13 @@
+"""This module provides integration with AWS AssumeRole functionality."""
+
 import datetime
 import hashlib
 
 import boto3
+from botocore.exceptions import ClientError
 
 from .plugin import CredentialPlugin, translate_function as _
 
-
-try:
-    from botocore.exceptions import ClientError
-except ImportError:
-    """Caught by AnsibleAWSModule."""
 
 _aws_cred_cache = {}
 
@@ -69,6 +67,7 @@ def aws_assumerole_getcreds(
         role_arn: str | None,
         external_id: int,
 ) -> dict:
+    """This function gets the credentials and returns them for use."""
     explicit_credentials_empty = not access_key and not secret_key
     credential_kwargs = {} if explicit_credentials_empty else {
         # EE creds are read from the env
@@ -90,9 +89,15 @@ def aws_assumerole_getcreds(
     return credentials
 
 
-def aws_assumerole_backend(**kwargs) -> dict:
-    """This backend function actually contacts AWS to assume a given role for
-    the specified user."""
+def aws_assumerole_backend(
+        access_key: str | None,
+        secret_key: str | None,
+        role_arn: str | None,
+        external_id: int,
+        identifier: str,
+) -> dict:
+    """This function contacts AWS to assume a given role for the user."""
+
     access_key = kwargs.get('access_key')
     secret_key = kwargs.get('secret_key')
     role_arn = kwargs.get('role_arn')
@@ -103,7 +108,7 @@ def aws_assumerole_backend(**kwargs) -> dict:
     # This should allow two users requesting the same ARN role to have
     # separate credentials, and should allow the same user to request
     # multiple roles.
-    #
+
     credential_key_hash = hashlib.sha256(
         (str(access_key or '') + role_arn).encode('utf-8'),
     )
@@ -114,11 +119,11 @@ def aws_assumerole_backend(**kwargs) -> dict:
     # If there are no credentials for this user/ARN *or* the credentials
     # we have in the cache have expired, then we need to contact AWS again.
     #
-    if (credentials is None) or (
-        credentials['Expiration'] < datetime.datetime.now(
-            credentials['Expiration'].tzinfo,
-        )
-    ):
+    creds_expired = (
+        (creds_expire_at := credentials.get('Expiration')) and
+        creds_expire_at < datetime.now(credentials['Expiration'].tzinfo)
+    )
+    if creds_expired:
 
         credentials = aws_assumerole_getcreds(
             access_key, secret_key, role_arn, external_id,
