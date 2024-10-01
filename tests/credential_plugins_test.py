@@ -170,7 +170,7 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
         'secret_key',
         'the_secret_key',
     ),
-    )
+)
 def test_aws_assumerole_identifier(
     monkeypatch: pytest.MonkeyPatch,
     kwargs: dict, identifier_key: str, expected: dict[str, str],
