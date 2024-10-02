@@ -75,7 +75,6 @@ credential_plugins = (
         'aws_assumerole',
         'awx_plugins.credentials:aws_assumerole_plugin',
     ),
-
 )
 
 
