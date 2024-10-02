@@ -15,12 +15,6 @@ CredentialPlugin = namedtuple(
 )
 
 
-try:
-    from django.utils.translation import gettext_lazy as translate_function
-except ModuleNotFoundError:
-    translate_function = lambda *args, **kwargs: None
-
-
 class Settings():
     DEBUG = False
 

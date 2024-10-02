@@ -3,9 +3,13 @@
 
 from base64 import b64decode
 
+from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+    gettext_noop as _,
+)
+
 from delinea.secrets.vault import PasswordGrantAuthorizer, SecretsVault
 
-from .plugin import CredentialPlugin, settings, translate_function as _
+from .plugin import CredentialPlugin, settings
 
 
 dsv_inputs = {

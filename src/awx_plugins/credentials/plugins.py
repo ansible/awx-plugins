@@ -1,33 +1,12 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="assignment, misc, no-redef"
 
-from __future__ import annotations
-
-
-try:
-    # Django
-    # AWX
-    from awx.main.models.credential import ManagedCredentialType
-    from django.utils.translation import gettext_noop
-except ImportError:
-    # FIXME: stop suppressing once the circular dependency is untangled
-    # FIXME: these stubs are temporary
-    from dataclasses import dataclass
-
-    @dataclass(frozen=True)
-    class ManagedCredentialType:
-        """Managed credential type stub."""
-
-        namespace: str
-        name: str
-        kind: str
-        inputs: dict[str, list[dict[str, bool | str] | str]]
-        injectors: dict[str, dict[str, str]] = None
-        managed: bool = False
-
-    def gettext_noop(_text: str) -> str:
-        """Emulate a Django-imported no-op."""  # noqa: DAR201; FIXME
-        return _text
+from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
+    ManagedCredentialType,
+)
+from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+    gettext_noop,
+)
 
 
 ManagedCredentialType(

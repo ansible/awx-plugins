@@ -13,3 +13,5 @@
 #      remain in Git.                                                         #
 #                                                                             #
 ###############################################################################
+
+awx_plugins.interfaces @ git+https://github.com/ansible/awx_plugins.interfaces.git

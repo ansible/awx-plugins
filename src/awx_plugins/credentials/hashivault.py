@@ -7,14 +7,13 @@ import pathlib
 import time
 from urllib.parse import urljoin
 
+from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+    gettext_noop as _,
+)
+
 import requests
 
-from .plugin import (
-    CertFiles,
-    CredentialPlugin,
-    raise_for_status,
-    translate_function as _,
-)
+from .plugin import CertFiles, CredentialPlugin, raise_for_status
 
 
 base_inputs = {

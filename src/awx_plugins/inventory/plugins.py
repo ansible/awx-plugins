@@ -4,13 +4,13 @@
 import os.path
 import stat
 import tempfile
-from contextlib import suppress as _suppress_exception
 
-
-with _suppress_exception(ImportError):
-    # FIXME: stop suppressing once the circular dependency is untangled
-    from awx.main.utils.execution_environments import to_container_path
-    from awx.main.utils.licensing import server_product_name
+from awx_plugins.interfaces._temporary_private_container_api import (  # noqa: WPS436
+    get_incontainer_path,
+)
+from awx_plugins.interfaces._temporary_private_licensing_api import (  # noqa: WPS436
+    detect_server_product_name,
+)
 
 import yaml
 
@@ -63,7 +63,7 @@ class PluginFileInjector:
             if hasattr(
                     self,
                     'downstream_namespace',
-            ) and server_product_name() != 'AWX':
+            ) and detect_server_product_name() != 'AWX':
                 source_vars['plugin'] = f"""{
                     self.downstream_namespace
                 }.{
@@ -267,7 +267,7 @@ class openstack(PluginFileInjector):
         )
         credential = inventory_update.get_cloud_credential()
         cred_data = private_data_files['credentials']
-        env['OS_CLIENT_CONFIG_FILE'] = to_container_path(
+        env['OS_CLIENT_CONFIG_FILE'] = get_incontainer_path(
             cred_data[credential], private_data_dir,
         )
         return env
@@ -334,7 +334,7 @@ class terraform(PluginFileInjector):
             with os.fdopen(handle, 'w') as f:
                 os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
                 f.write(config_cred)
-            ret['backend_config_files'] = to_container_path(
+            ret['backend_config_files'] = get_incontainer_path(
                 path, private_data_dir,
             )
         return ret
@@ -362,7 +362,7 @@ class terraform(PluginFileInjector):
         credential = inventory_update.get_cloud_credential()
         cred_data = private_data_files['credentials']
         if credential in cred_data:
-            env['GOOGLE_BACKEND_CREDENTIALS'] = to_container_path(
+            env['GOOGLE_BACKEND_CREDENTIALS'] = get_incontainer_path(
                 cred_data[credential], private_data_dir,
             )
         return env
