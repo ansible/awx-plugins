@@ -87,6 +87,8 @@ jobs:
         lock-file-env:
         - build-dists
         - build-docs
+        - coverage-docs
+        - doctest-docs
         - linkcheck-docs
         - metadata-validation
         - pip-compile
@@ -103,6 +105,10 @@ jobs:
         - lock-file-env: build-dists
           lock-file-extra-input: pyproject.toml
         - lock-file-env: build-docs
+          lock-file-extra-input: ''
+        - lock-file-env: coverage-docs
+          lock-file-extra-input: ''
+        - lock-file-env: doctest-docs
           lock-file-extra-input: ''
         - lock-file-env: linkcheck-docs
           lock-file-extra-input: ''
