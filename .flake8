@@ -113,7 +113,6 @@ per-file-ignores =
   # The following ignores must be fixed and the entries removed from this config:
   src/awx_plugins/credentials/aim.py: ANN003, ANN201, B950, CCR001, D100, D103, LN001, Q003, WPS210, WPS221, WPS223, WPS226, WPS231, WPS336, WPS432
   src/awx_plugins/credentials/aws_secretsmanager.py: ANN003, ANN201, D100, D103, WPS111, WPS210, WPS226, WPS329, WPS529
-  src/awx_plugins/credentials/aws_assumerole.py: WPS226, WPS332
   src/awx_plugins/credentials/azure_kv.py: ANN003, ANN201, D100, D103, WPS111, WPS226, WPS361, WPS421
   src/awx_plugins/credentials/centrify_vault.py: ANN003, ANN201, D100, D103, N802, P101, WPS210, WPS226, WPS229
   src/awx_plugins/credentials/conjur.py: ANN003, ANN201, B950, D100, D103, E800, P101, WPS111, WPS210, WPS226, WPS229, WPS432, WPS440
