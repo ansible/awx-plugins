@@ -115,12 +115,15 @@ show_error_codes = true
 show_error_context = true
 show_error_end = true
 
-# strict = true  # crashes on implicit unidentified settings
+# `strict` will pick up any future strictness-related settings:
+strict = true
 strict_equality = true
 strict_optional = true
 
 warn_no_return = true
 warn_redundant_casts = true
+warn_return_any = true
+warn_unused_configs = true
 warn_unused_ignores = true
 
 # [nitpick.files.".mypy.ini"]
