@@ -7,7 +7,10 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
     gettext_noop as _,
 )
 
-from delinea.secrets.vault import PasswordGrantAuthorizer, SecretsVault
+from delinea.secrets.vault import (
+    PasswordGrantAuthorizer,
+    SecretsVault as SecretsVault,
+)
 
 from .plugin import CredentialPlugin, settings
 

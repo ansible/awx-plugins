@@ -10,17 +10,17 @@ from .plugin import CredentialPlugin
 
 try:
     from delinea.secrets.server import (
-        DomainPasswordGrantAuthorizer,
-        PasswordGrantAuthorizer,
-        SecretServer,
-        ServerSecret,
+        DomainPasswordGrantAuthorizer as DomainPasswordGrantAuthorizer,
+        PasswordGrantAuthorizer as PasswordGrantAuthorizer,
+        SecretServer as SecretServer,
+        ServerSecret as ServerSecret,
     )
 except ImportError:
     from thycotic.secrets.server import (
-        DomainPasswordGrantAuthorizer,
-        PasswordGrantAuthorizer,
-        SecretServer,
-        ServerSecret,
+        DomainPasswordGrantAuthorizer as DomainPasswordGrantAuthorizer,
+        PasswordGrantAuthorizer as PasswordGrantAuthorizer,
+        SecretServer as SecretServer,
+        ServerSecret as ServerSecret,
     )
 
 tss_inputs = {
