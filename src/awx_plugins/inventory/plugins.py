@@ -27,6 +27,9 @@ class PluginFileInjector:
     collection = None
     collection_migration = '2.9'  # Starting with this version, we use collections
     use_fqcn = False  # plugin: name versus plugin: namespace.collection.name
+    # The following attributes trip MyPy when undeclared:
+    downstream_namespace: str | None = None  # FIXME: drop when refactoring
+    downstream_collection: str | None = None  # FIXME: drop when refactoring
 
     # TODO: delete this method and update unit tests
     @classmethod

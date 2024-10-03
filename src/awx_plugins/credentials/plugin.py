@@ -3,6 +3,7 @@
 
 import os
 import tempfile
+import typing
 from collections import namedtuple
 
 from requests.exceptions import HTTPError
@@ -46,7 +47,7 @@ class CertFiles:
         requests.post(..., cert=cert)
     """
 
-    certfile = None
+    certfile: typing.IO[bytes] | None = None
 
     def __init__(self, cert, key=None):
         self.cert = cert
