@@ -84,13 +84,24 @@ error_summary = true
 
 check_untyped_defs = true
 
-disallow_untyped_calls = true
-disallow_untyped_defs = true
+disallow_any_explicit = true
+# disallow_any_expr = true  # crashes with some decorators like `@functools.cache` and `@pytest.mark.parametrize`
+# disallow_any_decorated = true  # fails on `@hypothesis.example()` and `@hypothesis.given()`
 disallow_any_generics = true
+disallow_any_unimported = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
 
 enable_error_code = "\nignore-without-code"
 
+extra_checks = true
+
 follow_imports = 'normal'
+
+local_partial_types = true
 
 mypy_path = "${MYPY_CONFIG_FILE_DIR}/src:${MYPY_CONFIG_FILE_DIR}/_type_stubs"
 
@@ -101,6 +112,10 @@ show_error_code_links = true
 show_error_codes = true
 show_error_context = true
 show_error_end = true
+
+# strict = true  # crashes on implicit unidentified settings
+strict_equality = true
+strict_optional = true
 
 warn_no_return = true
 warn_redundant_casts = true
