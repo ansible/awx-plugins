@@ -136,21 +136,20 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
 
 
 @pytest.mark.parametrize(
-    'kwargs', (
-        (
-            {
-                'access_key': 'my_access_key',
-                'secret_key': 'my_secret_key',
-                'role_arn': 'the_arn',
-                'identifier': 'access_token',
-            },
-        ),
-        (
-            {
-                'role_arn': 'the_arn',
-                'identifier': 'access_token',
-            },
-        ),
+    'kwargs',
+    (
+        {
+            'access_key': 'my_access_key',
+            'secret_key': 'my_secret_key',
+            'role_arn': 'the_arn',
+            'identifier': 'access_token',
+        },
+    ),
+    (
+        {
+            'role_arn': 'the_arn',
+            'identifier': 'access_token',
+        },
     ),
 )
 @pytest.mark.parametrize(
@@ -159,16 +158,9 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
         'expected',
     ),
     (
-        None,
-        'the_access_token',
-    ),
-    (
-        'access_key',
-        'the_access_key',
-    ),
-    (
-        'secret_key',
-        'the_secret_key',
+	    (None, 'the_access_token'),
+	    ('access_key', 'the_access_key'),
+	    ('secret_key', 'the_secret_key'),
     ),
 )
 def test_aws_assumerole_identifier(
