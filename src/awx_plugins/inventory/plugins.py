@@ -33,13 +33,13 @@ class PluginFileInjector:
 
     # TODO: delete this method and update unit tests
     @classmethod
-    def get_proper_name(cls):
+    def get_proper_name(cls) -> str:
         if cls.plugin_name is None:
             return None
         return f'{cls.namespace}.{cls.collection}.{cls.plugin_name}'
 
     @property
-    def filename(self):
+    def filename(self) -> str:
         """Inventory filename for using the inventory plugin This is created
         dynamically, but the auto plugin requires this exact naming."""  # noqa: DAR201; FIXME
         return f'{self.plugin_name}.yml'
