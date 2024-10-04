@@ -25,6 +25,9 @@ branch = true
 cover_pylib = false
 # https://coverage.rtfd.io/en/latest/contexts.html#dynamic-contexts
 # dynamic_context = test_function  # conflicts with `pytest-cov` if set here
+# FIXME: drop `omit` post https://github.com/nedbat/coveragepy/issues/1869 fix
+omit =
+  .tox/**
 parallel = true
 plugins =
   covdefaults
