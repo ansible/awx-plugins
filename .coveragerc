@@ -27,7 +27,9 @@ cover_pylib = false
 # dynamic_context = test_function  # conflicts with `pytest-cov` if set here
 # FIXME: drop `omit` post https://github.com/nedbat/coveragepy/issues/1869 fix
 omit =
-  .tox/**
+  .tox/*/lib/pypy*/site-packages/awx_plugins/interfaces/**
+  .tox/*/lib/python*/site-packages/awx_plugins/interfaces/**
+  .tox\*\Lib\site-packages\awx_plugins\interfaces\**
 parallel = true
 plugins =
   covdefaults
