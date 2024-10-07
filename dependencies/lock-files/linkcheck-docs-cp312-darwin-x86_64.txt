@@ -8,8 +8,6 @@ adal==1.2.7
     # via msrestazure
 alabaster==1.0.0
     # via sphinx
-asgiref==3.8.1
-    # via django
 awx-plugins-interfaces @ git+https://github.com/ansible/awx_plugins.interfaces.git
     # via
     #   -c dependencies/direct/py-constraints.in
@@ -35,9 +33,9 @@ babel==2.16.0
     # via sphinx
 beautifulsoup4==4.12.3
     # via furo
-boto3==1.35.31
+boto3==1.35.34
     # via awx-plugins-core (pyproject.toml)
-botocore==1.35.31
+botocore==1.35.34
     # via
     #   boto3
     #   s3transfer
@@ -56,8 +54,6 @@ cryptography==43.0.1
     #   azure-keyvault-keys
     #   msal
     #   pyjwt
-django==5.1.1
-    # via awx-plugins-core (pyproject.toml)
 docutils==0.21.2
     # via
     #   myst-parser
@@ -197,8 +193,6 @@ sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 sphinxcontrib-spelling==8.0.0
     # via -r dependencies/direct/linkcheck-docs.in
-sqlparse==0.5.1
-    # via django
 typing-extensions==4.12.2
     # via
     #   azure-core
