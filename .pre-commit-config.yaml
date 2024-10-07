@@ -76,7 +76,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.29.1
+  rev: 0.29.3
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -108,7 +108,7 @@ repos:
   - id: rst-backticks
 
 - repo: https://github.com/pre-commit/pre-commit-hooks.git
-  rev: v4.6.0
+  rev: v5.0.0
   hooks:
   # Side-effects:
   - id: trailing-whitespace
@@ -280,7 +280,7 @@ repos:
     pass_filenames: false
 
 - repo: https://github.com/PyCQA/pylint.git
-  rev: v3.2.6
+  rev: v3.3.1
   hooks:
   - id: pylint
     additional_dependencies:
