@@ -4,7 +4,7 @@
 #
 #    tox r -e pip-compile-tox-env-lock -- build-dists --upgrade
 #
-build==1.2.2
+build==1.2.2.post1
     # via -r dependencies/direct/build-dists.in
 packaging==24.1
     # via build
