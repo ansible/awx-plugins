@@ -27,7 +27,7 @@ dependencies = [  # runtime deps  # https://packaging.python.org/en/latest/guide
   "python-dsv-sdk >= 1.0.4",  # credentials.thycotic_dsv
   "python-tss-sdk >= 1.2.1",  # credentials.thycotic_tss
   "requests",  # credentials.aim, credentials.centrify_vault, credentials.conjur, credentials.hashivault
-  "botocore",  # credentials.aws_assume_role
+  "botocore",  # credentials.aws_assume_role, credentials.awx_secretsmanager
 ]
 classifiers = [  # Allowlist: https://pypi.org/classifiers/
   "Development Status :: 1 - Planning",
