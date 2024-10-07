@@ -94,8 +94,10 @@ def aws_assumerole_getcreds(
             RoleSessionName='AAP_AWS_Role_Session1',
             ExternalId=external_id,
         )
-    except ClientError as ce:
-        raise ValueError(f'Got a bad client response from AWS: {ce.message}.')
+    except ClientError as client_err:
+        raise ValueError(
+            f'Got a bad client response from AWS: {ce.message}.',
+        ) from client_err
 
     return response.get('Credentials', {})
 
