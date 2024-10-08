@@ -6,7 +6,11 @@ import hashlib
 import boto3
 from botocore.exceptions import ClientError
 
-from .plugin import CredentialPlugin, translate_function as _
+from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+    gettext_noop as _,
+)
+
+from .plugin import CredentialPlugin
 
 
 _aws_cred_cache = {}
