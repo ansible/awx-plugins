@@ -3,12 +3,12 @@
 import datetime
 import hashlib
 
-import boto3
-from botocore.exceptions import ClientError
-
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
 )
+
+import boto3
+from botocore.exceptions import ClientError
 
 from .plugin import CredentialPlugin
 
