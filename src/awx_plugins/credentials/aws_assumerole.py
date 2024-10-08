@@ -2,6 +2,7 @@
 
 import datetime
 import hashlib
+import typing
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -9,7 +10,6 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 
 import boto3
 from botocore.exceptions import ClientError
-import typing
 
 
 if typing.TYPE_CHECKING:
