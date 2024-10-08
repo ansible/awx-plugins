@@ -163,7 +163,7 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
 )
 def test_aws_assumerole_identifier(
     monkeypatch: pytest.MonkeyPatch,
-    kwargs: dict, identifier_key: str, expected: dict[str, str],
+    kwargs: dict[str, str], identifier_key: str | None, expected: str,
 ) -> None:
     """Test that the aws_assumerole_backend function call returns a token given
     the access_key and secret_key."""
@@ -187,10 +187,9 @@ def test_aws_assumerole_identifier(
         mock_getcreds,
     )
 
-    if identifier_key:
-        kwargs['identifier'] = identifier_key
+    extra_kwargs = {'identifier': identifier_key} if identifier_key else {}
 
-    token = aws_assumerole.aws_assumerole_backend(**kwargs)
+    token = aws_assumerole.aws_assumerole_backend(**kwargs, **extra_kwargs)
     assert token == expected
 
 

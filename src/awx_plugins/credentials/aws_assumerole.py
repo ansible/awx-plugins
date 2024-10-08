@@ -19,7 +19,7 @@ if typing.TYPE_CHECKING:
 from .plugin import CredentialPlugin
 
 
-_aws_cred_cache = {}
+_aws_cred_cache: dict[str, CredentialsTypeDef | dict[Never, Never]] | dict[Never, Never] = {}
 
 
 assume_role_inputs = {
@@ -76,7 +76,7 @@ def aws_assumerole_getcreds(
         secret_key: str | None,
         role_arn: str | None,
         external_id: int,
-) -> dict:
+) -> CredentialsTypeDef | dict[Never, Never]:
     """Return the credentials for use.
 
     :param access_key: The AWS access key ID.
@@ -159,7 +159,7 @@ def aws_assumerole_backend(
 
         _aws_cred_cache[credential_key] = credentials
 
-    credentials = _aws_cred_cache.get(credential_key, None)
+    credentials = _aws_cred_cache.get(credential_key, {})
 
     try:
         return credentials[identifier]
