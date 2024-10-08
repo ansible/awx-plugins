@@ -124,9 +124,8 @@ per-file-ignores =
   src/awx_plugins/credentials/plugins.py: B950,D100, D101, D103, D105, D107, D205, D400, LN001, WPS204, WPS229, WPS433, WPS440
   src/awx_plugins/credentials/tss.py: ANN003, ANN201, D100, D103, E712, WPS433, WPS440, WPS503
   src/awx_plugins/inventory/plugins.py: ANN001, ANN002, ANN003, ANN101, ANN102, ANN201, ANN202, ANN206, B950, C812, C819, D100, D101, D102, D205, D209, D400, D401, LN001, LN002, N801, WPS110, WPS111, WPS202, WPS210, WPS214, WPS301, WPS319, WPS324, WPS331, WPS336, WPS337, WPS338, WPS347, WPS421, WPS433, WPS450, WPS510, WPS529
-  tests/credential_plugins_test.py: ANN101, B017, C419, D100, D102, D103, D205, D209, D400, DAR, PT011, S105, WPS111, WPS117, WPS118, WPS202, WPS352, WPS421, WPS433, WPS507
+  tests/credential_plugins_test.py: ANN101, B017, C419, D100, D102, D103, D205, D209, D400, DAR, PT011, S105, WPS111, WPS117, WPS118, WPS202, WPS352, WPS421, WPS430, WPS433, WPS507
   tests/importable_test.py: ANN101, DAR
-  tests/credential_plugins_test.py: DAR, WPS430
 
 # Count the number of occurrences of each error/warning code and print a report:
 statistics = true
