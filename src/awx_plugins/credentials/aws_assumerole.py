@@ -19,7 +19,8 @@ if typing.TYPE_CHECKING:
 from .plugin import CredentialPlugin
 
 
-_aws_cred_cache: dict[str, CredentialsTypeDef | dict[Never, Never]] | dict[Never, Never] = {}
+_aws_cred_cache: dict[str, CredentialsTypeDef |
+                      dict[Never, Never]] | dict[Never, Never] = {}
 
 
 assume_role_inputs = {
