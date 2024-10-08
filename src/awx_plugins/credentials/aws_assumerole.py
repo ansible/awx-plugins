@@ -9,6 +9,12 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 
 import boto3
 from botocore.exceptions import ClientError
+import typing
+
+
+if typing.TYPE_CHECKING:
+    from mypy_boto3_sts.client import STSClient
+    from mypy_boto3_sts.type_defs import AssumeRoleResponseTypeDef
 
 from .plugin import CredentialPlugin
 
@@ -85,8 +91,6 @@ def aws_assumerole_getcreds(
     :rtype: dict
     :raises ValueError: If the client response is bad.
     """
-    from mypy_boto3_sts.client import STSClient
-
     connection: STSClient = boto3.client(
         service_name='sts',
         # The following EE creds are read from the env if they are not passed:
@@ -94,8 +98,6 @@ def aws_assumerole_getcreds(
         aws_secret_access_key=secret_key,  # defaults to `None` in the lib
     )
     try:
-        from mypy_boto3_sts.type_defs import AssumeRoleResponseTypeDef
-
         response: AssumeRoleResponseTypeDef = connection.assume_role(
             RoleArn=role_arn,
             RoleSessionName='AAP_AWS_Role_Session1',
