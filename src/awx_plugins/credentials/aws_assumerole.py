@@ -81,15 +81,18 @@ def aws_assumerole_getcreds(
     :rtype: dict
     :raises ValueError: If the client response is bad.
     """
-    explicit_credentials_empty = not access_key and not secret_key
-    credential_kwargs = {} if explicit_credentials_empty else {
-        # EE creds are read from the env
-        'aws_access_key_id': access_key,
-        'aws_secret_access_key': secret_key,
-    }
-    connection = boto3.client(service_name='sts', **credential_kwargs)
+    from mypy_boto3_sts.client import STSClient
+
+    connection: STSClient = boto3.client(
+        service_name='sts',
+        # The following EE creds are read from the env if they are not passed:
+        aws_access_key_id=access_key,  # defaults to `None` in the lib
+        aws_secret_access_key=secret_key,  # defaults to `None` in the lib
+    )
     try:
-        response = connection.assume_role(
+        from mypy_boto3_sts.type_defs import AssumeRoleResponseTypeDef
+
+        response: AssumeRoleResponseTypeDef = connection.assume_role(
             RoleArn=role_arn,
             RoleSessionName='AAP_AWS_Role_Session1',
             ExternalId=external_id,
