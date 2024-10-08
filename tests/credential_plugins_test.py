@@ -144,8 +144,6 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
             'role_arn': 'the_arn',
             'identifier': 'access_token',
         },
-    ),
-    (
         {
             'role_arn': 'the_arn',
             'identifier': 'access_token',
