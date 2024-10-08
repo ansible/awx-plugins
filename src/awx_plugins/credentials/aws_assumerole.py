@@ -103,7 +103,7 @@ def aws_assumerole_getcreds(
         )
     except ClientError as client_err:
         raise ValueError(
-            f'Got a bad client response from AWS: {ce.message}.',
+            f'Got a bad client response from AWS: {client_err.message}.',
         ) from client_err
 
     return response.get('Credentials', {})
