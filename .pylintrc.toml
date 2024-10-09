@@ -457,6 +457,7 @@ disable = [
   "ungrouped-imports",  # isort-handled: https://github.com/pylint-dev/pylint/issues/9977
   "useless-import-alias",  # MyPy requires the opposite
   "wrong-import-order",  # isort-handled: https://github.com/pylint-dev/pylint/issues/9977
+  "wrong-import-position",  # isort-handled: https://github.com/pylint-dev/pylint/issues/9977
 ]
 
 # Enable the message, report, category or checker with the given id(s). You can
