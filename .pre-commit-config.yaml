@@ -198,6 +198,7 @@ repos:
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - django-stubs  # needed by credentials.injectors and inventory.plugins
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
@@ -229,6 +230,7 @@ repos:
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - django-stubs  # needed by credentials.injectors and inventory.plugins
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
@@ -260,6 +262,7 @@ repos:
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - django-stubs  # needed by credentials.injectors and inventory.plugins
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
