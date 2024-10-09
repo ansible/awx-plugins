@@ -194,7 +194,7 @@ repos:
     additional_dependencies:
     - >-  # standard interface declarations for AWX plugins
       awx_plugins.interfaces
-      @ git+https://github.com/ansible/awx_plugins.interfaces.git
+      @ git+https://github.com/ansible/awx_plugins.interfaces.git@ad4a965
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs  # needed by credentials.awx_secretsmanager
@@ -224,7 +224,7 @@ repos:
     additional_dependencies:
     - >-  # standard interface declarations for AWX plugins
       awx_plugins.interfaces
-      @ git+https://github.com/ansible/awx_plugins.interfaces.git
+      @ git+https://github.com/ansible/awx_plugins.interfaces.git@ad4a965
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs  # needed by credentials.awx_secretsmanager
@@ -254,7 +254,7 @@ repos:
     additional_dependencies:
     - >-  # standard interface declarations for AWX plugins
       awx_plugins.interfaces
-      @ git+https://github.com/ansible/awx_plugins.interfaces.git
+      @ git+https://github.com/ansible/awx_plugins.interfaces.git@ad4a965
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3-stubs  # needed by credentials.awx_secretsmanager
@@ -286,7 +286,7 @@ repos:
     additional_dependencies:
     - >-  # standard interface declarations for AWX plugins
       awx_plugins.interfaces
-      @ git+https://github.com/ansible/awx_plugins.interfaces.git
+      @ git+https://github.com/ansible/awx_plugins.interfaces.git@ad4a965
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
     - boto3  # needed by credentials.awx_secretsmanager
