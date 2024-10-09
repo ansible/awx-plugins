@@ -1,8 +1,9 @@
 """This module provides integration with AWS AssumeRole functionality."""
 
-import datetime
+from .plugin import CredentialPlugin
 import hashlib
 import typing
+from datetime import datetime
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -78,9 +79,9 @@ assume_role_inputs = {
 
 
 def aws_assumerole_getcreds(
-        access_key: str | None,
-        secret_key: str | None,
-        role_arn: str | None,
+        access_key: str,
+        secret_key: str,
+        role_arn: str,
         external_id: int,
 ) -> 'CredentialsTypeDef | dict[typing.Never, typing.Never]':
     """Return the credentials for use.
@@ -118,9 +119,9 @@ def aws_assumerole_getcreds(
 
 
 def aws_assumerole_backend(
-        access_key: str | None,
-        secret_key: str | None,
-        role_arn: str | None,
+        access_key: str,
+        secret_key: str,
+        role_arn: str,
         external_id: int,
         identifier: str,
 ) -> dict:
