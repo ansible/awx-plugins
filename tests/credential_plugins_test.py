@@ -187,9 +187,7 @@ def test_aws_assumerole_identifier(
         mock_getcreds,
     )
 
-    extra_kwargs = {'identifier': identifier_key} if identifier_key else {}
-
-    token = aws_assumerole.aws_assumerole_backend(**{**kwargs, **extra_kwargs})
+    token = aws_assumerole.aws_assumerole_backend(**kwargs, identifier=identifier_key or kwargs['identifier'])
     assert token == expected
 
 
