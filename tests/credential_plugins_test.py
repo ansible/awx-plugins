@@ -187,7 +187,8 @@ def test_aws_assumerole_identifier(
         mock_getcreds,
     )
 
-    token = aws_assumerole.aws_assumerole_backend(**kwargs, identifier=identifier_key or kwargs['identifier'])
+    token = aws_assumerole.aws_assumerole_backend(
+        **kwargs, identifier=identifier_key or kwargs['identifier'])
     assert token == expected
 
 
