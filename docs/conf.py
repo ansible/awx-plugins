@@ -7,6 +7,13 @@ from importlib.metadata import version as _retrieve_metadata_version_for
 from pathlib import Path
 from tomllib import loads as _parse_toml
 
+from sphinx.addnodes import pending_xref
+from sphinx.application import Sphinx
+from sphinx.environment import BuildEnvironment
+
+# isort: split
+
+from docutils.nodes import literal, reference
 
 # -- Path setup --------------------------------------------------------------
 
@@ -195,3 +202,42 @@ nitpicky = True
 nitpick_ignore = [
     # temporarily listed ('role', 'reference') pairs that Sphinx cannot resolve
 ]
+
+
+def _replace_missing_boto3_reference(
+    app: Sphinx,
+    env: BuildEnvironment,
+    node: pending_xref,
+    contnode: literal,
+) -> reference | None:
+    if (node.get('refdomain'), node.get('reftype')) != ('py', 'class'):
+        return None
+
+    boto3_type_uri_map = {
+        'AssumeRoleResponseTypeDef': 'type_defs/#assumeroleresponsetypedef',
+        'CredentialsTypeDef': 'type_defs/#credentialstypedef',
+        'STSClient': 'client/#stsclient',
+    }
+    ref_target = node.get('reftarget', '')
+
+    try:
+        return reference(
+            ref_target,
+            ref_target,
+            internal=False,
+            refuri=f'https://youtype.github.io/boto3_stubs_docs/mypy_boto3_sts/{boto3_type_uri_map[ref_target]}',
+        )
+    except KeyError:
+        return None
+
+
+def setup(app: Sphinx) -> dict[str, bool | str]:
+    """Register project-local Sphinx extension-API customizations."""
+
+    app.connect('missing-reference', _replace_missing_boto3_reference)
+
+    return {
+        'parallel_read_safe': True,
+        'parallel_write_safe': True,
+        'version': release,
+    }
