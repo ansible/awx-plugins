@@ -141,13 +141,8 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
         {
             'access_key': 'my_access_key',
             'secret_key': 'my_secret_key',
-            'role_arn': 'the_arn',
-            'identifier': 'access_token',
         },
-        {
-            'role_arn': 'the_arn',
-            'identifier': 'access_token',
-        },
+        {},
     ),
 )
 @pytest.mark.parametrize(
@@ -188,7 +183,10 @@ def test_aws_assumerole_identifier(
     )
 
     token = aws_assumerole.aws_assumerole_backend(
-        **kwargs, identifier=identifier_key or kwargs['identifier'])
+        identifier=identifier_key or 'access_token',
+        role_arn='the_arn',
+        **kwargs,
+    )
     assert token == expected
 
 
