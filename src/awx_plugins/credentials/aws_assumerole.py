@@ -24,7 +24,7 @@ from .plugin import CredentialPlugin
 
 _aws_cred_cache: dict[
     str,
-    CredentialsTypeDef | dict[typing.Never, typing.Never],
+    "CredentialsTypeDef" | dict[typing.Never, typing.Never],
 ] | dict[typing.Never, typing.Never] = {}
 
 
@@ -82,7 +82,7 @@ def aws_assumerole_getcreds(
         secret_key: str | None,
         role_arn: str | None,
         external_id: int,
-) -> CredentialsTypeDef | dict[typing.Never, typing.Never]:
+) -> "CredentialsTypeDef" | dict[typing.Never, typing.Never]:
     """Return the credentials for use.
 
     :param access_key: The AWS access key ID.
@@ -97,14 +97,14 @@ def aws_assumerole_getcreds(
     :rtype: dict
     :raises ValueError: If the client response is bad.
     """
-    connection: STSClient = boto3.client(
+    connection: "STSClient" = boto3.client(
         service_name='sts',
         # The following EE creds are read from the env if they are not passed:
         aws_access_key_id=access_key,  # defaults to `None` in the lib
         aws_secret_access_key=secret_key,  # defaults to `None` in the lib
     )
     try:
-        response: AssumeRoleResponseTypeDef = connection.assume_role(
+        response: "AssumeRoleResponseTypeDef" = connection.assume_role(
             RoleArn=role_arn,
             RoleSessionName='AAP_AWS_Role_Session1',
             ExternalId=external_id,
