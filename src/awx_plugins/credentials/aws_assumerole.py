@@ -24,7 +24,7 @@ from .plugin import CredentialPlugin
 
 _aws_cred_cache: dict[
     str,
-    'CredentialsTypeDef' | dict[typing.Never, typing.Never],
+    'CredentialsTypeDef | dict[typing.Never, typing.Never]',
 ] | dict[typing.Never, typing.Never] = {}
 
 
@@ -82,7 +82,7 @@ def aws_assumerole_getcreds(
         secret_key: str | None,
         role_arn: str | None,
         external_id: int,
-) -> 'CredentialsTypeDef' | dict[typing.Never, typing.Never]:
+) -> 'CredentialsTypeDef | dict[typing.Never, typing.Never]':
     """Return the credentials for use.
 
     :param access_key: The AWS access key ID.
