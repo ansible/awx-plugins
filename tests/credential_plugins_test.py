@@ -136,7 +136,7 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
 
 
 @pytest.mark.parametrize(
-    'kwargs',
+    'explicit_creds',
     (
         {
             'access_key': 'my_access_key',
@@ -158,7 +158,7 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
 )
 def test_aws_assumerole_identifier(
     monkeypatch: pytest.MonkeyPatch,
-    kwargs: dict[str, str], identifier_key: str | None, expected: str,
+    explicit_creds: dict[str, str], identifier_key: str | None, expected: str,
 ) -> None:
     """Test that the aws_assumerole_backend function call returns a token given
     the access_key and secret_key."""
@@ -185,7 +185,7 @@ def test_aws_assumerole_identifier(
     token = aws_assumerole.aws_assumerole_backend(
         identifier=identifier_key or 'access_token',
         role_arn='the_arn',
-        **kwargs,
+        **explicit_creds,
     )
     assert token == expected
 
