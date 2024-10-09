@@ -236,10 +236,9 @@ def _replace_missing_boto3_reference(
 
 def setup(app: Sphinx) -> dict[str, bool | str]:
     """Register project-local Sphinx extension-API customizations.
-    
+
     :param app: Initialized Sphinx app instance.
     :type app: Sphinx
-
     :returns: Extension metadata.
     :rtype: dict[str, bool | str]
     """
