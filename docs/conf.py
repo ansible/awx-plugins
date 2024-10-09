@@ -227,8 +227,7 @@ def _replace_missing_boto3_reference(
             ref_target,
             ref_target,
             internal=False,
-            refuri=
-            'https://youtype.github.io/boto3_stubs_docs/'
+            refuri='https://youtype.github.io/boto3_stubs_docs/'
             f'mypy_boto3_sts/{boto3_type_uri_map[ref_target]}',
         )
     except KeyError:
