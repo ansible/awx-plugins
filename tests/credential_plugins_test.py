@@ -143,8 +143,8 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
             'secret_key': 'my_secret_key',
         },
         {},
-        ids=('with-creds-args', 'with-env-creds'),
     ),
+    ids=('with-creds-args', 'with-env-creds'),
 )
 @pytest.mark.parametrize(
     (
