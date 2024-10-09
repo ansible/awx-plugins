@@ -8,8 +8,6 @@ adal==1.2.7
     # via msrestazure
 alabaster==1.0.0
     # via sphinx
-asgiref==3.8.1
-    # via django
 awx-plugins-interfaces @ git+https://github.com/ansible/awx_plugins.interfaces.git
     # via
     #   -c dependencies/direct/py-constraints.in
@@ -21,7 +19,7 @@ azure-core==1.31.0
     #   azure-keyvault-keys
     #   azure-keyvault-secrets
     #   msrest
-azure-identity==1.18.0
+azure-identity==1.19.0
     # via awx-plugins-core (pyproject.toml)
 azure-keyvault==4.2.0
     # via awx-plugins-core (pyproject.toml)
@@ -35,9 +33,9 @@ babel==2.16.0
     # via sphinx
 beautifulsoup4==4.12.3
     # via furo
-boto3==1.35.31
+boto3==1.35.36
     # via awx-plugins-core (pyproject.toml)
-botocore==1.35.31
+botocore==1.35.36
     # via
     #   boto3
     #   s3transfer
@@ -56,8 +54,6 @@ cryptography==43.0.1
     #   azure-keyvault-keys
     #   msal
     #   pyjwt
-django==5.1.1
-    # via awx-plugins-core (pyproject.toml)
 docutils==0.21.2
     # via
     #   myst-parser
@@ -69,7 +65,7 @@ idna==3.10
     # via requests
 imagesize==1.4.1
     # via sphinx
-isodate==0.6.1
+isodate==0.7.2
     # via
     #   azure-keyvault-certificates
     #   azure-keyvault-keys
@@ -89,7 +85,7 @@ markdown-it-py==3.0.0
     # via
     #   mdit-py-plugins
     #   myst-parser
-markupsafe==2.1.5
+markupsafe==3.0.1
     # via jinja2
 mdit-py-plugins==0.4.2
     # via myst-parser
@@ -153,12 +149,11 @@ requests==2.32.3
     #   sphinx
 requests-oauthlib==2.0.0
     # via msrest
-s3transfer==0.10.2
+s3transfer==0.10.3
     # via boto3
 six==1.16.0
     # via
     #   azure-core
-    #   isodate
     #   msrestazure
     #   python-dateutil
 snowballstemmer==2.2.0
@@ -179,7 +174,7 @@ sphinx-basic-ng==1.0.0b2
     # via furo
 sphinx-issues==4.1.0
     # via -r dependencies/direct/build-docs.in
-sphinx-tabs==3.4.5
+sphinx-tabs==3.4.7
     # via -r dependencies/direct/build-docs.in
 sphinxcontrib-apidoc==0.5.0
     # via -r dependencies/direct/build-docs.in
@@ -197,8 +192,6 @@ sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 sphinxcontrib-spelling==8.0.0
     # via -r dependencies/direct/linkcheck-docs.in
-sqlparse==0.5.1
-    # via django
 typing-extensions==4.12.2
     # via
     #   azure-core

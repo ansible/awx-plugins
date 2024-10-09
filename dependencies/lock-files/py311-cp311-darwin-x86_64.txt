@@ -6,8 +6,6 @@
 #
 adal==1.2.7
     # via msrestazure
-asgiref==3.8.1
-    # via django
 attrs==24.2.0
     # via hypothesis
 awx-plugins-interfaces @ git+https://github.com/ansible/awx_plugins.interfaces.git
@@ -21,7 +19,7 @@ azure-core==1.31.0
     #   azure-keyvault-keys
     #   azure-keyvault-secrets
     #   msrest
-azure-identity==1.18.0
+azure-identity==1.19.0
     # via awx-plugins-core (pyproject.toml)
 azure-keyvault==4.2.0
     # via awx-plugins-core (pyproject.toml)
@@ -31,9 +29,9 @@ azure-keyvault-keys==4.9.0
     # via azure-keyvault
 azure-keyvault-secrets==4.8.0
     # via azure-keyvault
-boto3==1.35.31
+boto3==1.35.36
     # via awx-plugins-core (pyproject.toml)
-botocore==1.35.31
+botocore==1.35.36
     # via
     #   boto3
     #   s3transfer
@@ -62,17 +60,15 @@ cryptography==43.0.1
     #   azure-keyvault-keys
     #   msal
     #   pyjwt
-django==5.1.1
-    # via awx-plugins-core (pyproject.toml)
 execnet==2.1.1
     # via pytest-xdist
-hypothesis==6.112.2
+hypothesis==6.112.5
     # via -r dependencies/direct/py.in
 idna==3.10
     # via requests
 iniconfig==2.0.0
     # via pytest
-isodate==0.6.1
+isodate==0.7.2
     # via
     #   azure-keyvault-certificates
     #   azure-keyvault-keys
@@ -140,18 +136,15 @@ requests==2.32.3
     #   requests-oauthlib
 requests-oauthlib==2.0.0
     # via msrest
-s3transfer==0.10.2
+s3transfer==0.10.3
     # via boto3
 six==1.16.0
     # via
     #   azure-core
-    #   isodate
     #   msrestazure
     #   python-dateutil
 sortedcontainers==2.4.0
     # via hypothesis
-sqlparse==0.5.1
-    # via django
 typing-extensions==4.12.2
     # via
     #   azure-core
