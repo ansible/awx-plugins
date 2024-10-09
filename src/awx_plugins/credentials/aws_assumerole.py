@@ -1,6 +1,5 @@
 """This module provides integration with AWS AssumeRole functionality."""
 
-from .plugin import CredentialPlugin
 import hashlib
 import typing
 from datetime import datetime
@@ -11,6 +10,8 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 
 import boto3
 from botocore.exceptions import ClientError
+
+from .plugin import CredentialPlugin
 
 
 if typing.TYPE_CHECKING:
