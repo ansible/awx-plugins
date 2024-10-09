@@ -14,7 +14,10 @@ from botocore.exceptions import ClientError
 
 if typing.TYPE_CHECKING:
     from mypy_boto3_sts.client import STSClient
-    from mypy_boto3_sts.type_defs import AssumeRoleResponseTypeDef, CredentialsTypeDef
+    from mypy_boto3_sts.type_defs import (
+        AssumeRoleResponseTypeDef,
+        CredentialsTypeDef,
+    )
 
 from .plugin import CredentialPlugin
 
