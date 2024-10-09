@@ -143,6 +143,7 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
             'secret_key': 'my_secret_key',
         },
         {},
+        ids=('with-creds-args', 'with-env-creds'),
     ),
 )
 @pytest.mark.parametrize(
@@ -154,6 +155,11 @@ def test_hashivault_handle_auth_not_enough_args() -> None:
         (None, 'the_access_token'),
         ('access_key', 'the_access_key'),
         ('secret_key', 'the_secret_key'),
+    ),
+    ids=(
+        'access-token',
+        'access-key',
+        'secret-key',
     ),
 )
 def test_aws_assumerole_identifier(
