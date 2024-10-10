@@ -149,7 +149,7 @@ def aws_assumerole_backend(
     )
     credential_key = credential_key_hash.hexdigest()
 
-    credentials = _aws_cred_cache.get(credential_key, None)
+    credentials = _aws_cred_cache.get(credential_key, {})
 
     # If there are no credentials for this user/ARN *or* the credentials
     # we have in the cache have expired, then we need to contact AWS again.

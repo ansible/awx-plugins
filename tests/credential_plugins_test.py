@@ -172,7 +172,7 @@ def test_aws_assumerole_identifier(
     def mock_getcreds(
             access_key: str | None,
             secret_key: str | None,
-            role_arn: str | None,
+            role_arn: str,
             external_id: int,
     ) -> dict:
         return {
