@@ -78,8 +78,8 @@ assume_role_inputs = {
 
 
 def aws_assumerole_getcreds(
-        access_key: str,
-        secret_key: str,
+        access_key: str | None,
+        secret_key: str | None,
         role_arn: str,
         external_id: int,
 ) -> 'CredentialsTypeDef | dict[typing.Never, typing.Never]':
@@ -118,8 +118,8 @@ def aws_assumerole_getcreds(
 
 
 def aws_assumerole_backend(
-        access_key: str,
-        secret_key: str,
+        access_key: str | None,
+        secret_key: str | None,
         role_arn: str,
         external_id: int,
         identifier: str,
