@@ -12,7 +12,16 @@ from delinea.secrets.vault import (
     SecretsVault as SecretsVault,
 )
 
-from .plugin import CredentialPlugin, settings
+from .plugin import CredentialPlugin
+
+
+class Settings:
+    """A stub Django settings-like interface."""
+
+    DEBUG: bool = False  # noqa: WPS115
+
+
+settings = Settings()
 
 
 dsv_inputs = {

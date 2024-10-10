@@ -16,13 +16,6 @@ CredentialPlugin = namedtuple(
 )
 
 
-class Settings():
-    DEBUG = False
-
-
-settings = Settings()
-
-
 def raise_for_status(resp):
     resp.raise_for_status()
     if resp.status_code >= 300:
