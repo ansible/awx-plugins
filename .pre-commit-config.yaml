@@ -197,7 +197,8 @@ repos:
       @ git+https://github.com/ansible/awx_plugins.interfaces.git@ad4a965
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
-    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
     - pytest
@@ -227,7 +228,8 @@ repos:
       @ git+https://github.com/ansible/awx_plugins.interfaces.git@ad4a965
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
-    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
     - pytest
@@ -257,7 +259,8 @@ repos:
       @ git+https://github.com/ansible/awx_plugins.interfaces.git@ad4a965
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
-    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
     - pytest

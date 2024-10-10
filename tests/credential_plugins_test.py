@@ -1,11 +1,12 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="no-untyped-call"
 
+import datetime
 from unittest import mock
 
 import pytest
 
-from awx_plugins.credentials import hashivault
+from awx_plugins.credentials import aws_assumerole, hashivault
 
 
 def test_imported_azure_cloud_sdk_vars() -> None:
@@ -132,6 +133,68 @@ def test_hashivault_handle_auth_client_cert() -> None:
 def test_hashivault_handle_auth_not_enough_args() -> None:
     with pytest.raises(Exception):
         hashivault.handle_auth()
+
+
+@pytest.mark.parametrize(
+    'explicit_creds',
+    (
+        {
+            'access_key': 'my_access_key',
+            'secret_key': 'my_secret_key',
+        },
+        {},
+    ),
+    ids=('with-creds-args', 'with-env-creds'),
+)
+@pytest.mark.parametrize(
+    (
+        'identifier_key',
+        'expected',
+    ),
+    (
+        (None, 'the_access_token'),
+        ('access_key', 'the_access_key'),
+        ('secret_key', 'the_secret_key'),
+    ),
+    ids=(
+        'access-token',
+        'access-key',
+        'secret-key',
+    ),
+)
+def test_aws_assumerole_identifier(
+    monkeypatch: pytest.MonkeyPatch,
+    explicit_creds: dict[str, str], identifier_key: str | None, expected: str,
+) -> None:
+    """Test that the aws_assumerole_backend function call returns a token given
+    the access_key and secret_key."""
+
+    def mock_getcreds(
+            access_key: str | None,
+            secret_key: str | None,
+            role_arn: str,
+            external_id: int,
+    ) -> dict:
+        return {
+            'access_key': 'the_access_key',
+            'secret_key': 'the_secret_key',
+            'access_token': 'the_access_token',
+            'Expiration': datetime.datetime.today() + datetime.timedelta(days=1),
+        }
+
+    monkeypatch.setattr(
+        aws_assumerole,
+        'aws_assumerole_getcreds',
+        mock_getcreds,
+    )
+
+    token = aws_assumerole.aws_assumerole_backend(
+        external_id=42,
+        identifier=identifier_key or 'access_token',
+        role_arn='the_arn',
+        **explicit_creds,
+    )
+    assert token == expected
 
 
 class TestDelineaImports:

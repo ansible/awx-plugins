@@ -22,11 +22,13 @@ dependencies = [  # runtime deps  # https://packaging.python.org/en/latest/guide
   "PyYAML",  # credentials.injectors, inventory.plugins
   "azure-identity",  # credentials.azure_kv
   "azure-keyvault",  # credentials.azure_kv
-  "boto3",  # credentials.awx_secretsmanager
+  "boto3",  # credentials.aws_assume_role, credentials.awx_secretsmanager
+  "botocore",  # credentials.aws_assume_role, credentials.awx_secretsmanager
   "msrestazure",  # credentials.azure_kv
   "python-dsv-sdk >= 1.0.4",  # credentials.thycotic_dsv
   "python-tss-sdk >= 1.2.1",  # credentials.thycotic_tss
   "requests",  # credentials.aim, credentials.centrify_vault, credentials.conjur, credentials.hashivault
+  "botocore.execeptions",  # credentials.aws_assume_role
 ]
 classifiers = [  # Allowlist: https://pypi.org/classifiers/
   "Development Status :: 1 - Planning",
@@ -83,6 +85,7 @@ centrify_vault_kv = "awx_plugins.credentials.centrify_vault:centrify_plugin"
 thycotic_dsv = "awx_plugins.credentials.dsv:dsv_plugin"
 thycotic_tss = "awx_plugins.credentials.tss:tss_plugin"
 aws_secretsmanager_credential = "awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin"
+aws_assume_role = "awx_plugins.credentials.aws_assume_role:aws_assume_role_plugin"
 
 [project.entry-points."awx_plugins.inventory"]  # new entry points group name
 azure-rm = "awx_plugins.inventory.plugins:azure_rm"
