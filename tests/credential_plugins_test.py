@@ -189,6 +189,7 @@ def test_aws_assumerole_identifier(
     )
 
     token = aws_assumerole.aws_assumerole_backend(
+        external_id=42,
         identifier=identifier_key or 'access_token',
         role_arn='the_arn',
         **explicit_creds,
