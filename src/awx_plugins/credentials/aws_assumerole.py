@@ -11,8 +11,6 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 import boto3
 from botocore.exceptions import ClientError
 
-from .plugin import CredentialPlugin
-
 
 if typing.TYPE_CHECKING:
     from mypy_boto3_sts.client import STSClient
