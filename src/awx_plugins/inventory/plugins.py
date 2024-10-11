@@ -8,9 +8,6 @@ import tempfile
 from awx_plugins.interfaces._temporary_private_container_api import (  # noqa: WPS436
     get_incontainer_path,
 )
-from awx_plugins.interfaces._temporary_private_licensing_api import (  # noqa: WPS436
-    detect_server_product_name,
-)
 
 import yaml
 
@@ -27,9 +24,6 @@ class PluginFileInjector:
     collection = None
     collection_migration = '2.9'  # Starting with this version, we use collections
     use_fqcn = False  # plugin: name versus plugin: namespace.collection.name
-    # The following attributes trip MyPy when undeclared:
-    downstream_namespace: str | None = None  # FIXME: drop when refactoring
-    downstream_collection: str | None = None  # FIXME: drop when refactoring
 
     # TODO: delete this method and update unit tests
     @classmethod
@@ -63,27 +57,13 @@ class PluginFileInjector:
         Note that a plugin value of '' should still be overridden.
         """
         if self.plugin_name is not None:
-            if hasattr(
-                    self,
-                    'downstream_namespace',
-            ) and detect_server_product_name() != 'AWX':
-                source_vars['plugin'] = f"""{
-                    self.downstream_namespace
-                }.{
-                    self.downstream_collection
-                }.{
-                    self.plugin_name
-                }"""
-            elif self.use_fqcn:
-                source_vars['plugin'] = f"""{
-                    self.namespace
-                }.{
-                    self.collection
-                }.{
-                    self.plugin_name
-                }"""
-            else:
-                source_vars['plugin'] = self.plugin_name
+            source_vars['plugin'] = f"""{
+                self.namespace
+            }.{
+                self.collection
+            }.{
+                self.plugin_name
+            }""" if self.use_fqcn else self.plugin_name
         return source_vars
 
     def build_env(
@@ -284,8 +264,17 @@ class rhv(PluginFileInjector):
     initial_version = '2.9'
     namespace = 'ovirt'
     collection = 'ovirt'
-    downstream_namespace = 'redhat'
-    downstream_collection = 'rhv'
+    use_fqcn = True
+
+
+class rhv_downstream(PluginFileInjector):
+    """Ovirt uses the custom credential templating, and that is all."""
+
+    plugin_name = 'ovirt'
+    base_injector = 'template'
+    initial_version = '2.9'
+    namespace = 'redhat'
+    collection = 'rhv'
     use_fqcn = True
 
 
@@ -293,8 +282,35 @@ class satellite6(PluginFileInjector):
     plugin_name = 'foreman'
     namespace = 'theforeman'
     collection = 'foreman'
-    downstream_namespace = 'redhat'
-    downstream_collection = 'satellite'
+    use_fqcn = True
+
+    def get_plugin_env(
+            self,
+            inventory_update,
+            private_data_dir,
+            private_data_files,
+    ):
+        # this assumes that this is merged
+        # https://github.com/ansible/ansible/pull/52693
+        credential = inventory_update.get_cloud_credential()
+        ret = super().get_plugin_env(
+            inventory_update,
+            private_data_dir,
+            private_data_files,
+        )
+        if credential:
+            ret['FOREMAN_SERVER'] = credential.get_input('host', default='')
+            ret['FOREMAN_USER'] = credential.get_input('username', default='')
+            ret['FOREMAN_PASSWORD'] = credential.get_input(
+                'password', default='',
+            )
+        return ret
+
+
+class satellite6_downstream(PluginFileInjector):
+    plugin_name = 'foreman'
+    namespace = 'redhat'
+    collection = 'satellite'
     use_fqcn = True
 
     def get_plugin_env(
@@ -378,8 +394,15 @@ class controller(PluginFileInjector):
     base_injector = 'template'
     namespace = 'awx'
     collection = 'awx'
-    downstream_namespace = 'ansible'
-    downstream_collection = 'controller'
+
+
+class controller_downstream(PluginFileInjector):
+    # TODO: relying on routing for now, update after EEs pick up revised
+    # collection
+    plugin_name = 'tower'
+    base_injector = 'template'
+    namespace = 'ansible'
+    collection = 'controller'
 
 
 class insights(PluginFileInjector):
@@ -387,8 +410,14 @@ class insights(PluginFileInjector):
     base_injector = 'template'
     namespace = 'redhatinsights'
     collection = 'insights'
-    downstream_namespace = 'redhat'
-    downstream_collection = 'insights'
+    use_fqcn = True
+
+
+class insights_downstream(PluginFileInjector):
+    plugin_name = 'insights'
+    base_injector = 'template'
+    namespace = 'redhat'
+    collection = 'insights'
     use_fqcn = True
 
 
@@ -397,8 +426,14 @@ class openshift_virtualization(PluginFileInjector):
     base_injector = 'template'
     namespace = 'kubevirt'
     collection = 'core'
-    downstream_namespace = 'redhat'
-    downstream_collection = 'openshift_virtualization'
+    use_fqcn = True
+
+
+class openshift_virtualization_downstream(PluginFileInjector):
+    plugin_name = 'kubevirt'
+    base_injector = 'template'
+    namespace = 'redhat'
+    collection = 'openshift_virtualization'
     use_fqcn = True
 
 
