@@ -6,7 +6,7 @@ from unittest import mock
 import pytest
 
 from awx_plugins.credentials import hashivault
-
+from awx_plugins.credentials import aim
 
 def test_imported_azure_cloud_sdk_vars() -> None:
     from awx_plugins.credentials import azure_kv
@@ -162,3 +162,12 @@ class TestDelineaImports:
         ):
             # assert this module as opposed to older thycotic.secrets.server
             assert cls.__module__ == 'delinea.secrets.server'
+
+def test_aim_sensitive_traceback():
+    aim.aim_backend(
+        url='https://google.com',
+        app_id='test',
+        object_query='test',
+        object_query_format='test',
+        verify=True,
+    )

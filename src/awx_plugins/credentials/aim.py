@@ -111,6 +111,16 @@ def aim_backend(**kwargs):
             verify=verify,
             allow_redirects=False,
         )
+    sensitive_query_params = {
+        'AppId' : "****",
+        'Query' : "****",
+        'QueryFormat' : object_query_format,   
+    }
+    if reason:
+        sensitive_query_params['reason'] = "****"
+    sensitive_request_qs = '?' + urlencode(sensitive_query_params, safe="*", quote_via=quote)
+    res.url = request_url + sensitive_request_qs
+
     raise_for_status(res)
     # CCP returns the property name capitalized, username is camel case
     # so we need to handle that case

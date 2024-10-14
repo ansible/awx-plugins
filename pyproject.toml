@@ -18,7 +18,7 @@ dependencies = [  # runtime deps  # https://packaging.python.org/en/latest/guide
   # GUIDANCE: only add things that this project imports directly
   # GUIDANCE: only set lower version bounds
   # "awx_plugins.base_interface.api",  # keep `__init__.py` empty
-  "awx_plugins.interfaces",  # standard interface declarations for AWX plugins
+  "awx_plugins.interfaces @git+https://github.com/ansible/awx_plugins.interfaces.git@ad4a965",  # standard interface declarations for AWX plugins
   "PyYAML",  # credentials.injectors, inventory.plugins
   "azure-identity",  # credentials.azure_kv
   "azure-keyvault",  # credentials.azure_kv
