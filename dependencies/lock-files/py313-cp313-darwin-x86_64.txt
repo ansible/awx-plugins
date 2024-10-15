@@ -29,9 +29,9 @@ azure-keyvault-keys==4.9.0
     # via azure-keyvault
 azure-keyvault-secrets==4.8.0
     # via azure-keyvault
-boto3==1.35.36
+boto3==1.35.39
     # via awx-plugins-core (pyproject.toml)
-botocore==1.35.36
+botocore==1.35.39
     # via
     #   boto3
     #   s3transfer
@@ -41,11 +41,11 @@ certifi==2024.8.30
     #   requests
 cffi==1.17.1
     # via cryptography
-charset-normalizer==3.3.2
+charset-normalizer==3.4.0
     # via requests
 covdefaults==2.3.0
     # via -r dependencies/direct/py.in
-coverage==7.6.1
+coverage==7.6.3
     # via
     #   -r dependencies/direct/py.in
     #   covdefaults
@@ -62,7 +62,7 @@ cryptography==43.0.1
     #   pyjwt
 execnet==2.1.1
     # via pytest-xdist
-hypothesis==6.112.5
+hypothesis==6.115.0
     # via -r dependencies/direct/py.in
 idna==3.10
     # via requests
