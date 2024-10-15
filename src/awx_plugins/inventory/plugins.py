@@ -267,7 +267,7 @@ class rhv(PluginFileInjector):
     use_fqcn = True
 
 
-class rhv_downstream(PluginFileInjector):
+class rhv_supported(PluginFileInjector):
     """Ovirt uses the custom credential templating, and that is all."""
 
     plugin_name = 'ovirt'
@@ -307,7 +307,7 @@ class satellite6(PluginFileInjector):
         return ret
 
 
-class satellite6_downstream(PluginFileInjector):
+class satellite6_supported(PluginFileInjector):
     plugin_name = 'foreman'
     namespace = 'redhat'
     collection = 'satellite'
@@ -396,7 +396,7 @@ class controller(PluginFileInjector):
     collection = 'awx'
 
 
-class controller_downstream(PluginFileInjector):
+class controller_supported(PluginFileInjector):
     # TODO: relying on routing for now, update after EEs pick up revised
     # collection
     plugin_name = 'tower'
@@ -413,7 +413,7 @@ class insights(PluginFileInjector):
     use_fqcn = True
 
 
-class insights_downstream(PluginFileInjector):
+class insights_supported(PluginFileInjector):
     plugin_name = 'insights'
     base_injector = 'template'
     namespace = 'redhat'
@@ -429,7 +429,7 @@ class openshift_virtualization(PluginFileInjector):
     use_fqcn = True
 
 
-class openshift_virtualization_downstream(PluginFileInjector):
+class openshift_virtualization_supported(PluginFileInjector):
     plugin_name = 'kubevirt'
     base_injector = 'template'
     namespace = 'redhat'
