@@ -170,6 +170,7 @@ class TestAimBackend:
         import requests
 
         from awx_plugins.credentials import aim
+
         # breakpoint()
         my_response = requests.Response()
         my_response.status_code = 404
@@ -187,6 +188,7 @@ class TestAimBackend:
             )
 
         assert 'http://testurl.com/AIMWebService/api/Accounts?AppId=****&Query=****&QueryFormat=test&reason=****' in str(
-            e)
+            e,
+        )
         assert e._excinfo[1].response.url == 'http://testurl.com/AIMWebService/api/Accounts?AppId=****&Query=****&QueryFormat=test&reason=****'
         assert 'foobar123' not in str(e)
