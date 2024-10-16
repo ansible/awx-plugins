@@ -163,11 +163,27 @@ class TestDelineaImports:
             # assert this module as opposed to older thycotic.secrets.server
             assert cls.__module__ == 'delinea.secrets.server'
 
-def test_aim_sensitive_traceback():
-    aim.aim_backend(
-        url='https://google.com',
-        app_id='test',
-        object_query='test',
-        object_query_format='test',
-        verify=True,
-    )
+class TestAimBackend:
+
+    def test_aim_sensitive_traceback(self):
+        import requests
+        from requests import Response
+        from awx_plugins.credentials import aim
+            #breakpoint()
+        my_response = Response()
+        my_response.status_code = 404
+        my_response.url = 'not_found'
+        aim.requests.get = mock.Mock(name="aim_request")   
+        aim.requests.get.return_value = my_response
+        with pytest.raises(requests.exceptions.HTTPError) as e:
+            aim.aim_backend(
+                url='http://testurl.com',
+                app_id='foobar123',
+                object_query='foobar123',
+                object_query_format='test',
+                verify=True,
+            )
+
+        assert 'http://testurl.com/AIMWebService/api/Accounts?AppId=****&Query=****&QueryFormat=test' in str(e)
+        assert e._excinfo[1].response.url == 'http://testurl.com/AIMWebService/api/Accounts?AppId=****&Query=****&QueryFormat=test'
+        assert 'foobar123' not in str(e)
