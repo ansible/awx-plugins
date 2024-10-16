@@ -5,7 +5,7 @@ from unittest import mock
 
 import pytest
 
-from awx_plugins.credentials import aim, hashivault
+from awx_plugins.credentials import hashivault
 
 
 def test_imported_azure_cloud_sdk_vars() -> None:
@@ -165,13 +165,14 @@ class TestDelineaImports:
 
 
 class TestAimBackend:
+    """These tests are designed to fail to ensure that the sensitive
+    information is not leaked in the traceback."""
 
-    def test_aim_sensitive_traceback(self):
+    def test_aim_sensitive_traceback(self) -> None:
         import requests
 
         from awx_plugins.credentials import aim
 
-        # breakpoint()
         my_response = requests.Response()
         my_response.status_code = 404
         my_response.url = 'not_found'
@@ -187,8 +188,8 @@ class TestAimBackend:
                 verify=True,
             )
 
-        assert 'http://testurl.com/AIMWebService/api/Accounts?AppId=****&Query=****&QueryFormat=test&reason=****' in str(
-            e,
-        )
-        assert e._excinfo[1].response.url == 'http://testurl.com/AIMWebService/api/Accounts?AppId=****&Query=****&QueryFormat=test&reason=****'
+        assert """http://testurl.com/AIMWebService/api/Accounts?AppId=
+            ****&Query=****&QueryFormat=test&reason=****""" in str(e)
+        assert e._excinfo[1].response.url == """http://testurl.com/AIMWebService
+            /api/Accounts?AppId=****&Query=****&QueryFormat=test&reason=****"""
         assert 'foobar123' not in str(e)
