@@ -162,3 +162,35 @@ class TestDelineaImports:
         ):
             # assert this module as opposed to older thycotic.secrets.server
             assert cls.__module__ == 'delinea.secrets.server'
+
+
+def test_aim_sensitive_traceback_masked(mocker: MockerFixture) -> None:
+    """Ensure that the sensitive information is not leaked in the traceback."""
+    my_response = requests.Response()
+    my_response.status_code = 404
+    my_response.url = 'not_found'
+
+    aim.requests.get = mocker.Mock(name='aim_request')
+    aim.requests.get.return_value = my_response
+
+    expected_url_in_exc = (
+        r'.*http://testurl\.com/AIMWebService/api/Accounts\?'
+        r'AppId=\*\*\*\*&Query=\*\*\*\*&QueryFormat=test&reason=\*\*\*\*.*'
+    )
+    expected_response_url_literal = (
+        'http://testurl.com/AIMWebService/api/Accounts?'
+        'AppId=****&Query=****&QueryFormat=test&reason=****'
+    )
+
+    with pytest.raises(requests.exceptions.HTTPError, match=expected_url_in_exc) as e:
+        aim.aim_backend(
+            url='http://testurl.com',
+            app_id='foobar123',
+            object_query='foobar123',
+            object_query_format='test',
+            reason='foobar123',
+            verify=True,
+        )
+
+    assert e._excinfo[1].response.url == expected_response_url_literal
+    assert 'foobar123' not in str(e)
