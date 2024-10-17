@@ -118,11 +118,12 @@ def aim_backend(**kwargs):
     }
     if reason:
         sensitive_query_params['reason'] = '****'
-    sensitive_request_qs = (
-        '?' +
-        urlencode(sensitive_query_params, safe='*', quote_via=quote)
+    sensitive_request_qs = urlencode(
+        sensitive_query_params,
+        safe='*',
+        quote_via=quote,
     )
-    res.url = request_url + sensitive_request_qs
+    res.url = f'{request_url}?{sensitive_request_qs}'
 
     raise_for_status(res)
     # CCP returns the property name capitalized, username is camel case
