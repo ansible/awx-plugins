@@ -20,5 +20,5 @@ pre-commit==4.0.1
     # via -r dependencies/direct/pre-commit.in
 pyyaml==6.0.2
     # via pre-commit
-virtualenv==20.26.6
+virtualenv==20.27.0
     # via pre-commit
