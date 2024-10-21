@@ -188,7 +188,10 @@ def test_aim_sensitive_traceback_masked(
         'AppId=****&Query=****&QueryFormat=test&reason=****'
     )
 
-    with pytest.raises(requests.exceptions.HTTPError, match=expected_url_in_exc) as e:
+    with pytest.raises(
+        requests.exceptions.HTTPError,
+        match=expected_url_in_exc,
+    ) as e:
         aim.aim_backend(
             url='http://testurl.com',
             app_id='foobar123',
@@ -198,5 +201,5 @@ def test_aim_sensitive_traceback_masked(
             verify=True,
         )
 
-    assert e._excinfo[1].response.url == expected_response_url_literal
+    assert e.value.response.url == expected_response_url_literal
     assert 'foobar123' not in str(e)
