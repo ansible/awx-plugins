@@ -167,7 +167,10 @@ class TestDelineaImports:
             assert cls.__module__ == 'delinea.secrets.server'
 
 
-def test_aim_sensitive_traceback_masked(mocker: MockerFixture, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_aim_sensitive_traceback_masked(
+        mocker: MockerFixture,
+        monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Ensure that the sensitive information is not leaked in the traceback."""
     my_response = requests.Response()
     my_response.status_code = 404
