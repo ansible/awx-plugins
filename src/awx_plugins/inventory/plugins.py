@@ -89,15 +89,19 @@ class PluginFileInjector:
             private_data_files,
     ):  # noqa: DAR101, DAR201; FIXME
         """By default, we will apply the standard managed injectors."""
-        injected_env = {}
+        if self.base_injector not in {'managed', 'template'}:
+            return {}
+
         credential = inventory_update.get_cloud_credential()
         # some sources may have no credential, specifically ec2
         if credential is None:
-            return injected_env
-        if self.base_injector in ('managed', 'template'):
-            injected_env['INVENTORY_UPDATE_ID'] = str(
+            return {}
+
+        injected_env = {
+            'INVENTORY_UPDATE_ID': str(
                 inventory_update.pk,
-            )  # so injector knows this is inventory
+            ),  # so injector knows this is inventory
+        }
         if self.base_injector == 'managed':
             from awx_plugins.credentials import injectors as builtin_injectors
 
