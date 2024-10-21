@@ -167,13 +167,13 @@ class TestDelineaImports:
             assert cls.__module__ == 'delinea.secrets.server'
 
 
-def test_aim_sensitive_traceback_masked(mocker: MockerFixture) -> None:
+def test_aim_sensitive_traceback_masked(mocker: MockerFixture, monkeypatch: pytest.MonkeyPatch) -> None:
     """Ensure that the sensitive information is not leaked in the traceback."""
     my_response = requests.Response()
     my_response.status_code = 404
     my_response.url = 'not_found'
 
-    aim.requests.get = mocker.Mock(name='aim_request')
+    monkeypatch.setattr(aim.requests, 'get', mocker.Mock(name='aim_request'))
     aim.requests.get.return_value = my_response
 
     expected_url_in_exc = (
