@@ -23,15 +23,15 @@ azure-identity==1.19.0
     # via awx-plugins-core (pyproject.toml)
 azure-keyvault==4.2.0
     # via awx-plugins-core (pyproject.toml)
-azure-keyvault-certificates==4.8.0
+azure-keyvault-certificates==4.9.0
     # via azure-keyvault
-azure-keyvault-keys==4.9.0
+azure-keyvault-keys==4.10.0
     # via azure-keyvault
-azure-keyvault-secrets==4.8.0
+azure-keyvault-secrets==4.9.0
     # via azure-keyvault
-boto3==1.35.39
+boto3==1.35.44
     # via awx-plugins-core (pyproject.toml)
-botocore==1.35.39
+botocore==1.35.44
     # via
     #   boto3
     #   s3transfer
@@ -45,7 +45,7 @@ charset-normalizer==3.4.0
     # via requests
 covdefaults==2.3.0
     # via -r dependencies/direct/py.in
-coverage==7.6.3
+coverage==7.6.4
     # via
     #   -r dependencies/direct/py.in
     #   covdefaults
@@ -53,7 +53,7 @@ coverage==7.6.3
     #   pytest-cov
 coverage-enable-subprocess==1.0
     # via -r dependencies/direct/py.in
-cryptography==43.0.1
+cryptography==43.0.3
     # via
     #   adal
     #   azure-identity
@@ -62,7 +62,7 @@ cryptography==43.0.1
     #   pyjwt
 execnet==2.1.1
     # via pytest-xdist
-hypothesis==6.115.0
+hypothesis==6.115.3
     # via -r dependencies/direct/py.in
 idna==3.10
     # via requests
