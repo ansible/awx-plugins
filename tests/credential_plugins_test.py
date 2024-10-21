@@ -5,7 +5,10 @@ from unittest import mock
 
 import pytest
 
-from awx_plugins.credentials import hashivault
+import requests
+from pytest_mock import MockerFixture
+
+from awx_plugins.credentials import aim, hashivault
 
 
 def test_imported_azure_cloud_sdk_vars() -> None:
