@@ -201,6 +201,7 @@ repos:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
     - pytest
+    - pytest-mock
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
     - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
     - types-PyYAML  # needed by credentials.injectors, inventory.plugins
@@ -231,6 +232,7 @@ repos:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
     - pytest
+    - pytest-mock
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
     - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
     - types-PyYAML  # needed by credentials.injectors, inventory.plugins
@@ -261,6 +263,7 @@ repos:
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
     - pytest
+    - pytest-mock
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
     - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
     - types-PyYAML  # needed by credentials.injectors, inventory.plugins
@@ -294,6 +297,7 @@ repos:
     - msrestazure  # needed by credentials.azure_kv
     - pylint-pytest ~= 2.0.0a0
     - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
+    - pytest-mock  # needed by pylint-pytest since it picks up pytest's args
     - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
     - python-dsv-sdk  # needed by credentials.dsv, credentials.thycotic_dsv
     - PyYAML  # needed by credentials.injectors, inventory.plugins
