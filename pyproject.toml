@@ -84,6 +84,16 @@ thycotic_dsv = "awx_plugins.credentials.dsv:dsv_plugin"
 thycotic_tss = "awx_plugins.credentials.tss:tss_plugin"
 aws_secretsmanager_credential = "awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin"
 
+[project.entry-points."awx_plugins.injector"]
+aws = "awx_plugins.credential.injectors:aws"
+azure_rm = "awx_plugins.credential.injectors:azure_rm"
+ec2 = "awx_plugins.credential.injectors:aws"
+gce = "awx_plugins.credential.injectors:gce"
+kubernetes_bearer_token = "awx_plugins.credential.injectors:kubernetes_bearer_token"
+openstack = "awx_plugins.credential.injectors:openstack"
+terraform = "awx_plugins.credential.injectors:terraform"
+vmware = "awx_plugins.credential.injectors:vmware"
+
 [project.entry-points."awx_plugins.inventory"]  # new entry points group name
 azure-rm = "awx_plugins.inventory.plugins:azure_rm"
 ec2 = "awx_plugins.inventory.plugins:ec2"
