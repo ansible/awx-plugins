@@ -7,7 +7,7 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
     gettext_noop as _,
 )
 
-import requests
+import requests as requests
 
 from .plugin import CertFiles, CredentialPlugin, raise_for_status
 
