@@ -14,4 +14,4 @@
 #                                                                             #
 ###############################################################################
 
-awx_plugins.interfaces @ git+https://github.com/ansible/awx_plugins.interfaces.git
+awx_plugins.interfaces @ git+https://github.com/webknjaz/ansible--awx_plugins.interfaces.git@features/inventory-entry-points

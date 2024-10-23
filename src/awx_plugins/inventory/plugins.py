@@ -8,6 +8,9 @@ import tempfile
 from awx_plugins.interfaces._temporary_private_container_api import (  # noqa: WPS436
     get_incontainer_path,
 )
+from awx_plugins.interfaces._temporary_private_injector_api import (  # noqa: WPS436
+    load_injector_callable,
+)
 
 import yaml
 
@@ -102,15 +105,16 @@ class PluginFileInjector:
                 inventory_update.pk,
             ),  # so injector knows this is inventory
         }
-        if self.base_injector == 'managed':
-            from awx_plugins.credentials import injectors as builtin_injectors
 
-            cred_kind = inventory_update.source.replace('ec2', 'aws')
-            if cred_kind in dir(builtin_injectors):
-                getattr(
-                    builtin_injectors,
-                    cred_kind,
-                )(
+        if self.base_injector == 'managed':
+            try:
+                inject_credential_into_env = load_injector_callable(
+                    inventory_update.source,
+                )
+            except LookupError:
+                pass  # noqa: WPS420
+            else:
+                inject_credential_into_env(
                     credential,
                     injected_env,
                     private_data_dir,
