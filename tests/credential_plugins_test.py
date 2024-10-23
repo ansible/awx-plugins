@@ -176,8 +176,12 @@ def test_aim_sensitive_traceback_masked(
     my_response.status_code = 404
     my_response.url = 'not_found'
 
-    monkeypatch.setattr(aim.requests, 'get', mocker.Mock(name='aim_request'))
-    aim.requests.get.return_value = my_response
+    aim_request_mock = mocker.Mock(
+        autospec=True,
+        name='aim_request',
+        return_value=my_response,
+    )
+    monkeypatch.setattr(aim.requests, 'get', aim_request_mock)
 
     expected_url_in_exc = (
         r'.*http://testurl\.com/AIMWebService/api/Accounts\?'
