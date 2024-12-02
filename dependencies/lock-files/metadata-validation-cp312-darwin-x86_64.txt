@@ -12,15 +12,13 @@ docutils==0.21.2
     # via readme-renderer
 idna==3.10
     # via requests
-importlib-metadata==8.5.0
-    # via twine
 jaraco-classes==3.4.0
     # via keyring
 jaraco-context==6.0.1
     # via keyring
 jaraco-functools==4.1.0
     # via keyring
-keyring==25.4.1
+keyring==25.5.0
     # via twine
 markdown-it-py==3.0.0
     # via rich
@@ -30,11 +28,13 @@ more-itertools==10.5.0
     # via
     #   jaraco-classes
     #   jaraco-functools
-nh3==0.2.18
+nh3==0.2.19
     # via readme-renderer
-packaging==24.1
-    # via setuptools-scm
-pkginfo==1.10.0
+packaging==24.2
+    # via
+    #   setuptools-scm
+    #   twine
+pkginfo==1.12.0
     # via twine
 pygments==2.18.0
     # via
@@ -50,19 +50,17 @@ requests-toolbelt==1.0.0
     # via twine
 rfc3986==2.0.0
     # via twine
-rich==13.9.2
+rich==13.9.4
     # via twine
 setuptools-scm==8.1.0
     # via -r dependencies/direct/metadata-validation.in
-twine==5.1.1
+twine==6.0.1
     # via -r dependencies/direct/metadata-validation.in
 urllib3==2.2.3
     # via
     #   requests
     #   twine
-zipp==3.20.2
-    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==75.2.0
+setuptools==75.6.0
     # via setuptools-scm
