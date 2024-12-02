@@ -15,3 +15,4 @@
 ###############################################################################
 
 awx_plugins.interfaces @ git+https://github.com/ansible/awx_plugins.interfaces.git
+sphinx-autodoc-typehints @ git+https://github.com/tox-dev/sphinx-autodoc-typehints.git@6c151583fb898731ebdb10bd6c36c2731fdd6180 # Workaround for docutils 0.21.2 while waiting for the fix to land in sphinx-autodoc-typehints 2.5.x release stream https://github.com/tox-dev/sphinx-autodoc-typehints/issues/454
