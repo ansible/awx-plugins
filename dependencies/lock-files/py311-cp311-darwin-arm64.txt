@@ -12,7 +12,7 @@ awx-plugins-interfaces @ git+https://github.com/ansible/awx_plugins.interfaces.g
     # via
     #   -c dependencies/direct/py-constraints.in
     #   awx-plugins-core (pyproject.toml)
-azure-core==1.31.0
+azure-core==1.32.0
     # via
     #   azure-identity
     #   azure-keyvault-certificates
@@ -29,9 +29,9 @@ azure-keyvault-keys==4.10.0
     # via azure-keyvault
 azure-keyvault-secrets==4.9.0
     # via azure-keyvault
-boto3==1.35.44
+boto3==1.35.72
     # via awx-plugins-core (pyproject.toml)
-botocore==1.35.44
+botocore==1.35.72
     # via
     #   boto3
     #   s3transfer
@@ -45,7 +45,7 @@ charset-normalizer==3.4.0
     # via requests
 covdefaults==2.3.0
     # via -r dependencies/direct/py.in
-coverage==7.6.4
+coverage==7.6.8
     # via
     #   -r dependencies/direct/py.in
     #   covdefaults
@@ -53,7 +53,7 @@ coverage==7.6.4
     #   pytest-cov
 coverage-enable-subprocess==1.0
     # via -r dependencies/direct/py.in
-cryptography==43.0.3
+cryptography==44.0.0
     # via
     #   adal
     #   azure-identity
@@ -62,7 +62,7 @@ cryptography==43.0.3
     #   pyjwt
 execnet==2.1.1
     # via pytest-xdist
-hypothesis==6.115.3
+hypothesis==6.122.1
     # via -r dependencies/direct/py.in
 idna==3.10
     # via requests
@@ -78,7 +78,7 @@ jmespath==1.0.1
     # via
     #   boto3
     #   botocore
-msal==1.31.0
+msal==1.31.1
     # via
     #   azure-identity
     #   msal-extensions
@@ -90,7 +90,7 @@ msrestazure==0.6.4.post1
     # via awx-plugins-core (pyproject.toml)
 oauthlib==3.2.2
     # via requests-oauthlib
-packaging==24.1
+packaging==24.2
     # via pytest
 pluggy==1.5.0
     # via pytest
@@ -98,17 +98,17 @@ portalocker==2.10.1
     # via msal-extensions
 pycparser==2.22
     # via cffi
-pyjwt==2.9.0
+pyjwt==2.10.1
     # via
     #   adal
     #   msal
-pytest==8.3.3
+pytest==8.3.4
     # via
     #   -r dependencies/direct/py.in
     #   pytest-cov
     #   pytest-mock
     #   pytest-xdist
-pytest-cov==5.0.0
+pytest-cov==6.0.0
     # via -r dependencies/direct/py.in
 pytest-mock==3.14.0
     # via -r dependencies/direct/py.in
@@ -136,7 +136,7 @@ requests==2.32.3
     #   requests-oauthlib
 requests-oauthlib==2.0.0
     # via msrest
-s3transfer==0.10.3
+s3transfer==0.10.4
     # via boto3
 six==1.16.0
     # via
