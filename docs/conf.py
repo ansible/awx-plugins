@@ -209,8 +209,4 @@ nitpicky = True
 # Ref: https://stackoverflow.com/a/30624034/595220
 nitpick_ignore = [
     # temporarily listed ('role', 'reference') pairs that Sphinx cannot resolve
-    (
-        'py:class',
-        'awx_plugins.interfaces._temporary_private_credential_api.Credential',
-    ),
 ]
