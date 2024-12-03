@@ -25,6 +25,12 @@ def aws(
     env: dict[str, GenericOptionalPrimitiveType],
     private_data_dir: str,
 ) -> None:
+    """Do some AWS things.
+
+    :param cred: AWS Credential data
+    :param env: dict passed in to be filled with environment variables
+    :param private_data_dir: Directory to write aws config files to
+    """
     env['AWS_ACCESS_KEY_ID'] = cred.get_input('username', default='')
     env['AWS_SECRET_ACCESS_KEY'] = cred.get_input('password', default='')
 
