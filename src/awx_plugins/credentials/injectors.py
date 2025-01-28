@@ -225,3 +225,20 @@ def terraform(
         env['GOOGLE_BACKEND_CREDENTIALS'] = get_incontainer_path(
             path, private_data_dir,
         )
+        
+def github_app_injector(
+    cred: Credential,
+    env: EnvVarsType,
+    private_data_dir: str,
+) -> None:
+    env['github_url'] = str(cred.get_input('github_url', default=''))
+    env['app_id'] = str(cred.get_input('app_id', default=''))
+    env['install_id'] = str(cred.get_input('install_id', default=''))
+    env['ssh_key_data'] = str(cred.get_input('ssh_key_data', default=''))
+    env['jwt_expiry'] = str(cred.get_input('jwt_expiry', default=''))
+    env['private_key']= str(
+            cred.get_input(
+                'ssh_key_data',
+                default='',
+            ),
+        ),
