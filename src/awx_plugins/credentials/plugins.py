@@ -7,6 +7,10 @@ from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop,
 )
+from github import Github
+
+# Authentication is defined via github.Auth
+from github import Auth
 
 from .injectors import (
     aws as aws_injector,

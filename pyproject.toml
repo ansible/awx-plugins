@@ -65,7 +65,7 @@ name = "Ansible maintainers and contributors"
 # PLUGIN ACTIVATION GUIDANCE (UX):
 # `pip install awx_plugins.credentials.x`  would auto-activate any plugins the packaged project ships
 
-## Lookups need to be in this list to load correctly.
+# Lookups need to be in this list to load correctly.
 [project.entry-points."awx_plugins.credentials"]  # new entry points group name
 conjur = "awx_plugins.credentials.conjur:conjur_plugin"
 hashivault_kv = "awx_plugins.credentials.hashivault:hashivault_kv_plugin"
@@ -88,6 +88,7 @@ kubernetes_bearer_token = "awx_plugins.credentials.plugins:kubernetes_bearer_tok
 registry = "awx_plugins.credentials.plugins:registry"
 galaxy_api_token = "awx_plugins.credentials.plugins:galaxy_api_token"
 net = "awx_plugins.credentials.plugins:net"
+
 
 [project.entry-points."awx_plugins.managed_credentials.supported"]  # new entry points group name
 aws = "awx_plugins.credentials.plugins:aws"
@@ -146,7 +147,7 @@ credentials-conjur = [
 ]
 credentials-github-app-kv = [
   "awx_plugins.interfaces",
-  "PyGithub",
+  "Github",
 ]
 credentials-hashivault-kv = [
   "awx_plugins.interfaces",
