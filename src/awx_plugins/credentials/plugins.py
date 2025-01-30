@@ -557,6 +557,7 @@ github_app_inputs={
             'from https://github.com/settings/apps/arestlel-github-app-ansible'
             'required for creating a bearer token for authentication',
         ),
+        'default': '1121547',
     },
     {
         'id': 'install_id',
@@ -568,6 +569,7 @@ github_app_inputs={
             'extracted from the installation link: https://github.com/settings/installations/59980338 '
             'required for creating a limited github app token'
         ),
+        'default': '59980338',
     },                      
     {
         'id': 'ssh_key_data',
@@ -624,10 +626,10 @@ def github_app_backend(**kwargs):
 
     return auth.token
 
-# github_app_lookup = CredentialPlugin(
-#     "GitHub App Lookup", 
-#     inputs=github_app_inputs, 
-#     backend=github_app_backend)
+github_app_lookup = CredentialPlugin(
+    "GitHub App Lookup", 
+    inputs=github_app_inputs, 
+    backend=github_app_backend)
 
 gitlab_token = ManagedCredentialType(
     namespace='gitlab_token',

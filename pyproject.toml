@@ -64,6 +64,8 @@ name = "Ansible maintainers and contributors"
 #
 # PLUGIN ACTIVATION GUIDANCE (UX):
 # `pip install awx_plugins.credentials.x`  would auto-activate any plugins the packaged project ships
+
+## Lookups need to be in this list to load correctly.
 [project.entry-points."awx_plugins.credentials"]  # new entry points group name
 conjur = "awx_plugins.credentials.conjur:conjur_plugin"
 hashivault_kv = "awx_plugins.credentials.hashivault:hashivault_kv_plugin"
@@ -74,6 +76,8 @@ centrify_vault_kv = "awx_plugins.credentials.centrify_vault:centrify_plugin"
 thycotic_dsv = "awx_plugins.credentials.dsv:dsv_plugin"
 thycotic_tss = "awx_plugins.credentials.tss:tss_plugin"
 aws_secretsmanager_credential = "awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin"
+github_app_lookup = "awx_plugins.credentials.plugins:github_app_lookup"
+
 
 [project.entry-points."awx_plugins.managed_credentials"] # new entry points group name
 ssh = "awx_plugins.credentials.plugins:ssh"
@@ -95,7 +99,7 @@ gce = "awx_plugins.credentials.plugins:gce"
 azure_rm = "awx_plugins.credentials.plugins:azure_rm"
 github_token = "awx_plugins.credentials.plugins:github_token"
 github_app_token = "awx_plugins.credentials.plugins:github_app_token"
-github_app_lookup = "awx_plugins.credentials.aim:github_app_lookup"
+
 gitlab_token = "awx_plugins.credentials.plugins:gitlab_token"
 insights = "awx_plugins.credentials.plugins:insights"
 rhv = "awx_plugins.credentials.plugins:rhv"

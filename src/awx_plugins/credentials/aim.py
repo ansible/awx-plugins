@@ -151,8 +151,3 @@ aim_plugin = CredentialPlugin(
     inputs=aim_inputs,
     backend=aim_backend,
 )
-
-github_app_lookup = CredentialPlugin(
-    "GitHub App Lookup", 
-    inputs=aim_inputs, 
-    backend=aim_backend)
