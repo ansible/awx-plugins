@@ -8,6 +8,7 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
     gettext_noop,
 )
 from github import Github
+from urllib.parse import urlparse
 
 # Authentication is defined via github.Auth
 from github import Auth
@@ -619,10 +620,27 @@ def github_app_backend(**kwargs):
         missing_parameters.append("Private Key")
     if missing_parameters:
         raise Exception.MissingParameterError(missing_parameters)
+    
+    # verify the installation id andn the app id are integers
+    try:
+        app_id = int(app_id)
+        installation_id = int(installation_id)
+    except ValueError:
+        raise Exception.InvalidParameterError("App ID and Installation ID must be integers")
+    
+    try:
+        jwt_expiry = int(jwt_expiry)
+    except ValueError:
+        raise Exception.InvalidParameterError("JWT Expiry must be an integer")
+    
+    try:
+        github_url = str(github_url)
+        # make sure it parses as a URL
+        parsed_url = urlparse(github_url)
+    except ValueError:
+        raise Exception.InvalidParameterError("GitHub URL must be a string")
 
-    auth = Auth.AppAuth(app_id=app_id, private_key=private_key, jwt_expiry=jwt_expiry).get_installation_auth(
-        installation_id=installation_id
-    )
+    auth = Auth.AppAuth(app_id, private_key).get_installation_auth(installation_id, None)
 
     # In order to generate a token we have to make an initial call
     # to GitHub even though we dont need to interact with GitHub.
