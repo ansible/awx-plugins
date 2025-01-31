@@ -7,11 +7,8 @@ from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop,
 )
-from github import Github
+from github import Github, Auth
 from urllib.parse import urlparse
-
-# Authentication is defined via github.Auth
-from github import Auth
 
 from .injectors import (
     aws as aws_injector,
@@ -605,9 +602,9 @@ github_app_token = ManagedCredentialType(
 def github_app_backend(**kwargs):
     github_url = kwargs.get("github_url")
     app_id = kwargs.get("app_id")
-    installation_id = int(kwargs.get("install_id"))
+    installation_id = kwargs.get("install_id")
     private_key = kwargs.get("ssh_key_data")
-    jwt_expiry = int(kwargs.get("jwt_expiry", 600))
+    jwt_expiry = kwargs.get("jwt_expiry", 600)
 
     missing_parameters = []
     if not github_url:
@@ -619,19 +616,19 @@ def github_app_backend(**kwargs):
     if not private_key:
         missing_parameters.append("Private Key")
     if missing_parameters:
-        raise Exception.MissingParameterError(missing_parameters)
+        raise Exception (f"Missing Parameter: {missing_parameters}")
     
     # verify the installation id andn the app id are integers
     try:
         app_id = int(app_id)
         installation_id = int(installation_id)
     except ValueError:
-        raise Exception.InvalidParameterError("App ID and Installation ID must be integers")
+        raise Exception("App ID and Installation ID must be integers")
     
     try:
         jwt_expiry = int(jwt_expiry)
     except ValueError:
-        raise Exception.InvalidParameterError("JWT Expiry must be an integer")
+        raise Exception("JWT Expiry must be an integer")
     
     try:
         github_url = str(github_url)
