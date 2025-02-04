@@ -76,7 +76,7 @@ centrify_vault_kv = "awx_plugins.credentials.centrify_vault:centrify_plugin"
 thycotic_dsv = "awx_plugins.credentials.dsv:dsv_plugin"
 thycotic_tss = "awx_plugins.credentials.tss:tss_plugin"
 aws_secretsmanager_credential = "awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin"
-github_app_lookup = "awx_plugins.credentials.plugins:github_app_lookup"
+github_app_lookup = "awx_plugins.credentials.github_app:github_app_lookup"
 
 
 [project.entry-points."awx_plugins.managed_credentials"] # new entry points group name
@@ -99,7 +99,7 @@ bitbucket_dc_token = "awx_plugins.credentials.plugins:bitbucket_dc_token"
 gce = "awx_plugins.credentials.plugins:gce"
 azure_rm = "awx_plugins.credentials.plugins:azure_rm"
 github_token = "awx_plugins.credentials.plugins:github_token"
-github_app_token = "awx_plugins.credentials.plugins:github_app_token"
+github_app_token = "awx_plugins.credentials.github_app:github_app_token"
 
 gitlab_token = "awx_plugins.credentials.plugins:gitlab_token"
 insights = "awx_plugins.credentials.plugins:insights"
