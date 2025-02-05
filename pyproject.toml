@@ -149,6 +149,11 @@ credentials-plugins = [
   "awx_plugins.interfaces",
   "PyGithub",
 ]
+credentials-plugins-test = [
+  "awx_plugins",
+  "awx_plugins.interfaces",
+  "PyGithub",
+]
 credentials-hashivault-kv = [
   "awx_plugins.interfaces",
   "requests",
