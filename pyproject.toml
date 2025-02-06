@@ -100,7 +100,6 @@ gce = "awx_plugins.credentials.plugins:gce"
 azure_rm = "awx_plugins.credentials.plugins:azure_rm"
 github_token = "awx_plugins.credentials.plugins:github_token"
 github_app_token = "awx_plugins.credentials.github_app:github_app_token"
-
 gitlab_token = "awx_plugins.credentials.plugins:gitlab_token"
 insights = "awx_plugins.credentials.plugins:insights"
 rhv = "awx_plugins.credentials.plugins:rhv"
@@ -145,6 +144,7 @@ credentials-conjur = [
   "awx_plugins.interfaces",
   "requests",
 ]
+
 credentials-hashivault-kv = [
   "awx_plugins.interfaces",
   "requests",

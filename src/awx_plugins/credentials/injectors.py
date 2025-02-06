@@ -232,14 +232,42 @@ def github_app_injector(
     env: EnvVarsType,
     private_data_dir: str,
 ) -> None:
-    env['github_url'] = str(cred.get_input('github_url', default='https://github.com'))
+    """Injects GitHub App credential details into the provided environment
+    dictionary.
+
+    This function extracts required credential values from a `Credential` object
+    and populates them into the `env` dictionary for use in authentication
+    processes. It ensures required parameters such as GitHub URL, App ID,
+    Installation ID, and private key are available for further authentication.
+
+    Args:
+        cred (Credential): The credential object containing GitHub App authentication details.
+        env (EnvVarsType): A dictionary where extracted credential values will be injected.
+        private_data_dir (str): Path to the private data directory (not used in this function).
+
+    Environment Variables Set:
+        - `github_url`: The GitHub instance URL (default: "https://github.com").
+        - `app_id`: The GitHub App ID (string).
+        - `install_id`: The installation ID for the GitHub App.
+        - `ssh_key_data`: The private key data associated with the GitHub App.
+        - `jwt_expiry`: JWT expiration time in seconds (default: "600").
+        - `private_key`: Duplicate of `ssh_key_data`, ensuring compatibility.
+
+    Usage Example (Bash Script):
+        Can be used with the github api to create a temporary token.
+        See https://docs.github.com/en/apps/creating-github-apps
+
+    Returns:
+        None: Modifies the `env` dictionary in place.
+    """
+    env['github_url'] = str(
+        cred.get_input(
+            'github_url',
+            default='https://github.com',
+        ),
+    )
     env['app_id'] = str(cred.get_input('app_id', default=''))
     env['install_id'] = str(cred.get_input('install_id', default=''))
     env['ssh_key_data'] = str(cred.get_input('ssh_key_data', default=''))
     env['jwt_expiry'] = str(cred.get_input('jwt_expiry', default='600'))
-    env['private_key'] = str(
-        cred.get_input(
-            'ssh_key_data',
-            default='',
-        ),
-    )
+    env['private_key'] = str(cred.get_input('ssh_key_data', default=''))
