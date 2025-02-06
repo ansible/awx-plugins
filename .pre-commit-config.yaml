@@ -201,6 +201,7 @@ repos:
     - hypothesis
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
+    - PyGithub  # needed by credentials.github_app
     - pytest
     - pytest-mock
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
@@ -232,6 +233,7 @@ repos:
     - hypothesis
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
+    - PyGithub  # needed by credentials.github_app
     - pytest
     - pytest-mock
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
@@ -263,6 +265,7 @@ repos:
     - hypothesis
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
+    - PyGithub  # needed by credentials.github_app
     - pytest
     - pytest-mock
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
@@ -296,6 +299,7 @@ repos:
     - covdefaults  # needed by pylint-pytest due to pytest-cov loading coverage
     - hypothesis  # needed by pylint-pytest due to pytest-cov loading coverage
     - msrestazure  # needed by credentials.azure_kv
+    - PyGithub  # needed by credentials.github_app
     - pylint-pytest ~= 2.0.0a0
     - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
     - pytest-mock  # needed by pylint-pytest since it picks up pytest's args
@@ -303,5 +307,6 @@ repos:
     - python-dsv-sdk  # needed by credentials.dsv, credentials.thycotic_dsv
     - PyYAML  # needed by credentials.injectors, inventory.plugins
     - Sphinx  # needed by the Sphinx extension stub
+
 
 ...

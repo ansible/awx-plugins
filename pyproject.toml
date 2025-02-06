@@ -145,15 +145,6 @@ credentials-conjur = [
   "awx_plugins.interfaces",
   "requests",
 ]
-credentials-plugins = [
-  "awx_plugins.interfaces",
-  "PyGithub",
-]
-credentials-plugins-test = [
-  "awx_plugins",
-  "awx_plugins.interfaces",
-  "PyGithub",
-]
 credentials-hashivault-kv = [
   "awx_plugins.interfaces",
   "requests",
