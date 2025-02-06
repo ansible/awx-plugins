@@ -9,7 +9,7 @@ import requests
 from github import Auth
 from pytest_mock import MockerFixture
 
-from awx_plugins.credentials import aim, hashivault
+from awx_plugins.credentials import aim, github_app, hashivault
 
 
 def test_imported_azure_cloud_sdk_vars() -> None:
@@ -228,3 +228,5 @@ def test_aim_sensitive_traceback_masked(
 
     assert e.value.response.url == expected_response_url_literal
     assert 'foobar123' not in str(e)
+    
+    

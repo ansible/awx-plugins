@@ -1,13 +1,16 @@
 import pytest
 from unittest import mock
 from awx_plugins.credentials import github_app
+from github import Auth
+
+JWT_EXPIRY_DEFAULT = 600
 
 def test_github_app_missing_parameters() -> None:
     """Test that missing parameters raise an exception."""
-    with pytest.raises(Exception, match='Missing Parameter'):
+    with pytest.raises(ValueError, match=r'Missing Parameter: \[.*\]'):
         github_app.github_app_backend()
 
-    with pytest.raises(Exception, match=r"Missing Parameter: \['GitHub URL'\]"):
+    with pytest.raises(ValueError, match=r"Missing Parameter: \['GitHub URL'\]"):
         github_app.github_app_backend(
             app_id='123', install_id='456', ssh_key_data='key',
         )
@@ -15,7 +18,7 @@ def test_github_app_missing_parameters() -> None:
 
 def test_github_app_invalid_app_id_and_install_id() -> None:
     """Test that non-integer app_id and install_id raise an exception."""
-    with pytest.raises(Exception, match='App and Installation ID not integers'):
+    with pytest.raises(ValueError, match=r'App ID and Installation ID must be integers .*invalid literal for int\(\) with base 10: .*'):
         github_app.github_app_backend(
             github_url='https://github.com',
             app_id='invalid',
@@ -26,7 +29,8 @@ def test_github_app_invalid_app_id_and_install_id() -> None:
 
 def test_github_app_invalid_jwt_expiry() -> None:
     """Test that non-integer JWT expiry raises an exception."""
-    with pytest.raises(Exception, match='JWT Expiry must be an integer'):
+    with pytest.raises(ValueError, match=r'JWT Expiry must be an integer invalid'):
+
         github_app.github_app_backend(
             github_url='https://github.com',
             app_id='123',
@@ -35,13 +39,18 @@ def test_github_app_invalid_jwt_expiry() -> None:
             jwt_expiry='invalid',
         )
 
-
 def test_github_app_github_authentication() -> None:
     """Test successful GitHub authentication."""
-    mock_auth = mock.MagicMock()
-    mock_auth.get_installation_auth.return_value.token = 'example-token'
+    
+    # Mock the AppInstallationAuth to be returned
+    mock_auth_instance = mock.MagicMock(spec=Auth.AppInstallationAuth)
+    mock_auth_instance.token = 'example-token'
+    
+    # Mock AppAuth and get_installation_auth() to return our mock instance
+    mock_app_auth = mock.MagicMock(spec=Auth.AppAuth)
+    mock_app_auth.get_installation_auth.return_value = mock_auth_instance
 
-    with mock.patch.object(Auth, 'AppAuth', return_value=mock_auth):
+    with mock.patch.object(Auth, 'AppAuth', return_value=mock_app_auth):
         token = github_app.github_app_backend(
             github_url='https://github.com',
             app_id='123',

@@ -121,7 +121,7 @@ def github_app_backend(**kwargs) -> str:
     if not private_key:
         missing_parameters.append('Private Key')
     if missing_parameters:
-        raise Exception(f'Missing Parameter: {missing_parameters}')
+        raise ValueError(f'Missing Parameter: {missing_parameters}')
 
     # verify the installation id andn the app id are integers
     try:
@@ -132,8 +132,8 @@ def github_app_backend(**kwargs) -> str:
 
     try:
         jwt_expiry = int(jwt_expiry)
-    except ValueError:
-        raise Exception('JWT Expiry must be an integer')
+    except ValueError as val_err:
+        raise ValueError(f'JWT Expiry must be an integer {jwt_expiry}') from val_err
 
     auth = Auth.AppAuth(
         app_id, private_key, jwt_expiry=jwt_expiry,
