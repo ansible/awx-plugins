@@ -9,7 +9,7 @@ Functions:
 - ``github_app_lookup``: Defines the credential plugin interface.
 """
 
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
     ManagedCredentialType,
@@ -23,20 +23,20 @@ from github import Auth, Github
 from .plugin import CredentialPlugin
 
 
-class FieldDict(TypedDict, total=False):
+class FieldDict(TypedDict):
     id: str
     label: str
     type: str
-    format: str  # Optional field
-    secret: bool  # Optional field
-    multiline: bool  # Optional field
+    format: NotRequired[str]
+    secret: NotRequired[bool]
+    multiline: NotRequired[bool]
     help_text: str
     default: str
 
 
-class MetadataDict(TypedDict, total=False):
+class MetadataDict(TypedDict):
     id: str
-    label: str
+    label: NotRequired[str]
     type: str
     help_text: str
 
