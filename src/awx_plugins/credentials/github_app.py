@@ -69,7 +69,6 @@ github_app_inputs: GitHubAppInputs = {
                 'from https://github.com/settings/apps/arestlel-github-app-ansible '
                 'required for creating a JWT token for authentication',
             ),
-            'default': '1121547',
         },
         {
             'id': 'install_id',
@@ -81,7 +80,6 @@ github_app_inputs: GitHubAppInputs = {
                 'extracted from the installation link: https://github.com/settings/installations/59980338 '
                 'required for creating a limited GitHub app token',
             ),
-            'default': '59980338',
         },
         {
             'id': 'private_rsa_key',
