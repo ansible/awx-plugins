@@ -19,7 +19,6 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 
 from github import Auth, Github
 
-from .injectors import github_app_injector
 from .plugin import CredentialPlugin
 
 
@@ -104,16 +103,6 @@ github_app_inputs: GitHubAppInputs = {
     ],
     'required': ['app_id', 'install_id', 'private_rsa_key'],
 }
-
-github_app_token = ManagedCredentialType(  # type: ignore[misc]
-    namespace='github_app_token',
-    kind='scm',
-    name=_('GitHub App Token'),  # type: ignore[misc]
-    managed=True,
-    inputs=github_app_inputs,
-    custom_injectors=github_app_injector,
-)
-
 
 class GitHubAppBackendArgs(TypedDict, total=False):
     github_url: str
