@@ -87,7 +87,7 @@ github_app_inputs: GitHubAppInputs = {
             'id': 'private_rsa_key',
             'label': _('RSA Private Key'),
             'type': 'string',
-            'format': 'ssh_private_key',
+            'format': 'ssh_private_key',  # this validator checks for formats close to PKCS#1 PEMs
             'secret': True,
             'multiline': True,
             'help_text': _(
