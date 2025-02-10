@@ -4,6 +4,7 @@ This module defines a credential plugin for GitHub Apps, allowing
 authentication via GitHub App tokens.
 
 Functions:
+
 - ``github_app_backend``: Generates a GitHub App token fields from GitHub Admin.
 - ``github_app_lookup``: Defines the credential plugin interface.
 """
@@ -116,18 +117,22 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
     """Generate an authentication token for a GitHub App using provided
     credentials.
 
-    Args:
-        github_url (str): The GitHub instance URL.
-        app_id (str): The GitHub App ID.
-        install_id (str): The installation ID for the GitHub App.
-        private_rsa_key (str): The private key associated with the GitHub App.
-        jwt_expiry (int, optional): JWT expiration time in seconds (default: 600).
+    :param github_url: The GitHub instance API URL.
+    :type github_url: str
 
-    Returns:
-        str: A GitHub App authentication token.
+    :param app_id: The GitHub App ID.
+    :type app_id: str
 
-    Raises:
-        ValueError: If any required parameters are missing or invalid.
+    :param private_rsa_key: The private key associated with the GitHub App.
+    :type private_rsa_key: str
+
+    :param jwt_expiry: JWT expiration time in seconds (default: 600).
+    :type jwt_expiry: int | None
+
+    :returns: A GitHub App authentication token.
+    :rtype: str
+
+    :raises ValueError: If any required parameters are missing or invalid.
     """
 
     # because the calling functions are not linted, avoid type checking
