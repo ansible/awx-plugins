@@ -78,7 +78,6 @@ thycotic_tss = "awx_plugins.credentials.tss:tss_plugin"
 aws_secretsmanager_credential = "awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin"
 github_app_lookup = "awx_plugins.credentials.github_app:github_app_lookup"
 
-
 [project.entry-points."awx_plugins.managed_credentials"] # new entry points group name
 ssh = "awx_plugins.credentials.plugins:ssh"
 scm = "awx_plugins.credentials.plugins:scm"
@@ -88,7 +87,6 @@ kubernetes_bearer_token = "awx_plugins.credentials.plugins:kubernetes_bearer_tok
 registry = "awx_plugins.credentials.plugins:registry"
 galaxy_api_token = "awx_plugins.credentials.plugins:galaxy_api_token"
 net = "awx_plugins.credentials.plugins:net"
-
 
 [project.entry-points."awx_plugins.managed_credentials.supported"]  # new entry points group name
 aws = "awx_plugins.credentials.plugins:aws"
@@ -105,7 +103,6 @@ insights = "awx_plugins.credentials.plugins:insights"
 rhv = "awx_plugins.credentials.plugins:rhv"
 gpg_public_key = "awx_plugins.credentials.plugins:gpg_public_key"
 terraform = "awx_plugins.credentials.plugins:terraform"
-
 
 [project.entry-points."awx_plugins.inventory"]  # new entry points group name
 azure_rm = "awx_plugins.inventory.plugins:azure_rm"
@@ -144,7 +141,6 @@ credentials-conjur = [
   "awx_plugins.interfaces",
   "requests",
 ]
-
 credentials-hashivault-kv = [
   "awx_plugins.interfaces",
   "requests",

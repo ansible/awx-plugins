@@ -308,5 +308,4 @@ repos:
     - PyYAML  # needed by credentials.injectors, inventory.plugins
     - Sphinx  # needed by the Sphinx extension stub
 
-
 ...
