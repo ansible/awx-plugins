@@ -11,39 +11,53 @@ from awx_plugins.credentials.github_app import github_app_backend
 JWT_EXPIRY_DEFAULT = 600
 
 
-def test_github_app_missing_parameters() -> None:
+@pytest.mark.parametrize(
+    ('github_app_backend_args', 'missing_args_regex'),
+    (
+        (
+            {},
+            '.*',
+        ),
+        (
+            {'app_id': '123', 'install_id': '456', 'private_rsa_key': 'key'},
+            "'GitHub URL'",
+        ),
+    ),
+    ids=('no-args', 'no-gh-url'),
+)
+def test_github_app_insufficient_args(
+    github_app_backend_args: dict[str, str],
+    missing_args_regex: str,
+) -> None:
     """Test that missing parameters raise an exception."""
-    with pytest.raises(ValueError, match=r'Missing Parameter: \[.*\]'):
-        github_app_backend()
-
-    with pytest.raises(ValueError, match=r"Missing Parameter: \['GitHub URL'\]"):
-        github_app_backend(
-            # type: ignore[arg-type]
-            app_id='123', install_id='456', private_rsa_key='key',
-        )
+    with pytest.raises(ValueError, match=fr'Missing Parameter: \[{missing_args_regex}\]'):
+        github_app_backend(**github_app_backend_args)
 
 
-def test_github_app_invalid_app_id_and_install_id() -> None:
-    """Test that non-integer app_id and install_id raise an exception."""
-    with pytest.raises(ValueError, match=r'App ID and Installation ID must be integers .*invalid literal for int\(\) with base 10: .*'):
+@pytest.mark.parametrize(
+    ('github_app_backend_args', 'expected_error_msg'),
+    (
+        (
+            {'app_id': 'invalid', 'install_id': 'invalid'},
+            r'App ID and Installation ID must be integers .*invalid literal for int\(\) with base 10: .*',
+        ),
+        (
+            {'app_id': '123', 'install_id': '456', 'jwt_expiry': 'invalid'},
+            r'JWT Expiry must be an integer invalid',
+        ),
+    ),
+    ids=('app-n-install-ids', 'jwt'),
+)
+def test_github_app_invalid_args(
+    github_app_backend_args: dict[str, str],
+    expected_error_msg: str,
+) -> None:
+    """Test that invalid arguments make ``github_app_backend`` bail early."""
+    with pytest.raises(ValueError, match=expected_error_msg):
         github_app_backend(
             github_url='https://api.github.com',  # type: ignore[arg-type]
-            app_id='invalid',  # type: ignore[arg-type]
-            install_id='invalid',  # type: ignore[arg-type]
             private_rsa_key='key',  # type: ignore[arg-type]
-        )
-
-
-def test_github_app_invalid_jwt_expiry() -> None:
-    """Test that non-integer JWT expiry raises an exception."""
-    with pytest.raises(ValueError, match=r'JWT Expiry must be an integer invalid'):
-
-        github_app_backend(
-            github_url='https://api.github.com',  # type: ignore[arg-type]
-            app_id='123',  # type: ignore[arg-type]
-            install_id='456',  # type: ignore[arg-type]
-            private_rsa_key='key',  # type: ignore[arg-type]
-            jwt_expiry='invalid',  # type: ignore[arg-type]
+            **github_app_backend_args,
         )
 
 
