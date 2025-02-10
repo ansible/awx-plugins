@@ -46,7 +46,7 @@ def test_github_app_invalid_args(
     """Test that invalid arguments make ``github_app_backend`` bail early."""
     with pytest.raises(ValueError, match=expected_error_msg):
         github_app_backend(
-            github_url='https://api.github.com',  # type: ignore[arg-type]
+            github_api_url='https://api.github.com',  # type: ignore[arg-type]
             private_rsa_key='key',  # type: ignore[arg-type]
             **github_app_backend_args,
         )
@@ -66,7 +66,7 @@ def test_github_app_github_authentication(mocker: MockerFixture) -> None:
     mocker.patch.object(Auth, 'AppAuth', return_value=mock_app_auth)
 
     args = {
-        'github_url': 'https://api.github.com',
+        'github_api_url': 'https://api.github.com',
         'app_id': '123',
         'install_id': '456',
         'private_rsa_key': 'example-key',

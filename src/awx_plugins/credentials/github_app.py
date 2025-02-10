@@ -50,8 +50,8 @@ class GitHubAppInputs(TypedDict):
 github_app_inputs: GitHubAppInputs = {
     'fields': [
         {
-            'id': 'github_url',
-            'label': _('GitHub URL'),
+            'id': 'github_api_url',
+            'label': _('GitHub API endpoint URL'),
             'type': 'string',
             'help_text': _(
                 'Specify the GitHub URL here in the case of an Enterprise Github. '
@@ -106,7 +106,7 @@ github_app_inputs: GitHubAppInputs = {
 }
 
 class GitHubAppBackendArgs(TypedDict, total=False):
-    github_url: str
+    github_api_url: str
     app_id: str | int
     install_id: str | int
     private_rsa_key: str
@@ -116,8 +116,8 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
     """Generate an authentication token for a GitHub App using provided
     credentials.
 
-    :param github_url: The GitHub instance API URL.
-    :type github_url: str
+    :param github_api_url: The GitHub instance API URL.
+    :type github_api_url: str
 
     :param app_id: The GitHub App ID.
     :type app_id: str
@@ -132,8 +132,8 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
     """
 
     # because the calling functions are not linted, avoid type checking
-    github_url: str | None = kwargs.get(
-        'github_url')  # type: ignore[assignment]
+    github_api_url: str | None = kwargs.get(
+        'github_api_url')  # type: ignore[assignment]
     app_id: str | None = kwargs.get('app_id')  # type: ignore[assignment]
     install_id: str | None = kwargs.get(
         'install_id')  # type: ignore[assignment]
@@ -141,7 +141,7 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
         'private_rsa_key')  # type: ignore[assignment]
 
     missing_parameters: list[str] = []
-    if not github_url:
+    if not github_api_url:
         missing_parameters.append('GitHub URL')
     if not install_id:
         missing_parameters.append('Installation ID')
@@ -169,7 +169,7 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
 
     Github(  # Generate a GitHub App authentication token
         auth=auth,
-        base_url=github_url,
+        base_url=github_api_url,
     )
 
     return auth.token
