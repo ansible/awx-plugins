@@ -27,7 +27,7 @@ def test_github_app_invalid_app_id_and_install_id() -> None:
     """Test that non-integer app_id and install_id raise an exception."""
     with pytest.raises(ValueError, match=r'App ID and Installation ID must be integers .*invalid literal for int\(\) with base 10: .*'):
         github_app_backend(
-            github_url='https://github.com',  # type: ignore[arg-type]
+            github_url='https://api.github.com',  # type: ignore[arg-type]
             app_id='invalid',  # type: ignore[arg-type]
             install_id='invalid',  # type: ignore[arg-type]
             ssh_key_data='key',  # type: ignore[arg-type]
@@ -39,7 +39,7 @@ def test_github_app_invalid_jwt_expiry() -> None:
     with pytest.raises(ValueError, match=r'JWT Expiry must be an integer invalid'):
 
         github_app_backend(
-            github_url='https://github.com',  # type: ignore[arg-type]
+            github_url='https://api.github.com',  # type: ignore[arg-type]
             app_id='123',  # type: ignore[arg-type]
             install_id='456',  # type: ignore[arg-type]
             ssh_key_data='key',  # type: ignore[arg-type]
@@ -61,7 +61,7 @@ def test_github_app_github_authentication() -> None:
     with mock.patch.object(Auth, 'AppAuth', return_value=mock_app_auth):
 
         args = {
-            'github_url': 'https://github.com',
+            'github_url': 'https://api.github.com',
             'app_id': '123',
             'install_id': '456',
             'ssh_key_data': 'example-key',

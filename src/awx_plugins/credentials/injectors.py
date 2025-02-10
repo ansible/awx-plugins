@@ -246,7 +246,7 @@ def github_app_injector(
         private_data_dir (str): Path to the private data directory (not used in this function).
 
     Environment Variables Set:
-        - `github_url`: The GitHub instance URL (default: "https://github.com").
+        - `github_url`: The GitHub instance API URL (default: "https://api.github.com").
         - `app_id`: The GitHub App ID (string).
         - `install_id`: The installation ID for the GitHub App.
         - `ssh_key_data`: The private key data associated with the GitHub App.
