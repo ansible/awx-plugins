@@ -4,8 +4,8 @@ This module defines a credential plugin for GitHub Apps, allowing
 authentication via GitHub App tokens.
 
 Functions:
-- github_app_backend: Generates a GitHub App token fields from GitHub Admin.
-- github_app_lookup: Defines the credential plugin interface.
+- ``github_app_backend``: Generates a GitHub App token fields from GitHub Admin.
+- ``github_app_lookup``: Defines the credential plugin interface.
 """
 # FIXME: ManagedCredentialType type not found.
 
