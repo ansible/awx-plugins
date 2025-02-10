@@ -167,7 +167,10 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
         private_rsa_key,
     ).get_installation_auth(install_id_int, None)
 
-    Github(auth=auth)  # Generate a GitHub App authentication token
+    Github(  # Generate a GitHub App authentication token
+        auth=auth,
+        base_url=github_url,
+    )
 
     return auth.token
 
