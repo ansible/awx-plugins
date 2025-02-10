@@ -19,7 +19,7 @@ def test_github_app_missing_parameters() -> None:
     with pytest.raises(ValueError, match=r"Missing Parameter: \['GitHub URL'\]"):
         github_app_backend(
             # type: ignore[arg-type]
-            app_id='123', install_id='456', ssh_key_data='key',
+            app_id='123', install_id='456', private_rsa_key='key',
         )
 
 

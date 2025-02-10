@@ -161,7 +161,7 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
         missing_parameters.append('Installation ID')
     if not app_id:
         missing_parameters.append('Application ID')
-    if not ssh_key_data:
+    if not private_rsa_key:
         missing_parameters.append('Private Key')
     if missing_parameters:
         raise ValueError(f'Missing Parameter: {missing_parameters}')

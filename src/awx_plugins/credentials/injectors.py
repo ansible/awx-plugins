@@ -268,6 +268,6 @@ def github_app_injector(
     )
     env['app_id'] = str(cred.get_input('app_id', default=''))
     env['install_id'] = str(cred.get_input('install_id', default=''))
-    env['ssh_key_data'] = str(cred.get_input('ssh_key_data', default=''))
+    env['private_rsa_key'] = str(cred.get_input('private_rsa_key', default=''))
     env['jwt_expiry'] = str(cred.get_input('jwt_expiry', default='600'))
     env['private_key'] = str(cred.get_input('private_rsa_key', default=''))
