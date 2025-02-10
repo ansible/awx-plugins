@@ -1,5 +1,5 @@
 # FIXME: the following violations must be addressed gradually and unignored
-# mypy: disable-error-code=no-untyped-call
+# mypy: disable-error-code="no-untyped-call"
 
 from unittest import mock
 

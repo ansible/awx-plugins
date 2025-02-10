@@ -1,5 +1,6 @@
 """Individual ManagedCredentialType plugin tests."""
 # FIXME: ManagedCredentialType type not found.
+# mypy: allow-any-unimported
 import configparser
 import json
 import os
