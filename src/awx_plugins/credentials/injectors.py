@@ -263,7 +263,7 @@ def github_app_injector(
     env['github_url'] = str(
         cred.get_input(
             'github_url',
-            default='https://github.com',
+            default='https://api.github.com',
         ),
     )
     env['app_id'] = str(cred.get_input('app_id', default=''))
