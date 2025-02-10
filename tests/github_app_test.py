@@ -1,7 +1,7 @@
 from typing import cast
-from unittest import mock
 
 import pytest
+from pytest_mock import MockerFixture
 
 from github import Auth
 
@@ -61,26 +61,26 @@ def test_github_app_invalid_args(
         )
 
 
-def test_github_app_github_authentication() -> None:
+def test_github_app_github_authentication(mocker: MockerFixture) -> None:
     """Test successful GitHub authentication."""
 
     # Mock the AppInstallationAuth to be returned
-    mock_auth_instance = mock.MagicMock(spec=Auth.AppInstallationAuth)
+    mock_auth_instance = mocker.MagicMock(spec=Auth.AppInstallationAuth)
     mock_auth_instance.token = 'example-token'
 
     # Mock AppAuth and get_installation_auth() to return our mock instance
-    mock_app_auth = mock.MagicMock(spec=Auth.AppAuth)
+    mock_app_auth = mocker.MagicMock(spec=Auth.AppAuth)
     mock_app_auth.get_installation_auth.return_value = mock_auth_instance
 
-    with mock.patch.object(Auth, 'AppAuth', return_value=mock_app_auth):
+    mocker.patch.object(Auth, 'AppAuth', return_value=mock_app_auth)
 
-        args = {
-            'github_url': 'https://api.github.com',
-            'app_id': '123',
-            'install_id': '456',
-            'private_rsa_key': 'example-key',
-            'jwt_expiry': JWT_EXPIRY_DEFAULT,
-        }
+    args = {
+        'github_url': 'https://api.github.com',
+        'app_id': '123',
+        'install_id': '456',
+        'private_rsa_key': 'example-key',
+        'jwt_expiry': JWT_EXPIRY_DEFAULT,
+    }
 
-        token = github_app_backend(**args)  # type: ignore[arg-type]
-        assert token == 'example-token'
+    token = github_app_backend(**args)  # type: ignore[arg-type]
+    assert token == 'example-token'
