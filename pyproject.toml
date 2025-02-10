@@ -64,8 +64,6 @@ name = "Ansible maintainers and contributors"
 #
 # PLUGIN ACTIVATION GUIDANCE (UX):
 # `pip install awx_plugins.credentials.x`  would auto-activate any plugins the packaged project ships
-
-# Lookups need to be in this list to load correctly.
 [project.entry-points."awx_plugins.credentials"]  # new entry points group name
 conjur = "awx_plugins.credentials.conjur:conjur_plugin"
 hashivault_kv = "awx_plugins.credentials.hashivault:hashivault_kv_plugin"

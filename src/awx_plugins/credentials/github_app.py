@@ -7,7 +7,6 @@ Functions:
 - ``github_app_backend``: Generates a GitHub App token fields from GitHub Admin.
 - ``github_app_lookup``: Defines the credential plugin interface.
 """
-# FIXME: ManagedCredentialType type not found.
 
 from typing import TypedDict
 
@@ -24,7 +23,6 @@ from .injectors import github_app_injector
 from .plugin import CredentialPlugin
 
 
-# Define expected structure for 'fields'
 class FieldDict(TypedDict, total=False):
     id: str
     label: str
@@ -35,16 +33,12 @@ class FieldDict(TypedDict, total=False):
     help_text: str
     default: str
 
-# Define expected structure for 'metadata'
-
 
 class MetadataDict(TypedDict, total=False):
     id: str
     label: str
     type: str
     help_text: str
-
-# Define the full structure of github_app_inputs
 
 
 class GitHubAppInputs(TypedDict):
@@ -53,7 +47,6 @@ class GitHubAppInputs(TypedDict):
     required: list[str]
 
 
-# Explicitly define the type of github_app_inputs
 github_app_inputs: GitHubAppInputs = {
     'fields': [
         {
@@ -116,8 +109,6 @@ github_app_inputs: GitHubAppInputs = {
 
 github_app_token = ManagedCredentialType(  # type: ignore[misc]
     namespace='github_app_token',
-    # scm source control management so it can be used for github
-    # authentication.
     kind='scm',
     name=_('GitHub App Token'),  # type: ignore[misc]
     managed=True,
@@ -196,8 +187,7 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
         app_id_int, str(ssh_key_data), jwt_expiry=jwt_expiry_int,
     ).get_installation_auth(install_id_int, None)
 
-    # Generate a GitHub App authentication token
-    Github(auth=auth)
+    Github(auth=auth)  # Generate a GitHub App authentication token
 
     return auth.token
 
