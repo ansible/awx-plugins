@@ -1,5 +1,3 @@
-from typing import cast
-
 import pytest
 from pytest_mock import MockerFixture
 
