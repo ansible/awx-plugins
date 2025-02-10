@@ -8,7 +8,7 @@ import pytest
 import requests
 from pytest_mock import MockerFixture
 
-from awx_plugins.credentials import aim, github_app, hashivault
+from awx_plugins.credentials import aim, hashivault
 
 
 def test_imported_azure_cloud_sdk_vars() -> None:
