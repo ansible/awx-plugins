@@ -110,7 +110,6 @@ class GitHubAppBackendArgs(TypedDict, total=False):
     app_id: str | int
     install_id: str | int
     private_rsa_key: str
-    jwt_expiry: str | int
 
 
 def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
@@ -126,9 +125,6 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
     :param private_rsa_key: The private key associated with the GitHub App.
     :type private_rsa_key: str
 
-    :param jwt_expiry: JWT expiration time in seconds (default: 600).
-    :type jwt_expiry: int | None
-
     :returns: A GitHub App authentication token.
     :rtype: str
 
@@ -143,8 +139,6 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
         'install_id')  # type: ignore[assignment]
     private_rsa_key: str | None = kwargs.get(
         'private_rsa_key')  # type: ignore[assignment]
-    jwt_expiry: str | None = kwargs.get(
-        'jwt_expiry')  # type: ignore[assignment]
 
     missing_parameters: list[str] = []
     if not github_url:
@@ -168,15 +162,9 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
             f'App ID and Installation ID must be integers {val_err}',
         ) from val_err
 
-    try:
-        jwt_expiry_int: int = int(jwt_expiry or 600)
-    except ValueError as val_err:
-        raise ValueError(
-            f'JWT Expiry must be an integer {jwt_expiry}',
-        ) from val_err
-
     auth = Auth.AppAuth(
-        app_id_int, private_rsa_key, jwt_expiry=jwt_expiry_int,
+        app_id_int,
+        private_rsa_key,
     ).get_installation_auth(install_id_int, None)
 
     Github(auth=auth)  # Generate a GitHub App authentication token

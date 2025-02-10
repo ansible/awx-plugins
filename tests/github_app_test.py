@@ -6,9 +6,6 @@ from github import Auth
 from awx_plugins.credentials.github_app import github_app_backend
 
 
-JWT_EXPIRY_DEFAULT = 600
-
-
 @pytest.mark.parametrize(
     ('github_app_backend_args', 'missing_args_regex'),
     (
@@ -39,12 +36,8 @@ def test_github_app_insufficient_args(
             {'app_id': 'invalid', 'install_id': 'invalid'},
             r'App ID and Installation ID must be integers .*invalid literal for int\(\) with base 10: .*',
         ),
-        (
-            {'app_id': '123', 'install_id': '456', 'jwt_expiry': 'invalid'},
-            r'JWT Expiry must be an integer invalid',
-        ),
     ),
-    ids=('app-n-install-ids', 'jwt'),
+    ids=('app-n-install-ids',),
 )
 def test_github_app_invalid_args(
     github_app_backend_args: dict[str, str],
@@ -77,7 +70,6 @@ def test_github_app_github_authentication(mocker: MockerFixture) -> None:
         'app_id': '123',
         'install_id': '456',
         'private_rsa_key': 'example-key',
-        'jwt_expiry': JWT_EXPIRY_DEFAULT,
     }
 
     token = github_app_backend(**args)  # type: ignore[arg-type]
