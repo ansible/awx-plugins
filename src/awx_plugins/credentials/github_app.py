@@ -84,7 +84,7 @@ github_app_inputs: GitHubAppInputs = {
             'default': '59980338',
         },
         {
-            'id': 'ssh_key_data',
+            'id': 'private_rsa_key',
             'label': _('RSA Private Key'),
             'type': 'string',
             'format': 'ssh_private_key',
@@ -104,7 +104,7 @@ github_app_inputs: GitHubAppInputs = {
             'help_text': _('To be removed after UI is updated'),
         },
     ],
-    'required': ['app_id', 'install_id', 'ssh_key_data'],
+    'required': ['app_id', 'install_id', 'private_rsa_key'],
 }
 
 github_app_token = ManagedCredentialType(  # type: ignore[misc]
@@ -121,7 +121,7 @@ class GitHubAppBackendArgs(TypedDict, total=False):
     github_url: str
     app_id: str | int
     install_id: str | int
-    ssh_key_data: str
+    private_rsa_key: str
     jwt_expiry: str | int
 
 
@@ -133,7 +133,7 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
         github_url (str): The GitHub instance URL.
         app_id (str): The GitHub App ID.
         install_id (str): The installation ID for the GitHub App.
-        ssh_key_data (str): The private key associated with the GitHub App.
+        private_rsa_key (str): The private key associated with the GitHub App.
         jwt_expiry (int, optional): JWT expiration time in seconds (default: 600).
 
     Returns:
@@ -149,8 +149,8 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
     app_id: str | None = kwargs.get('app_id')  # type: ignore[assignment]
     install_id: str | None = kwargs.get(
         'install_id')  # type: ignore[assignment]
-    ssh_key_data: str | None = kwargs.get(
-        'ssh_key_data')  # type: ignore[assignment]
+    private_rsa_key: str | None = kwargs.get(
+        'private_rsa_key')  # type: ignore[assignment]
     jwt_expiry: str | None = kwargs.get(
         'jwt_expiry')  # type: ignore[assignment]
 
@@ -184,7 +184,7 @@ def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
         ) from val_err
 
     auth = Auth.AppAuth(
-        app_id_int, str(ssh_key_data), jwt_expiry=jwt_expiry_int,
+        app_id_int, private_rsa_key, jwt_expiry=jwt_expiry_int,
     ).get_installation_auth(install_id_int, None)
 
     Github(auth=auth)  # Generate a GitHub App authentication token

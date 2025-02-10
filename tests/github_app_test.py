@@ -30,7 +30,7 @@ def test_github_app_invalid_app_id_and_install_id() -> None:
             github_url='https://api.github.com',  # type: ignore[arg-type]
             app_id='invalid',  # type: ignore[arg-type]
             install_id='invalid',  # type: ignore[arg-type]
-            ssh_key_data='key',  # type: ignore[arg-type]
+            private_rsa_key='key',  # type: ignore[arg-type]
         )
 
 
@@ -42,7 +42,7 @@ def test_github_app_invalid_jwt_expiry() -> None:
             github_url='https://api.github.com',  # type: ignore[arg-type]
             app_id='123',  # type: ignore[arg-type]
             install_id='456',  # type: ignore[arg-type]
-            ssh_key_data='key',  # type: ignore[arg-type]
+            private_rsa_key='key',  # type: ignore[arg-type]
             jwt_expiry='invalid',  # type: ignore[arg-type]
         )
 
@@ -64,7 +64,7 @@ def test_github_app_github_authentication() -> None:
             'github_url': 'https://api.github.com',
             'app_id': '123',
             'install_id': '456',
-            'ssh_key_data': 'example-key',
+            'private_rsa_key': 'example-key',
             'jwt_expiry': JWT_EXPIRY_DEFAULT,
         }
 

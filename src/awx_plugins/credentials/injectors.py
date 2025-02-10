@@ -249,9 +249,9 @@ def github_app_injector(
         - `github_url`: The GitHub instance API URL (default: "https://api.github.com").
         - `app_id`: The GitHub App ID (string).
         - `install_id`: The installation ID for the GitHub App.
-        - `ssh_key_data`: The private key data associated with the GitHub App.
+        - `private_rsa_key`: The private key data associated with the GitHub App.
         - `jwt_expiry`: JWT expiration time in seconds (default: "600").
-        - `private_key`: Duplicate of `ssh_key_data`, ensuring compatibility.
+        - `private_key`: Duplicate of `private_rsa_key`, ensuring compatibility.
 
     Usage Example (Bash Script):
         Can be used with the github api to create a temporary token.
@@ -270,4 +270,4 @@ def github_app_injector(
     env['install_id'] = str(cred.get_input('install_id', default=''))
     env['ssh_key_data'] = str(cred.get_input('ssh_key_data', default=''))
     env['jwt_expiry'] = str(cred.get_input('jwt_expiry', default='600'))
-    env['private_key'] = str(cred.get_input('ssh_key_data', default=''))
+    env['private_key'] = str(cred.get_input('private_rsa_key', default=''))
