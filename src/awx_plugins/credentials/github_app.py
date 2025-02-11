@@ -113,11 +113,11 @@ github_app_inputs: GitHubAppInputs = {
 
 
 class EmptyKwargs(TypedDict):
-    """Schema for no keyword args."""
+    """Schema for zero keyword arguments."""
 
 
 class MaybeBaseURLKwarg(TypedDict, total=False):
-    """Schema for optional PyGitHub ``base_url`` keyword arg."""
+    """Schema for optional PyGitHub ``base_url`` keyword argument."""
 
     base_url: str
 
