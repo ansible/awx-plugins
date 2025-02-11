@@ -153,7 +153,7 @@ def extract_github_app_install_token(
 
     extra_gh_args = {'base_url': github_api_url} if github_api_url else {}
     Github(  # Generate a GitHub App authentication token
-        auth=auth,
+        app_auth=auth,
         **extra_gh_args,
     )
 
