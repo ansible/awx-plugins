@@ -3,11 +3,11 @@ from pytest_mock import MockerFixture
 
 from github import Auth
 
-from awx_plugins.credentials.github_app import github_app_backend
+from awx_plugins.credentials.github_app import extract_github_app_install_token
 
 
 @pytest.mark.parametrize(
-    ('github_app_backend_args', 'expected_error_msg'),
+    ('extract_github_app_install_token_args', 'expected_error_msg'),
     (
         (
             {
@@ -32,15 +32,15 @@ from awx_plugins.credentials.github_app import github_app_backend
     ids=('gh-app-id', 'gh-app-install-id'),
 )
 def test_github_app_invalid_args(
-    github_app_backend_args: dict[str, str],
+    extract_github_app_install_token_args: dict[str, str],
     expected_error_msg: str,
 ) -> None:
-    """Test that invalid arguments make ``github_app_backend`` bail early."""
+    """Test that invalid arguments make ``extract_github_app_install_token`` bail early."""
     with pytest.raises(ValueError, match=expected_error_msg):
-        github_app_backend(
+        extract_github_app_install_token(
             github_api_url='https://api.github.com',  # type: ignore[arg-type]
             private_rsa_key='key',  # type: ignore[arg-type]
-            **github_app_backend_args,
+            **extract_github_app_install_token_args,
         )
 
 
@@ -57,7 +57,7 @@ def test_github_app_github_authentication(mocker: MockerFixture) -> None:
 
     mocker.patch.object(Auth, 'AppAuth', return_value=mock_app_auth)
 
-    token = github_app_backend(
+    token = extract_github_app_install_token(
         github_api_url='https://api.github.com',
         app_id='123',
         install_id='456',
