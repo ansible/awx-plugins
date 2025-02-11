@@ -11,18 +11,14 @@ from awx_plugins.credentials.github_app import extract_github_app_install_token
     (
         (
             {
-                'github_api_url': '',
                 'app_id': 'invalid',
-                'private_rsa_key': '',
                 'install_id': '666',
             },
             "^Expected GitHub App ID to be an integer but got 'invalid'$",
         ),
         (
             {
-                'github_api_url': '',
                 'app_id': '666',
-                'private_rsa_key': '',
                 'install_id': 'invalid',
             },
             '^Expected GitHub App Installation ID to be an integer '
