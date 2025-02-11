@@ -65,7 +65,7 @@ github_app_inputs: GitHubAppInputs = {
                 'Specify the GitHub URL here in the case of an Enterprise Github. '
                 'Example: https://gh.your.org/api/v3',
             ),
-            'default': 'https://api.github.com',
+            'default': 'https://github.com',
         },
         {
             'id': 'app_id',

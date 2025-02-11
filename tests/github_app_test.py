@@ -3,11 +3,11 @@
 from typing import TypedDict
 
 import pytest
+
+from github.Auth import AppAuth, AppInstallationAuth
 from pytest_mock import MockerFixture
 
-from github import Auth
-
-from awx_plugins.credentials.github_app import extract_github_app_install_token
+from awx_plugins.credentials import github_app as gh_app_plugin_mod
 
 
 class AppInstallIds(TypedDict):
@@ -44,27 +44,64 @@ def test_github_app_invalid_args(
 ) -> None:
     """Test that invalid arguments make token extractor bail early."""
     with pytest.raises(ValueError, match=expected_error_msg):
-        extract_github_app_install_token(
-            github_api_url='https://api.github.com',
+        gh_app_plugin_mod.extract_github_app_install_token(
+            github_api_url='https://github.com',
             private_rsa_key='key',
             **extract_github_app_install_token_args,
         )
 
 
-def test_github_app_github_authentication(mocker: MockerFixture) -> None:
+class _FakeAppInstallationAuth(AppInstallationAuth):
+    @property
+    def token(self: '_FakeAppInstallationAuth') -> str:
+        return 'token-sentinel'
+
+
+def test_github_app_github_authentication(
+    mocker: MockerFixture,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Test successful GitHub authentication."""
-    mock_auth_instance = mocker.MagicMock(spec=Auth.AppInstallationAuth)
-    mock_auth_instance.token = 'example-token'
+    monkeypatch.setattr(
+        gh_app_plugin_mod.Auth,
+        'AppInstallationAuth',
+        _FakeAppInstallationAuth,
+    )
 
-    mock_app_auth = mocker.MagicMock(spec=Auth.AppAuth)
-    mock_app_auth.get_installation_auth.return_value = mock_auth_instance
+    get_installation_auth_spy = mocker.spy(
+        gh_app_plugin_mod.Auth,
+        'AppInstallationAuth',
+    )
+    github_initializer_spy = mocker.spy(gh_app_plugin_mod, 'Github')
 
-    mocker.patch.object(Auth, 'AppAuth', return_value=mock_app_auth)
-
-    token = extract_github_app_install_token(
-        github_api_url='https://api.github.com',
+    token = gh_app_plugin_mod.extract_github_app_install_token(
+        github_api_url='https://github.com',
         app_id='123',
         install_id='456',
         private_rsa_key='example-key',
     )
-    assert token == 'example-token'
+
+    assert token == 'token-sentinel'
+
+    get_installation_auth_spy.assert_called_once_with(
+        mocker.ANY,
+        456,  # noqa: WPS432
+        None,
+        None,
+    )
+    first_arg_to_get_installation_auth = (
+        get_installation_auth_spy.
+        call_args[0][0]
+    )
+    assert isinstance(first_arg_to_get_installation_auth, AppAuth)
+    assert first_arg_to_get_installation_auth.app_id == 123  # noqa: WPS432
+    assert first_arg_to_get_installation_auth.private_key == 'example-key'
+
+    github_initializer_spy.assert_called_once_with(
+        auth=mocker.ANY,
+        base_url='https://github.com',
+    )
+    assert isinstance(
+        github_initializer_spy.call_args[1]['auth'],
+        _FakeAppInstallationAuth,
+    )
