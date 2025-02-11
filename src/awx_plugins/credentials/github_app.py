@@ -3,6 +3,9 @@
 This module defines a credential plugin for GitHub Apps, allowing
 authentication via GitHub App tokens.
 
+
+.. py:module:: awx_plugins.credentials.github_app
+
 Functions:
 
 - :func:`extract_github_app_install_token`: Generates a GitHub App Installation token.
