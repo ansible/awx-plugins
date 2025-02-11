@@ -113,7 +113,7 @@ class GitHubAppBackendArgs(TypedDict, total=False):
 
 
 def extract_github_app_install_token(*, github_api_url: str, app_id: str, private_rsa_key: str, install_id: str, **_discarded_kwargs: dict[object, object]) -> str:
-    """Generate an authentication token for a GitHub App using provided
+    """Generate a GitHub authentication token from GitHub App Installation
     credentials.
 
     :param github_api_url: The GitHub instance API endpoint URL.
@@ -121,7 +121,7 @@ def extract_github_app_install_token(*, github_api_url: str, app_id: str, privat
     :param private_rsa_key: The private key associated with the GitHub App.
     :param install_id: The GitHub App Installation ID.
 
-    :returns: A GitHub App authentication token.
+    :returns: A GitHub access token for a GitHub App Installation.
 
     :raises ValueError: If any required parameters are missing or invalid.
     """
