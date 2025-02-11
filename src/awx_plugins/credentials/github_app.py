@@ -162,5 +162,5 @@ def extract_github_app_install_token(
 
 github_app_lookup = CredentialPlugin(
     # type: ignore[misc]
-    'GitHub App Lookup', inputs=github_app_inputs, backend=extract_github_app_install_token,
+    'GitHub App Installation Access Token Lookup', inputs=github_app_inputs, backend=extract_github_app_install_token,
 )
