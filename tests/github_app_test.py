@@ -1,9 +1,17 @@
+from typing import TypedDict
+
 import pytest
 from pytest_mock import MockerFixture
 
 from github import Auth
 
 from awx_plugins.credentials.github_app import extract_github_app_install_token
+
+
+class AppInstallIds(TypedDict):
+    """Schema for augmentedextractor function keyword args."""
+    app_id: str
+    install_id: str
 
 
 @pytest.mark.parametrize(
@@ -28,7 +36,7 @@ from awx_plugins.credentials.github_app import extract_github_app_install_token
     ids=('gh-app-id', 'gh-app-install-id'),
 )
 def test_github_app_invalid_args(
-    extract_github_app_install_token_args: dict[str, str],
+    extract_github_app_install_token_args: AppInstallIds,
     expected_error_msg: str,
 ) -> None:
     """Test that invalid arguments make ``extract_github_app_install_token``

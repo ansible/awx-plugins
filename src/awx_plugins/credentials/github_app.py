@@ -106,6 +106,11 @@ github_app_inputs: GitHubAppInputs = {
 }
 
 
+class MaybeBaseURLKwarg(TypedDict, total=False):
+    """Schema for optional PyGitHub ``base_url`` keyword arg."""
+    base_url: str
+
+
 def extract_github_app_install_token(
     *,
     github_api_url: str,
@@ -141,7 +146,9 @@ def extract_github_app_install_token(
         private_key=private_rsa_key,
     ).get_installation_auth(installation_id=int(install_id))
 
-    extra_gh_args = {'base_url': github_api_url} if github_api_url else {}
+    extra_gh_args: MaybeBaseURLKwarg = {
+        'base_url': github_api_url,
+    } if github_api_url else {}
     Github(  # Generate a GitHub App authentication token
         auth=auth,
         **extra_gh_args,
