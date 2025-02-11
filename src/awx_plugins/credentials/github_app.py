@@ -105,6 +105,7 @@ github_app_inputs: GitHubAppInputs = {
     'required': ['app_id', 'install_id', 'private_rsa_key'],
 }
 
+
 class GitHubAppBackendArgs(TypedDict, total=False):
     github_api_url: str
     app_id: str | int
