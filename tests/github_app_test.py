@@ -7,37 +7,29 @@ from awx_plugins.credentials.github_app import github_app_backend
 
 
 @pytest.mark.parametrize(
-    ('github_app_backend_args', 'missing_args_regex'),
-    (
-        (
-            {},
-            '.*',
-        ),
-        (
-            {'app_id': '123', 'install_id': '456', 'private_rsa_key': 'key'},
-            "'GitHub URL'",
-        ),
-    ),
-    ids=('no-args', 'no-gh-url'),
-)
-def test_github_app_insufficient_args(
-    github_app_backend_args: dict[str, str],
-    missing_args_regex: str,
-) -> None:
-    """Test that missing parameters raise an exception."""
-    with pytest.raises(ValueError, match=fr'Missing Parameter: \[{missing_args_regex}\]'):
-        github_app_backend(**github_app_backend_args)
-
-
-@pytest.mark.parametrize(
     ('github_app_backend_args', 'expected_error_msg'),
     (
         (
-            {'app_id': 'invalid', 'install_id': 'invalid'},
-            r'App ID and Installation ID must be integers .*invalid literal for int\(\) with base 10: .*',
+            {
+                'github_api_url': '',
+                'app_id': 'invalid',
+                'private_rsa_key': '',
+                'install_id': '666',
+            },
+            "^Expected GitHub App ID to be an integer but got 'invalid'$",
+        ),
+        (
+            {
+                'github_api_url': '',
+                'app_id': '666',
+                'private_rsa_key': '',
+                'install_id': 'invalid',
+            },
+            '^Expected GitHub App Installation ID to be an integer '
+            "but got 'invalid'$",
         ),
     ),
-    ids=('app-n-install-ids',),
+    ids=('gh-app-id', 'gh-app-install-id'),
 )
 def test_github_app_invalid_args(
     github_app_backend_args: dict[str, str],
@@ -65,12 +57,10 @@ def test_github_app_github_authentication(mocker: MockerFixture) -> None:
 
     mocker.patch.object(Auth, 'AppAuth', return_value=mock_app_auth)
 
-    args = {
-        'github_api_url': 'https://api.github.com',
-        'app_id': '123',
-        'install_id': '456',
-        'private_rsa_key': 'example-key',
-    }
-
-    token = github_app_backend(**args)  # type: ignore[arg-type]
+    token = github_app_backend(
+        github_api_url='https://api.github.com',
+        app_id='123',
+        install_id='456',
+        private_rsa_key='example-key',
+    )
     assert token == 'example-token'

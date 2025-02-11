@@ -112,64 +112,39 @@ class GitHubAppBackendArgs(TypedDict, total=False):
     private_rsa_key: str
 
 
-def github_app_backend(**kwargs: GitHubAppBackendArgs) -> str:
+def github_app_backend(*, github_api_url: str, app_id: str, private_rsa_key: str, install_id: str, *_discarded_kwargs: dict[object, object]) -> str:
     """Generate an authentication token for a GitHub App using provided
     credentials.
 
-    :param github_api_url: The GitHub instance API URL.
-    :type github_api_url: str
-
+    :param github_api_url: The GitHub instance API endpoint URL.
     :param app_id: The GitHub App ID.
-    :type app_id: str
-
     :param private_rsa_key: The private key associated with the GitHub App.
-    :type private_rsa_key: str
+    :param install_id: The GitHub App Installation ID.
 
     :returns: A GitHub App authentication token.
-    :rtype: str
 
     :raises ValueError: If any required parameters are missing or invalid.
     """
-
-    # because the calling functions are not linted, avoid type checking
-    github_api_url: str | None = kwargs.get(
-        'github_api_url')  # type: ignore[assignment]
-    app_id: str | None = kwargs.get('app_id')  # type: ignore[assignment]
-    install_id: str | None = kwargs.get(
-        'install_id')  # type: ignore[assignment]
-    private_rsa_key: str | None = kwargs.get(
-        'private_rsa_key')  # type: ignore[assignment]
-
-    missing_parameters: list[str] = []
-    if not github_api_url:
-        missing_parameters.append('GitHub URL')
-    if not install_id:
-        missing_parameters.append('Installation ID')
-    if not app_id:
-        missing_parameters.append('Application ID')
-    if not private_rsa_key:
-        missing_parameters.append('Private Key')
-    if missing_parameters:
-        raise ValueError(f'Missing Parameter: {missing_parameters}')
-
-    # Verify that app_id and installation_id are integers
-    try:
-        # already checked for None but linter doesn't know
-        app_id_int: int = int(app_id)  # type: ignore[arg-type]
-        install_id_int: int = int(install_id)  # type: ignore[arg-type]
-    except ValueError as val_err:
+    if not app_id.isdigit():
         raise ValueError(
-            f'App ID and Installation ID must be integers {val_err}',
-        ) from val_err
+            f'Expected GitHub App ID to be an integer but got {app_id !r}',
+        )
+
+    if not install_id.isdigit():
+        raise ValueError(
+            'Expected GitHub App Installation ID to be an integer'
+            f' but got {install_id !r}',
+        )
 
     auth = Auth.AppAuth(
         app_id_int,
         private_rsa_key,
     ).get_installation_auth(install_id_int, None)
 
+    extra_gh_args = {'base_url': github_api_url} if github_api_url else {}
     Github(  # Generate a GitHub App authentication token
         auth=auth,
-        base_url=github_api_url,
+        **extra_gh_args,
     )
 
     return auth.token
