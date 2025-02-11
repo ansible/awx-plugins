@@ -31,8 +31,8 @@ omit =
   .tox/*/lib/python*/site-packages/awx_plugins/interfaces/**
   .tox\*\Lib\site-packages\awx_plugins\interfaces\**
 parallel = true
-#plugins =
-#  covdefaults
+plugins =
+  covdefaults
 relative_files = true
 source =
   .
