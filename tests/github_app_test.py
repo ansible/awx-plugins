@@ -35,8 +35,8 @@ def test_github_app_invalid_args(
     bail early."""
     with pytest.raises(ValueError, match=expected_error_msg):
         extract_github_app_install_token(
-            github_api_url='https://api.github.com',  # type: ignore[arg-type]
-            private_rsa_key='key',  # type: ignore[arg-type]
+            github_api_url='https://api.github.com',
+            private_rsa_key='key',
             **extract_github_app_install_token_args,
         )
 
