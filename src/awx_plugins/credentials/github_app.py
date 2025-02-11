@@ -5,8 +5,8 @@ authentication via GitHub App tokens.
 
 Functions:
 
-- ``extract_github_app_install_token``: Generates a GitHub App Installation token.
-- ``github_app_lookup``: Defines the credential plugin interface.
+- :func:`extract_github_app_install_token`: Generates a GitHub App Installation token.
+- :func:`github_app_lookup`: Defines the credential plugin interface.
 """
 
 from typing import NotRequired, TypedDict
