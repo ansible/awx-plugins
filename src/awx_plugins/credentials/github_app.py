@@ -9,7 +9,7 @@ Functions:
 - ``github_app_lookup``: Defines the credential plugin interface.
 """
 
-from typing import NotRequired, TypedDict
+from typing import NotRequired, TypedDict, Unpack
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -106,6 +106,10 @@ github_app_inputs: GitHubAppInputs = {
 }
 
 
+class EmptyKwargs(TypedDict):
+    """Schema for no keyword args."""
+
+
 class MaybeBaseURLKwarg(TypedDict, total=False):
     """Schema for optional PyGitHub ``base_url`` keyword arg."""
     base_url: str
@@ -117,7 +121,7 @@ def extract_github_app_install_token(
     app_id: str,
     private_rsa_key: str,
     install_id: str,
-    **_discarded_kwargs: dict[object, object],
+    **_discarded_kwargs: Unpack[EmptyKwargs],
 ) -> str:
     """Generate a GitHub authentication token from GitHub App Installation
     credentials.
