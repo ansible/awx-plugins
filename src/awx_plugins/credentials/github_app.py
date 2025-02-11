@@ -11,9 +11,6 @@ Functions:
 
 from typing import NotRequired, TypedDict
 
-from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
-    ManagedCredentialType,
-)
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
 )
