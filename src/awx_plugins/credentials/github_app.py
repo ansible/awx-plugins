@@ -28,7 +28,7 @@ class FieldDict(TypedDict):
     secret: NotRequired[bool]
     multiline: NotRequired[bool]
     help_text: str
-    default: str
+    default: NotRequired[str]
 
 
 class MetadataDict(TypedDict):
