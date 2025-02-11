@@ -118,12 +118,13 @@ def extract_github_app_install_token(*, github_api_url: str, app_id: str, privat
 
     :param github_api_url: The GitHub instance API endpoint URL.
     :param app_id: The GitHub App ID.
-    :param private_rsa_key: The private key associated with the GitHub App.
+    :param private_rsa_key: The private key associated with the
+                            GitHub App.
     :param install_id: The GitHub App Installation ID.
 
     :returns: A GitHub access token for a GitHub App Installation.
 
-    :raises ValueError: If any required parameters are missing or invalid.
+    :raises ValueError: If any required parameters are invalid.
     """
     if not app_id.isdigit():
         raise ValueError(

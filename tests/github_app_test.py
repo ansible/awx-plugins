@@ -31,7 +31,8 @@ def test_github_app_invalid_args(
     extract_github_app_install_token_args: dict[str, str],
     expected_error_msg: str,
 ) -> None:
-    """Test that invalid arguments make ``extract_github_app_install_token`` bail early."""
+    """Test that invalid arguments make ``extract_github_app_install_token``
+    bail early."""
     with pytest.raises(ValueError, match=expected_error_msg):
         extract_github_app_install_token(
             github_api_url='https://api.github.com',  # type: ignore[arg-type]
