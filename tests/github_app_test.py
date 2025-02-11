@@ -53,11 +53,9 @@ def test_github_app_invalid_args(
 
 def test_github_app_github_authentication(mocker: MockerFixture) -> None:
     """Test successful GitHub authentication."""
-    # Mock the AppInstallationAuth to be returned
     mock_auth_instance = mocker.MagicMock(spec=Auth.AppInstallationAuth)
     mock_auth_instance.token = 'example-token'
 
-    # Mock AppAuth and get_installation_auth() to return our mock instance
     mock_app_auth = mocker.MagicMock(spec=Auth.AppAuth)
     mock_app_auth.get_installation_auth.return_value = mock_auth_instance
 
