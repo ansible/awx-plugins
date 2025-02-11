@@ -17,9 +17,12 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
     gettext_noop as _,
 )
 
-from github import Auth, Github
+from github import Auth as Auth, Github
 
 from .plugin import CredentialPlugin
+
+
+__all__ = ('github_app_lookup',)  # noqa: WPS410
 
 
 class FieldDict(TypedDict):
