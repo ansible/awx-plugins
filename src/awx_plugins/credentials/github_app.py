@@ -112,7 +112,7 @@ class GitHubAppBackendArgs(TypedDict, total=False):
     private_rsa_key: str
 
 
-def extract_github_app_install_token(*, github_api_url: str, app_id: str, private_rsa_key: str, install_id: str, *_discarded_kwargs: dict[object, object]) -> str:
+def extract_github_app_install_token(*, github_api_url: str, app_id: str, private_rsa_key: str, install_id: str, **_discarded_kwargs: dict[object, object]) -> str:
     """Generate an authentication token for a GitHub App using provided
     credentials.
 
