@@ -137,9 +137,9 @@ def extract_github_app_install_token(*, github_api_url: str, app_id: str, privat
         )
 
     auth = Auth.AppAuth(
-        app_id_int,
-        private_rsa_key,
-    ).get_installation_auth(install_id_int, None)
+        app_id=int(app_id),
+        private_key=private_rsa_key,
+    ).get_installation_auth(installation_id=int(install_id))
 
     extra_gh_args = {'base_url': github_api_url} if github_api_url else {}
     Github(  # Generate a GitHub App authentication token
