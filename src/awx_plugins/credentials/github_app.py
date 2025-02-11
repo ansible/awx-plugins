@@ -106,14 +106,6 @@ github_app_inputs: GitHubAppInputs = {
 }
 
 
-class GitHubAppBackendArgs(TypedDict, total=False):
-    """Schema for plugin backend callable args."""
-    github_api_url: str
-    app_id: str | int
-    install_id: str | int
-    private_rsa_key: str
-
-
 def extract_github_app_install_token(
     *,
     github_api_url: str,
