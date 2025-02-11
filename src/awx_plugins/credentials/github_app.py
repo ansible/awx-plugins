@@ -5,7 +5,8 @@ authentication via GitHub App tokens.
 
 Functions:
 
-- :func:`extract_github_app_install_token`: Generates a GitHub App Installation token.
+- :func:`extract_github_app_install_token`: Generates a GitHub App
+  Installation token.
 - ``github_app_lookup``: Defines the credential plugin interface.
 """
 
@@ -22,6 +23,7 @@ from .plugin import CredentialPlugin
 
 class FieldDict(TypedDict):
     """A single UI field schema."""
+
     id: str
     label: str
     type: str
@@ -34,6 +36,7 @@ class FieldDict(TypedDict):
 
 class MetadataDict(TypedDict):
     """Schema for input metadata."""
+
     id: str
     label: NotRequired[str]
     type: str
@@ -42,6 +45,7 @@ class MetadataDict(TypedDict):
 
 class GitHubAppInputs(TypedDict):
     """Schema for a collection of plugin input fields."""
+
     fields: list[FieldDict]
     metadata: list[MetadataDict]
     required: list[str]
@@ -112,6 +116,7 @@ class EmptyKwargs(TypedDict):
 
 class MaybeBaseURLKwarg(TypedDict, total=False):
     """Schema for optional PyGitHub ``base_url`` keyword arg."""
+
     base_url: str
 
 
@@ -123,14 +128,14 @@ def extract_github_app_install_token(
     install_id: str,
     **_discarded_kwargs: Unpack[EmptyKwargs],
 ) -> str:
-    """Generate a GitHub authentication token from GitHub App Installation
-    credentials.
+    """Generate a GH App Installation access token.
 
     :param github_api_url: The GitHub instance API endpoint URL.
     :param app_id: The GitHub App ID.
     :param private_rsa_key: The private key associated with the GitHub
         App.
     :param install_id: The GitHub App Installation ID.
+    :param _discarded_kwargs: Aren't expected to be passed.
     :returns: A GitHub access token for a GitHub App Installation.
     :raises ValueError: If any required parameters are invalid.
     """

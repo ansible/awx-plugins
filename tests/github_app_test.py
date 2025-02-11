@@ -1,3 +1,5 @@
+"""Tests for GitHub App Installation access token extraction plugin."""
+
 from typing import TypedDict
 
 import pytest
@@ -9,7 +11,8 @@ from awx_plugins.credentials.github_app import extract_github_app_install_token
 
 
 class AppInstallIds(TypedDict):
-    """Schema for augmentedextractor function keyword args."""
+    """Schema for augmented extractor function keyword args."""
+
     app_id: str
     install_id: str
 
@@ -39,8 +42,7 @@ def test_github_app_invalid_args(
     extract_github_app_install_token_args: AppInstallIds,
     expected_error_msg: str,
 ) -> None:
-    """Test that invalid arguments make ``extract_github_app_install_token``
-    bail early."""
+    """Test that invalid arguments make token extractor bail early."""
     with pytest.raises(ValueError, match=expected_error_msg):
         extract_github_app_install_token(
             github_api_url='https://api.github.com',
@@ -51,7 +53,6 @@ def test_github_app_invalid_args(
 
 def test_github_app_github_authentication(mocker: MockerFixture) -> None:
     """Test successful GitHub authentication."""
-
     # Mock the AppInstallationAuth to be returned
     mock_auth_instance = mocker.MagicMock(spec=Auth.AppInstallationAuth)
     mock_auth_instance.token = 'example-token'
