@@ -1,7 +1,8 @@
-"""GitHub App Credential Plugin.
+"""GitHub App Installation Access Token Credential Plugin.
 
-This module defines a credential plugin for GitHub Apps, allowing
-authentication via GitHub App tokens.
+This module defines a credential plugin for making use of the
+GitHub Apps mechanism, allowing authentication via GitHub App
+installation-scoped access tokens.
 
 Functions:
 
