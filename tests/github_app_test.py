@@ -3,9 +3,9 @@
 from typing import TypedDict
 
 import pytest
+from pytest_mock import MockerFixture
 
 from github.Auth import AppAuth, AppInstallationAuth
-from pytest_mock import MockerFixture
 
 from awx_plugins.credentials import github_app as gh_app_plugin_mod
 

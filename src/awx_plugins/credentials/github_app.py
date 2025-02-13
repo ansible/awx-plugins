@@ -62,7 +62,7 @@ github_app_inputs: GitHubAppInputs = {
             'label': _('GitHub API endpoint URL'),
             'type': 'string',
             'help_text': _(
-                'Specify the GitHub URL here. In the case of an Enterprise Github: '
+                'Specify the GitHub URL here. In the case of an Enterprise: '
                 'https://github.acme.com (self-hosted) '
                 'or https://github.com/enterprises/acme (cloud)',
             ),

@@ -4,9 +4,9 @@
 from unittest import mock
 
 import pytest
+from pytest_mock import MockerFixture
 
 import requests
-from pytest_mock import MockerFixture
 
 from awx_plugins.credentials import aim, hashivault
 
