@@ -62,8 +62,9 @@ github_app_inputs: GitHubAppInputs = {
             'label': _('GitHub API endpoint URL'),
             'type': 'string',
             'help_text': _(
-                'Specify the GitHub URL here in the case of an Enterprise Github. '
-                'Example: https://gh.your.org/api/v3',
+                'Specify the GitHub URL here. In the case of an Enterprise Github: '
+                'https://github.acme.com (self-hosted) '
+                'or https://github.com/enterprises/acme (cloud)',
             ),
             'default': 'https://github.com',
         },
@@ -74,7 +75,7 @@ github_app_inputs: GitHubAppInputs = {
             'help_text': _(
                 'The GitHub App ID created by the GitHub Admin. '
                 'Example App ID: 1121547 '
-                'from https://github.com/settings/apps/arestlel-github-app-ansible '
+                'find on https://github.com/settings/apps/ '
                 'required for creating a JWT token for authentication',
             ),
         },
