@@ -62,11 +62,11 @@ github_app_inputs: GitHubAppInputs = {
             'label': _('GitHub API endpoint URL'),
             'type': 'string',
             'help_text': _(
-                'Specify the GitHub URL here. In the case of an Enterprise: '
-                'https://github.acme.com (self-hosted) '
-                'or https://github.com/enterprises/acme (cloud)',
+                'Specify the GitHub API URL here. In the case of an Enterprise: '
+                ' https://github.acme.com/api/v3 (self-hosted) '
+                'or https://github.acme.com/api/v3 (cloud)',
             ),
-            'default': 'https://github.com',
+            'default': 'https://api.github.com',
         },
         {
             'id': 'app_id',
@@ -170,7 +170,14 @@ def extract_github_app_install_token(
         **extra_gh_args,
     )
 
-    return auth.token
+    try:
+        token = f'{auth.token}'
+    except Exception as my_exc:
+        raise ValueError(
+            f'unable to create token for {github_api_url} {my_exc}',
+        ) from my_exc
+
+    return token
 
 
 github_app_lookup = CredentialPlugin(
