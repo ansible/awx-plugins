@@ -63,8 +63,8 @@ github_app_inputs: GitHubAppInputs = {
             'type': 'string',
             'help_text': _(
                 'Specify the GitHub API URL here. In the case of an Enterprise: '
-                ' https://github.acme.com/api/v3 (self-hosted) '
-                'or https://github.acme.com/api/v3 (cloud)',
+                ' https://gh.your.org/api/v3 (self-hosted) '
+                'or https://api.SUBDOMAIN.ghe.com (cloud)',
             ),
             'default': 'https://api.github.com',
         },
