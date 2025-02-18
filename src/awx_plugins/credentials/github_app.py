@@ -18,6 +18,11 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 )
 
 from github import Auth as Auth, Github
+from github.GithubException import (
+    BadAttributeException,
+    GithubException,
+    UnknownObjectException,
+)
 
 from .plugin import CredentialPlugin
 
@@ -127,7 +132,20 @@ class MaybeBaseURLKwarg(TypedDict, total=False):
     base_url: str
 
 
-def extract_github_app_install_token(
+def _validate_inputs(  # noqa: DAR101
+    app_id: str, install_id: str,
+) -> None:
+    if not app_id.isdigit():
+        raise ValueError(
+            f'Expected GitHub App ID to be an integer but got {app_id !r}',
+        )
+    if not install_id.isdigit():
+        raise ValueError(
+            f'Expected GitHub App ID to be an integer but got {app_id !r}',
+        )
+
+
+def extract_github_app_install_token(  # noqa: WPS210
     *,
     github_api_url: str,
     app_id: str,
@@ -145,17 +163,9 @@ def extract_github_app_install_token(
     :param _discarded_kwargs: Aren't expected to be passed.
     :returns: A GitHub access token for a GitHub App Installation.
     :raises ValueError: If any required parameters are invalid.
+    :raises RuntimeError: If any required parameters are invalid.
     """
-    if not app_id.isdigit():
-        raise ValueError(
-            f'Expected GitHub App ID to be an integer but got {app_id !r}',
-        )
-
-    if not install_id.isdigit():
-        raise ValueError(
-            'Expected GitHub App Installation ID to be an integer'
-            f' but got {install_id !r}',
-        )
+    _validate_inputs(app_id, install_id)
 
     auth = Auth.AppAuth(
         app_id=int(app_id),
@@ -170,12 +180,21 @@ def extract_github_app_install_token(
         **extra_gh_args,
     )
 
+    doc = 'https://docs.github.com/rest/reference/apps'
+    doc = f'See {doc}#create-an-installation-access-token-for-an-app'
+    tvars = f'app_id: {app_id}, install_id: {install_id}'
+
     try:
         token = f'{auth.token}'
-    except Exception as my_exc:
-        raise ValueError(
-            f'unable to create token for {github_api_url} {my_exc}',
-        ) from my_exc
+    except UnknownObjectException as github_exc:  # type: ignore[misc]
+        msg = f'Token retrieval failed {github_api_url} mismatch with {tvars}'
+        raise ValueError(msg, github_exc) from github_exc
+    except GithubException as github_exc:  # type: ignore[misc]
+        msg = f'Token retrieval failed {github_api_url} with {tvars}'
+        raise RuntimeError(msg, doc, github_exc) from github_exc
+    except BadAttributeException as github_exc:  # type: ignore[misc]
+        msg = f'Failure in {github_api_url} with {tvars}'
+        raise RuntimeError(msg, doc, github_exc) from github_exc
 
     return token
 
