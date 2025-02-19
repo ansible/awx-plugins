@@ -180,21 +180,32 @@ def extract_github_app_install_token(  # noqa: WPS210
         **extra_gh_args,
     )
 
-    doc = 'https://docs.github.com/rest/reference/apps'
-    doc = f'See {doc}#create-an-installation-access-token-for-an-app'
-    app_install_context = f'app_id: {app_id}, install_id: {install_id}'
+    doc_url = (
+        'See https://docs.github.com/rest/reference/apps'
+        '#create-an-installation-access-token-for-an-app'
+    )
+    app_install_context = f'with app_id: {app_id}, install_id: {install_id}'
 
     try:
         token = auth.token
     except UnknownObjectException as github_exc:  # type: ignore[misc]
-        msg = f'Token retrieval failed {github_api_url} mismatch with {tvars}'
+        msg = (
+            f'Token retrieval failed {github_api_url} '
+            f'mismatch {app_install_context}'
+        )
         raise ValueError(msg, github_exc) from github_exc
     except GithubException as github_exc:  # type: ignore[misc]
-        msg = f'Token retrieval failed {github_api_url} with {tvars}'
-        raise RuntimeError(msg, doc, github_exc) from github_exc
+        msg = (
+            f'Token retrieval failed {github_api_url} '
+            f'{app_install_context}'
+        )
+        raise RuntimeError(msg, doc_url, github_exc) from github_exc
     except BadAttributeException as github_exc:  # type: ignore[misc]
-        msg = f'Failure in {github_api_url} with {tvars}'
-        raise RuntimeError(msg, doc, github_exc) from github_exc
+        msg = (
+            f'Failure in {github_api_url} '
+            f'{app_install_context}'
+        )
+        raise RuntimeError(msg, doc_url, github_exc) from github_exc
 
     return token
 
