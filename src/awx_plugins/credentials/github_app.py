@@ -185,7 +185,7 @@ def extract_github_app_install_token(  # noqa: WPS210
     tvars = f'app_id: {app_id}, install_id: {install_id}'
 
     try:
-        token = f'{auth.token}'
+        token = auth.token
     except UnknownObjectException as github_exc:  # type: ignore[misc]
         msg = f'Token retrieval failed {github_api_url} mismatch with {tvars}'
         raise ValueError(msg, github_exc) from github_exc
