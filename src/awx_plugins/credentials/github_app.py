@@ -141,7 +141,7 @@ def _validate_inputs(  # noqa: DAR101
         )
     if not install_id.isdigit():
         raise ValueError(
-            f'Expected GitHub App ID to be an integer but got {app_id !r}',
+            f'Expected GitHub App Installation ID to be an integer but got {install_id !r}',
         )
 
 
