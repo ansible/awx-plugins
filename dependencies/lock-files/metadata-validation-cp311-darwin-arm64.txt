@@ -57,7 +57,7 @@ rfc3986==2.0.0
     # via twine
 rich==13.9.4
     # via twine
-setuptools-scm==8.1.0
+setuptools-scm==8.2.0
     # via -r dependencies/direct/metadata-validation.in
 twine==6.1.0
     # via -r dependencies/direct/metadata-validation.in
