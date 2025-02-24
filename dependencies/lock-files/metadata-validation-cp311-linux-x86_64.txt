@@ -69,7 +69,7 @@ rich==13.9.4
     # via twine
 secretstorage==3.3.3
     # via keyring
-setuptools-scm==8.1.0
+setuptools-scm==8.2.0
     # via -r dependencies/direct/metadata-validation.in
 twine==6.1.0
     # via -r dependencies/direct/metadata-validation.in
