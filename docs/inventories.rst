@@ -18,7 +18,7 @@ The Inventories window displays a list of the inventories that are currently ava
 
 The list of Inventory details includes:
 
-- **Name**: The inventory name. Clicking the Inventory name navigates to the properties screen for the selected inventory, which shows the inventory's groups and hosts. 
+- **Name**: The inventory name. Clicking the Inventory name navigates to the properties screen for the selected inventory, which shows the inventory's groups and hosts.
 
 - **Status**: The statuses are:
     - **Success**: when the inventory source sync completed successfully
@@ -439,22 +439,22 @@ After saving the new inventory, you can proceed with configuring permissions, gr
 Add permissions
 ------------------
 
-1. In the **Access** tab, click the **Add** button. 
+1. In the **Access** tab, click the **Add** button.
 
 2. Select a user or team to add and click **Next**
 
-3. Select one or more users or teams from the list by clicking the check box(es) next to the name(s) to add them as members and click **Next**. 
+3. Select one or more users or teams from the list by clicking the check box(es) next to the name(s) to add them as members and click **Next**.
 
 4. Select the role(s) you want the selected user(s) or team(s) to have. Be sure to scroll down for a complete list of roles. Different resources have different options available.
 
-5. Click the **Save** button to apply the roles to the selected user(s) or team(s) and to add them as members. 
+5. Click the **Save** button to apply the roles to the selected user(s) or team(s) and to add them as members.
 
 The Add Users/Teams window closes to display the updated roles assigned for each user and team.
 
 To remove roles for a particular user, click the disassociate (x) button next to its resource.
 
 This launches a confirmation dialog, asking you to confirm the disassociation.
- 
+
 
 .. _ug_inventories_add_groups:
 
@@ -659,7 +659,7 @@ This opens the Create Source window.
 
 12.  To configure notifications for the source, click the **Notifications** tab.
 
-  a. If notifications are already set up, use the toggles to enable or disable the notifications to use with your particular source. 
+  a. If notifications are already set up, use the toggles to enable or disable the notifications to use with your particular source.
 
   b. If notifications have not been set up, set them up following the prompts.
 
@@ -799,4 +799,3 @@ The Run command window opens.
 
 
 The results display in the **Output** tab of the module's job window.
-

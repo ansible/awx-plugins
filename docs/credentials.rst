@@ -3,7 +3,7 @@
 Credentials
 ===============
 
-.. index:: 
+.. index::
    single: credentials
 
 Credentials are utilized for authentication when launching Jobs against machines, synchronizing with inventory sources, and importing project content from a version control system.
@@ -16,10 +16,10 @@ You can grant users and teams the ability to use these credentials, without actu
 Understanding How Credentials Work
 ------------------------------------
 
-.. index:: 
+.. index::
     pair: credentials; how they work
 
-AWX uses SSH to connect to remote hosts (or the Windows equivalent).  In order to pass the key from AWX to SSH, the key must be decrypted before it can be written a named pipe. AWX then uses that pipe to send the key to SSH (so that it is never written to disk).   
+AWX uses SSH to connect to remote hosts (or the Windows equivalent).  In order to pass the key from AWX to SSH, the key must be decrypted before it can be written a named pipe. AWX then uses that pipe to send the key to SSH (so that it is never written to disk).
 
 If passwords are used, AWX handles those by responding directly to the password prompt and decrypting the password before writing it to the prompt.
 
@@ -28,7 +28,7 @@ If passwords are used, AWX handles those by responding directly to the password 
 Getting Started with Credentials
 ----------------------------------
 
-.. index:: 
+.. index::
    pair: credentials; getting started
 
 Click **Credentials** from the left navigation bar to access the Credentials page. The Credentials page displays a search-able list of all available Credentials and can be sorted by **Name**.
@@ -67,10 +67,10 @@ You can click the **Add** button to assign this **Demo Credential** to additiona
 Add a New Credential
 ----------------------
 
-.. index:: 
+.. index::
    pair: credentials; adding new
 
-To create a new credential:   
+To create a new credential:
 
 1. Click the **Create credential** button from the **Credentials** screen.
 
@@ -88,7 +88,7 @@ To create a new credential:
   A credential with a set of permissions associated with one organization will remain even after the credential is reassigned to another organization.
 
 
-4. Enter or select the credential type you want to create. 
+4. Enter or select the credential type you want to create.
 
 5. Enter the appropriate details depending on the type of credential selected, as described in the next section, :ref:`ug_credentials_cred_types`.
 
@@ -100,7 +100,7 @@ To create a new credential:
 Credential Types
 -----------------
 
-.. index:: 
+.. index::
    single: credentials; types
    single: credential types
 
@@ -112,7 +112,7 @@ The following credential types are supported with AWX:
 - :ref:`ug_credentials_network`
 - :ref:`ug_credentials_ocp_k8s`
 - :ref:`ug_credentials_aap`
-- :ref:`ug_credentials_scm` 
+- :ref:`ug_credentials_scm`
 - :ref:`ug_credentials_vault`
 
 Certain credential types are associated with credential plugins capability that allows an external system to lookup your secrets information. See the :ref:`ug_credential_plugins` section for further detail.
@@ -125,7 +125,7 @@ Ansible Galaxy/Automation Hub API Token
    pair: credential types; Galaxy
    pair: credential types; Automation Hub
 
-Selecting this credential allows AWX to access Galaxy or use a collection published on a local hub.  Entering the Galaxy server URL is the only required value on this screen.  
+Selecting this credential allows AWX to access Galaxy or use a collection published on a local hub.  Entering the Galaxy server URL is the only required value on this screen.
 
 |Credentials - create galaxy credential|
 
@@ -142,7 +142,7 @@ Container Registry
 .. index::
    pair: credential types; Container Registry
 
-Selecting this credential allows AWX to access a collection of container images. See `What is a container registry? <https://www.redhat.com/en/topics/cloud-native-apps/what-is-a-container-registry>`_ for more information. 
+Selecting this credential allows AWX to access a collection of container images. See `What is a container registry? <https://www.redhat.com/en/topics/cloud-native-apps/what-is-a-container-registry>`_ for more information.
 
 Aside from specifying a name, the **Authentication URL** is the only required field on this screen, and it is already pre-populated with a default value. You may change this default by specifying the authentication endpoint for a different container registry.
 
@@ -246,11 +246,11 @@ Network credentials have several attributes that may be configured:
 - **SSH Private Key**: Copy or drag-and-drop the actual SSH Private Key to be used to authenticate the user to the network via SSH.
 -  **Private Key Passphrase**: The actual passphrase for the private key to be used to authenticate the user to the network via SSH.
 -  **Authorize**: Select this from the Options field to control whether or not to enter privileged mode.
-- If **Authorize** is checked, enter a password in the **Authorize Password** field to access privileged mode. 
+- If **Authorize** is checked, enter a password in the **Authorize Password** field to access privileged mode.
 
 For more information, refer to the *Inside Playbook* blog, `Porting Ansible Network Playbooks with New Connection Plugins`_.
 
-.. _`Porting Ansible Network Playbooks with New Connection Plugins`: https://www.ansible.com/blog/porting-ansible-network-playbooks-with-new-connection-plugins 
+.. _`Porting Ansible Network Playbooks with New Connection Plugins`: https://www.ansible.com/blog/porting-ansible-network-playbooks-with-new-connection-plugins
 
 .. _ug_credentials_ocp_k8s:
 
@@ -263,7 +263,7 @@ OpenShift or Kubernetes API Bearer Token
    pair: credential types; API bearer token
 
 
-Selecting this credential type allows you to create instance groups that point to a Kubernetes or OpenShift container. 
+Selecting this credential type allows you to create instance groups that point to a Kubernetes or OpenShift container.
 
 |Credentials - create Containers credential|
 
@@ -286,7 +286,7 @@ A ``ContainerGroup`` is a type of ``InstanceGroup`` that has an associated Crede
 - A token associated with that service account (OpenShift or Kubernetes Bearer Token)
 - A CA certificate associated with the cluster
 
-Create a Service Account in an Openshift cluster (or K8s) in order to be used to run jobs in a container group via AWX. After the Service Account is created, its credentials are provided to AWX in the form of an Openshift or Kubernetes API bearer token credential. Below describes how to create a service account and collect the needed information for configuring AWX. 
+Create a Service Account in an Openshift cluster (or K8s) in order to be used to run jobs in a container group via AWX. After the Service Account is created, its credentials are provided to AWX in the form of an Openshift or Kubernetes API bearer token credential. Below describes how to create a service account and collect the needed information for configuring AWX.
 
 To configure AWX:
 
@@ -320,7 +320,7 @@ Red Hat Ansible Automation Platform
 .. index::
    pair: credential types; automation platform
 
-Selecting this credential allows you to access a Red Hat Ansible Automation Platform instance. 
+Selecting this credential allows you to access a Red Hat Ansible Automation Platform instance.
 
 .. image:: _static/images/credentials-create-at-credential.png
     :alt: Credentials - create Red Hat Ansible Automation Platform credential form
@@ -358,8 +358,8 @@ Source Control credentials have several attributes that may be configured:
 
 .. note::
 
-    Source Control credentials cannot be configured as "**Prompt on launch**". 
-    If you are using a GitHub account for a Source Control credential and you have 2FA (Two Factor Authentication) enabled on your account, you will need to use your Personal Access Token in the password field rather than your account password. 
+    Source Control credentials cannot be configured as "**Prompt on launch**".
+    If you are using a GitHub account for a Source Control credential and you have 2FA (Two Factor Authentication) enabled on your account, you will need to use your Personal Access Token in the password field rather than your account password.
 
 
 .. _ug_credentials_vault:
@@ -384,7 +384,6 @@ You may configure AWX to ask the user for the password at launch time by selecti
 
 .. warning::
 
-    Credentials which are used in *Scheduled Jobs* must not be configured as "**Prompt on launch**". 
+    Credentials which are used in *Scheduled Jobs* must not be configured as "**Prompt on launch**".
 
 For more information about Ansible Vault, refer to: http://docs.ansible.com/ansible/playbooks_vault.html
-

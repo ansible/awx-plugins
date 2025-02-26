@@ -84,14 +84,14 @@ Below shows an example of a configured GitHub app token lookup credential.
 - **Name** (required): provide the name for your project
 - **Organization** (required): select the name of the organization from the drop-down menu
 - **Execution environment**: optionally select an execution environment, if applicable
-- **Source control type** (required): If you are syncing with a private repo, select **Git** for your source control. 
+- **Source control type** (required): If you are syncing with a private repo, select **Git** for your source control.
 
 The **Type Details** pane opens for additional input. Provide the following information:
 
 - **Source control URL** (required): enter the URL of the private repo you want to access. The other related fields pertaining to **branch/tag/commit** and **refspec** are not pertinent for use with a lookup credential.
 - **Source control credential**: Select the target credential that you created in the previous step
 
-6. Click **Save** and the project sync automatically starts and the project Details displays the progress of the job. 
+6. Click **Save** and the project sync automatically starts and the project Details displays the progress of the job.
 
 .. image:: _static/images/project-sync-github-app.png
    :alt: Example of a successful project sync using a GitHub App lookup token
