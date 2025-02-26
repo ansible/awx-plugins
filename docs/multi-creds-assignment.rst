@@ -7,7 +7,7 @@ Multi-Credential Assignment
    single: credentials
    pair: credentials; multi
    pair: credentials; assignment
-   
+
 AWX provides support for assigning zero or more credentials to a job template.
 
 
@@ -79,7 +79,7 @@ If you have a playbook that is setup the traditional way with all the secrets in
 Prompted Vault Credentials
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Passwords for Vault credentials that are marked with "Prompt on launch", the launch endpoint of any related Job Templates will communicate necessary Vault passwords via the ``passwords_needed_to_start`` key: 
+Passwords for Vault credentials that are marked with "Prompt on launch", the launch endpoint of any related Job Templates will communicate necessary Vault passwords via the ``passwords_needed_to_start`` key:
 
    .. code-block:: text
 
@@ -108,4 +108,3 @@ Linked credentials
 ^^^^^^^^^^^^^^^^^^^
 
 Instead of uploading sensitive credential information into AWX, you can link credential fields to external systems and using them to run your playbooks. Refer to the :ref:`Secret Management System <ug_credential_plugins>`.
-
