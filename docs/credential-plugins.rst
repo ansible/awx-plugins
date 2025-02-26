@@ -95,3 +95,7 @@ The **Type Details** pane opens for additional input. Provide the following info
 
 .. image:: _static/images/project-sync-github-app.png
    :alt: Example of a successful project sync using a GitHub App lookup token
+
+.. note::
+
+   If your project sync fails, you may have to manually re-enter ``https://api.github.com/`` in the **GitHub API endpoint URL** field from Step 1 and re-run your project sync.
