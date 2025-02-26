@@ -21,9 +21,12 @@
 :caption: Contents
 :hidden: true
 
+credentials
 credential-plugins
+inventories
 inventory-plugins
 inventory-plugins-templates
+multi-creds-assignment
 changelog
 ```
 
