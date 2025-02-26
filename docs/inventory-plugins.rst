@@ -85,7 +85,7 @@ AWX uses the ``ansible-inventory`` module from Ansible to process inventory file
 .. _ug_sourced_from_project:
 
 Sourced from a Project
-~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 .. index::
    pair: inventories; project-sourced
