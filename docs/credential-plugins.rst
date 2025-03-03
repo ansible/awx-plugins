@@ -389,7 +389,7 @@ GitHub App Token Lookup
 
 This plugin allows a GitHub app token to be used as a credential input source to pull secrets from GitHub App. AWX uses existing GitHub auth from organizations' GitHub repos. Refer to `Generating an installation access token for a GitHub App <https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app>`_ for more detail.
 
-1. Create a lookup credential that stores your secrets. See TBD for detail. 
+1. Create a lookup credential that stores your secrets. See TBD for detail.
 ..(link available in separate PR that has this information).
 
 2. When **GitHub App Installation Access Token lookup** is selected for **Credential Type**, provide the following attributes to properly configure your lookup:
@@ -443,4 +443,3 @@ The **Type Details** pane opens for additional input. Provide the following info
 .. note::
 
    If your project sync fails, you may have to manually re-enter ``https://api.github.com/`` in the **GitHub API endpoint URL** field from Step 2 and re-run your project sync.
-
