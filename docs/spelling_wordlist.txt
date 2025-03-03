@@ -21,6 +21,7 @@ Ovirt
 ovirt
 PEM
 Pre
+repo
 Submodules
 Subpackages
 templating
