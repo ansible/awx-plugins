@@ -139,9 +139,18 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
-        cache: pip
-        cache-dependency-path: dependencies/**
         python-version: ${{ matrix.python-version }}
+
+    - name: >-
+        Calculate dependency files' combined hash value
+        for use in the cache key
+      id: calc-cache-key-files
+      uses: ./.github/actions/cache-keys
+    - name: Set up pip cache
+      uses: re-actors/cache-python-deps@release/v1
+      with:
+        cache-key-for-dependency-files: >-
+          ${{ steps.calc-cache-key-files.outputs.cache-key-for-dep-files }}
 
     - name: Identify tox's own lock file
       id: tox-deps

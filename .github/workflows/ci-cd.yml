@@ -152,8 +152,8 @@ jobs:
           )
           && true || false
         }}
-      cache-key-files: >-
-        ${{ steps.calc-cache-key-files.outputs.files-hash-key }}
+      cache-key-for-dep-files: >-
+        ${{ steps.calc-cache-key-files.outputs.cache-key-for-dep-files }}
       git-tag: ${{ steps.git-tag.outputs.tag }}
       sdist-artifact-name: ${{ steps.artifact-name.outputs.sdist }}
       wheel-artifact-name: ${{ steps.artifact-name.outputs.wheel }}
@@ -199,82 +199,27 @@ jobs:
         ) as outputs_file:
             print('release-requested=true', file=outputs_file)
     - name: Check out src from Git
-      if: >-
-        steps.request-check.outputs.release-requested != 'true'
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        fetch-depth: >-
+          ${{
+              steps.request-check.outputs.release-requested == 'true'
+              && 1
+              || 0
+          }}
         ref: ${{ github.event.inputs.release-committish }}
-    - name: >-
-        Calculate Python interpreter version hash value
-        for use in the cache key
-      if: >-
-        steps.request-check.outputs.release-requested != 'true'
-      id: calc-cache-key-py
-      run: |
-        from hashlib import sha512
-        from os import environ
-        from pathlib import Path
-        from sys import version
-
-        FILE_APPEND_MODE = 'a'
-
-        hash = sha512(version.encode()).hexdigest()
-
-        with Path(environ['GITHUB_OUTPUT']).open(
-                mode=FILE_APPEND_MODE,
-        ) as outputs_file:
-            print(f'py-hash-key={hash}', file=outputs_file)
     - name: >-
         Calculate dependency files' combined hash value
         for use in the cache key
-      if: >-
-        steps.request-check.outputs.release-requested != 'true'
       id: calc-cache-key-files
-      run: |
-        from os import environ
-        from pathlib import Path
-
-        FILE_APPEND_MODE = 'a'
-
-        with Path(environ['GITHUB_OUTPUT']).open(
-                mode=FILE_APPEND_MODE,
-        ) as outputs_file:
-            print(
-                "files-hash-key=${{
-                    hashFiles(
-                      'tox.ini',
-                      'pyproject.toml',
-                      '.pre-commit-config.yaml',
-                      'pytest.ini',
-                      'dependencies/**/*'
-                    )
-                }}",
-                file=outputs_file,
-            )
-    - name: Get pip cache dir
-      id: pip-cache-dir
-      if: >-
-        steps.request-check.outputs.release-requested != 'true'
-      run: >-
-        echo "dir=$(python -m pip cache dir)" >> "${GITHUB_OUTPUT}"
-      shell: bash
+      uses: ./.github/actions/cache-keys
     - name: Set up pip cache
       if: >-
         steps.request-check.outputs.release-requested != 'true'
-      uses: actions/cache@v4
+      uses: re-actors/cache-python-deps@release/v1
       with:
-        path: ${{ steps.pip-cache-dir.outputs.dir }}
-        key: >-
-          ${{ runner.os }}-pip-${{
-          steps.calc-cache-key-py.outputs.py-hash-key }}-${{
-          steps.calc-cache-key-files.outputs.files-hash-key }}
-        restore-keys: |
-          ${{ runner.os }}-pip-${{
-              steps.calc-cache-key-py.outputs.py-hash-key
-          }}-
-          ${{ runner.os }}-pip-
-          ${{ runner.os }}-
+        cache-key-for-dependency-files: >-
+          ${{ steps.calc-cache-key-files.outputs.cache-key-for-dep-files }}
     - name: Drop Git tags from HEAD for non-release requests
       if: >-
         steps.request-check.outputs.release-requested != 'true'
@@ -411,42 +356,11 @@ jobs:
           }}
         ref: ${{ github.event.inputs.release-committish }}
 
-    - name: >-
-        Calculate Python interpreter version hash value
-        for use in the cache key
-      id: calc-cache-key-py
-      run: |
-        from hashlib import sha512
-        from os import environ
-        from pathlib import Path
-        from sys import version
-
-        FILE_APPEND_MODE = 'a'
-
-        hash = sha512(version.encode()).hexdigest()
-
-        with Path(environ['GITHUB_OUTPUT']).open(
-                mode=FILE_APPEND_MODE,
-        ) as outputs_file:
-            print(f'py-hash-key={hash}', file=outputs_file)
-      shell: python
-    - name: Get pip cache dir
-      id: pip-cache-dir
-      run: >-
-        echo "dir=$(python -m pip cache dir)" >> "${GITHUB_OUTPUT}"
     - name: Set up pip cache
-      uses: actions/cache@v4
+      uses: re-actors/cache-python-deps@release/v1
       with:
-        path: ${{ steps.pip-cache-dir.outputs.dir }}
-        key: >-
-          ${{ runner.os }}-pip-${{
-          steps.calc-cache-key-py.outputs.py-hash-key }}-${{
-          needs.pre-setup.outputs.cache-key-files }}
-        restore-keys: |
-          ${{ runner.os }}-pip-${{
-              steps.calc-cache-key-py.outputs.py-hash-key
-          }}-
-          ${{ runner.os }}-pip-
+        cache-key-for-dependency-files: >-
+          ${{ needs.pre-setup.outputs.cache-key-for-dep-files }}
 
     - name: Identify tox's own lock file
       id: tox-deps
@@ -616,8 +530,8 @@ jobs:
       fail-fast: false
     uses: ./.github/workflows/reusable-tox.yml
     with:
-      cache-key-files: >-
-        ${{ needs.pre-setup.outputs.cache-key-files }}
+      cache-key-for-dependency-files: >-
+        ${{ needs.pre-setup.outputs.cache-key-for-dep-files }}
       check-name: >-
         ${{ matrix.check-name }}
       dists-artifact-name: >-
@@ -674,8 +588,8 @@ jobs:
     with:
       built-wheel-names: >-
         ${{ needs.pre-setup.outputs.wheel-artifact-name }}
-      cache-key-files: >-
-        ${{ needs.pre-setup.outputs.cache-key-files }}
+      cache-key-for-dependency-files: >-
+        ${{ needs.pre-setup.outputs.cache-key-for-dep-files }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       python-version: >-

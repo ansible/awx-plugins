@@ -14,8 +14,8 @@ on:
           to test (is installed into tox env if passed)
         required: false
         type: string
-      cache-key-files:
-        description: Dependency files cache
+      cache-key-for-dependency-files:
+        description: Dependency files hash for use in cache keys
         required: true
         type: string
       check-name:
@@ -185,66 +185,11 @@ jobs:
             hashFiles('.pre-commit-config.yaml')
           }}
 
-    - name: Figure out if the interpreter ABI is stable
-      id: py-abi
-      run: |
-        from os import environ
-        from pathlib import Path
-        from sys import version_info
-
-        FILE_APPEND_MODE = 'a'
-
-        is_stable_abi = version_info.releaselevel == 'final'
-
-        with Path(environ['GITHUB_OUTPUT']).open(
-                mode=FILE_APPEND_MODE,
-        ) as outputs_file:
-            print(
-                'is-stable-abi={is_stable_abi}'.
-                format(is_stable_abi=str(is_stable_abi).lower()),
-                file=outputs_file,
-            )
-      shell: python
-    - name: >-
-        Calculate Python interpreter version hash value
-        for use in the cache key
-      if: fromJSON(steps.py-abi.outputs.is-stable-abi)
-      id: calc-cache-key-py
-      run: |
-        from hashlib import sha512
-        from os import environ
-        from pathlib import Path
-        from sys import version
-
-        FILE_APPEND_MODE = 'a'
-
-        hash = sha512(version.encode()).hexdigest()
-
-        with Path(environ['GITHUB_OUTPUT']).open(
-                mode=FILE_APPEND_MODE,
-        ) as outputs_file:
-            print(f'py-hash-key={hash}', file=outputs_file)
-      shell: python
-    - name: Get pip cache dir
-      if: fromJSON(steps.py-abi.outputs.is-stable-abi)
-      id: pip-cache-dir
-      run: >-
-        echo "dir=$(python -Im pip cache dir)" >> "${GITHUB_OUTPUT}"
-      shell: bash
     - name: Set up pip cache
-      if: fromJSON(steps.py-abi.outputs.is-stable-abi)
-      uses: actions/cache@v4
+      uses: re-actors/cache-python-deps@release/v1
       with:
-        path: ${{ steps.pip-cache-dir.outputs.dir }}
-        key: >-
-          ${{ runner.os }}-pip-${{
-          steps.calc-cache-key-py.outputs.py-hash-key }}-${{
-          inputs.cache-key-files }}
-        restore-keys: |
-          ${{ runner.os }}-pip-${{
-              steps.calc-cache-key-py.outputs.py-hash-key
-          }}-
-          ${{ runner.os }}-pip-
+        cache-key-for-dependency-files: >-
+          ${{ inputs.cache-key-for-dependency-files }}
 
     - name: Identify tox's own lock file
       id: tox-deps
