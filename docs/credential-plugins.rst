@@ -1,7 +1,7 @@
 .. _ug_credential_plugins:
 
 Secret Management System
-=============================
+========================
 
 .. index::
    single: credentials
@@ -24,7 +24,7 @@ Users and admins upload machine and cloud credentials so that automation can acc
 These external secret values will be fetched prior to running a playbook that needs them.
 
 Configure and link secret lookups
------------------------------------
+---------------------------------
 
 When configuring AWX to pull a secret from a 3rd-party system, it is in essence linking credential fields to external systems. To link a credential field to a value stored in an external system, select the external credential corresponding to that system and provide metadata to look up the desired value. The metadata input fields are part of the external credential type definition of the source credential.
 
@@ -151,7 +151,7 @@ This example shows the Metadata prompt for HashiVault Secret Lookup.
 .. _ug_credentials_aws_lookup:
 
 AWS Secrets Manager Lookup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. index::
    pair: credential types; AWS
 
@@ -194,7 +194,7 @@ Below shows an example of a configured CyberArk AIM credential.
 .. _ug_credentials_cyberarkccp:
 
 CyberArk Central Credential Provider (CCP) Lookup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. index::
    single: CyberArk CCP
    pair: credential; CyberArk CCP
@@ -216,7 +216,7 @@ Below shows an example of a configured CyberArk CCP credential.
 .. _ug_credentials_cyberarkconjur:
 
 CyberArk Conjur Secrets Manager Lookup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. index::
    single: CyberArk Conjur
    pair: credential; CyberArk Conjur
@@ -239,7 +239,7 @@ Below shows an example of a configured CyberArk Conjur credential.
 .. _ug_credentials_hashivault:
 
 HashiCorp Vault Secret Lookup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. index::
    single: HashiCorp Secret Lookup
    pair: credential; HashiCorp KV
@@ -286,7 +286,7 @@ To test the lookup, create another credential that uses the HashiCorp Vault look
 .. _ug_credentials_hashivaultssh:
 
 HashiCorp Vault Signed SSH
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. index::
    single: HashiCorp SSH Secrets Engine
    pair: credential; HashiCorp SSH Secrets Engine
@@ -321,7 +321,7 @@ Below shows an example of a configured HashiCorp SSH Secrets Engine credential.
 .. _ug_credentials_azurekeyvault:
 
 Microsoft Azure Key Vault
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 .. index::
    single: MS Azure KMS
    pair: credential; MS Azure KMS
@@ -343,7 +343,7 @@ Below shows an example of a configured Microsoft Azure KMS credential.
 .. _ug_credentials_thycoticvault:
 
 Thycotic DevOps Secrets Vault
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. index::
    single: Thycotic DevOps Secrets Vault
    pair: credential; Thycotic DevOps Secrets Vault
@@ -365,7 +365,7 @@ Below shows an example of a configured Thycotic DevOps Secrets Vault credential.
 .. _ug_credentials_thycoticserver:
 
 Thycotic Secret Server
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 .. index::
    single: Thycotic Secret Server
    pair: credential; Thycotic Secret Server
