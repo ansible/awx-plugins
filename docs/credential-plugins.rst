@@ -19,6 +19,7 @@ Users and admins upload machine and cloud credentials so that automation can acc
 - :ref:`ug_credentials_azurekeyvault` (KMS)
 - :ref:`ug_credentials_thycoticvault`
 - :ref:`ug_credentials_thycoticserver`
+- :ref:`ug_credentials_github_app_lookup`
 
 These external secret values will be fetched prior to running a playbook that needs them.
 
@@ -379,3 +380,67 @@ Below shows an example of a configured Thycotic Secret Server credential.
 
 .. image:: _static/images/credentials-create-thycotic-server-credential.png
    :alt: Example new Thycotic Secret Server credential lookup dialog
+
+
+.. _ug_credentials_github_app_lookup:
+
+GitHub App Token Lookup
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This plugin allows a GitHub app token to be used as a credential input source to pull secrets from GitHub App. AWX uses existing GitHub auth from organizations' GitHub repos. Refer to `Generating an installation access token for a GitHub App <https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app>`_ for more detail.
+
+1. Create a lookup credential that stores your secrets. See TBD for detail. 
+..(link available in separate PR that has this information).
+
+2. When **GitHub App Installation Access Token lookup** is selected for **Credential Type**, provide the following attributes to properly configure your lookup:
+
+- **GitHub App ID** (required): provide the app ID used for communicating with your GitHub App
+- **GitHub App Installation ID** (required): ID of the installation that you want to authenticate as
+- **RSA Private Key** (required): provide the generated private key obtained by the GitHub organization which your repo resides. See `Managing private keys for GitHub Apps <https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/managing-private-keys-for-github-apps>`_
+
+
+Below shows an example of a configured GitHub app token lookup credential.
+
+.. image:: _static/images/credentials-create-github-app-lookup-credential.png
+   :alt: Example of GitHub app token lookup credential configured
+
+3. Click **Create Credential** to confirm and save the credential.
+
+4. Create a target credential that looks up the lookup credential. To use your lookup in a private repo, use **Source Control** as your Credential type. Provide the following attributes to properly configure your target credential:
+
+- **Username**: provide the username of ``x-access-token``
+- **Password** (required): click the |key| button of the input field. You are prompted to set the input source to use to retrieve your secret information - this is the credential that you created in the previous step.
+
+5. Enter an optional description for the metadata requested and click **Finish**.
+
+.. image:: _static/images/credentials-create-target-github-app-credential.png
+   :alt: Example of creating a target credential that uses source control
+
+6. Click **Create Credential** to confirm and save the credential.
+
+7. Verify both your lookup credential and your target credential are now available on the Credentials list view.
+
+8. To use the target credential in a project, create a project and supply the following information:
+
+- **Name** (required): provide the name for your project
+- **Organization** (required): select the name of the organization from the drop-down menu
+- **Execution environment**: optionally select an execution environment, if applicable
+- **Source control type** (required): If you are syncing with a private repo, select **Git** for your source control.
+
+The **Type Details** pane opens for additional input. Provide the following information:
+
+- **Source control URL** (required): enter the URL of the private repo you want to access. The other related fields pertaining to **branch/tag/commit** and **refspec** are not pertinent for use with a lookup credential.
+- **Source control credential**: Select the target credential that you created in the previous step
+
+.. image:: _static/images/project-create-git-github-app.png
+   :alt: Example of a project pointing to a private git repo
+
+9. Click **Save** and the project sync automatically starts and the project Details displays the progress of the job.
+
+.. image:: _static/images/project-sync-github-app.png
+   :alt: Example of a successful project sync using a GitHub App lookup token
+
+.. note::
+
+   If your project sync fails, you may have to manually re-enter ``https://api.github.com/`` in the **GitHub API endpoint URL** field from Step 2 and re-run your project sync.
+
