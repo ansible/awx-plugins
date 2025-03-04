@@ -22,6 +22,22 @@ on:
         description: A custom name for the Checks API-reported status
         required: false
         type: string
+      checkout-src-git-committish:
+        description: >-
+          A Git-resolvable ref that is used when the source is taken
+          from Git. No-op otherwise. The default is whatever
+          `actions/checkout` does.
+        default: ''
+        required: false
+        type: string
+      checkout-src-from-git:
+        description: >-
+          Flag whether this CI job should fetch the source by from Git.
+          It will unpack the sdist in-place otherwise, which is also
+          the default.
+        default: 'false'
+        required: false
+        type: string
       dists-artifact-name:
         description: Workflow artifact name containing dists
         required: true
@@ -30,6 +46,14 @@ on:
         description: >-
           A newline-delimited blob of text with environment variables
           to be set using `${GITHUB_ENV}`
+        required: false
+        type: string
+      post-toxenv-preparation-command:
+        description: >-
+          A command to run at the end of the preparation stage, before
+          invoking the Tox's main environment command. Can be used to
+          pre-download things and perform actions that aren't seen as
+          testing directly.
         required: false
         type: string
       python-version:
@@ -43,7 +67,7 @@ on:
         type: string
       runner-vm-os:
         description: VM OS to use
-        default: ubuntu
+        default: ubuntu-latest
         required: false
         type: string
       source-tarball-name:
@@ -58,6 +82,18 @@ on:
         description: Name of the tox environment to use
         required: true
         type: string
+      tox-provision-args:
+        description: Tox arguments to pass to the env provisioning run
+        required: false
+        type: string
+      tox-run-args:
+        description: Tox arguments to pass to the regular run
+        required: false
+        type: string
+      tox-rerun-args:
+        description: Tox arguments to pass to the re-attempted run
+        required: false
+        type: string
       tox-run-posargs:
         description: Positional arguments to pass to the regular tox run
         required: false
@@ -70,9 +106,12 @@ on:
         description: ID of the upstream GitHub Repository
         required: true
         type: string
-      voting:
+      xfail:
         description: >-
-          Whether the run outcomes contribute to the failing CI status
+          Whether this job is expected to fail. Controls if the run outcomes
+          contribute to the failing CI status or not. The job status will be
+          treated as successful if this is set to `true`. Setting `false`
+          should be preferred typically.
         required: true
         type: string
     secrets:
@@ -116,7 +155,7 @@ jobs:
         inputs.check-name
         && inputs.check-name
         || format(
-             '{0}@🐍{1}@{2}',
+             '{0}@🐍{1}@💻{2}',
              inputs.toxenv,
              inputs.python-version,
              inputs.runner-vm-os
@@ -130,7 +169,7 @@ jobs:
     continue-on-error: >-
       ${{
           (
-            fromJSON(inputs.voting) ||
+            fromJSON(inputs.xfail) ||
             (
               startsWith(inputs.python-version, '~')
             ) ||
@@ -156,34 +195,28 @@ jobs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    # NOTE: `pre-commit --show-diff-on-failure` and `sphinxcontrib-spellcheck`
-    # NOTE: with Git authors allowlist enabled both depend on the presence of a
-    # NOTE: Git repository.
     - name: Grab the source from Git
       if: >-
-        contains(fromJSON('["pre-commit", "spellcheck-docs"]'), inputs.toxenv)
+        fromJSON(inputs.checkout-src-from-git)
       uses: actions/checkout@v4
       with:
-        ref: ${{ github.event.inputs.release-committish }}
+        ref: ${{ inputs.checkout-src-git-committish }}
     - name: Retrieve the project source from an sdist inside the GHA artifact
       if: >-
-        !contains(fromJSON('["pre-commit", "spellcheck-docs"]'), inputs.toxenv)
+        !fromJSON(inputs.checkout-src-from-git)
       uses: re-actors/checkout-python-sdist@release/v2
       with:
         source-tarball-name: ${{ inputs.source-tarball-name }}
         workflow-artifact-name: ${{ inputs.dists-artifact-name }}
 
-    - name: Cache pre-commit.com virtualenvs
-      if: inputs.toxenv == 'pre-commit'
-      uses: actions/cache@v4
+    - name: 🪝 Invoke the in-repo `post-src-checkout` hook (if exists)
+      if: >-  # `hashFiles()` is used as a rudimentary `file.exists()`
+        hashFiles(
+          '.github/stdlib-workflows/reusable-tox/actions/post-src-checkout/action.yml'
+        ) != ''
+      uses: ./.github/stdlib-workflows/reusable-tox/actions/post-src-checkout
       with:
-        path: ~/.cache/pre-commit
-        key: >-
-          ${{
-            runner.os
-          }}-pre-commit-${{
-            hashFiles('.pre-commit-config.yaml')
-          }}
+        calling-job-context: ${{ toJSON(inputs) }}
 
     - name: Set up pip cache
       uses: re-actors/cache-python-deps@release/v1
@@ -216,15 +249,9 @@ jobs:
         }}
       shell: bash  # windows compat
 
-    - name: Make the env clean of non-test files
-      if: inputs.toxenv == 'metadata-validation'
-      run: |
-        shopt -s extglob
-        rm -rf !tox.ini
-      shell: bash
     - name: Download all the dists
       if: >-
-        contains(fromJSON('["metadata-validation", "py"]'), inputs.toxenv)
+        inputs.built-wheel-names != ''
       uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.dists-artifact-name }}
@@ -233,38 +260,40 @@ jobs:
     - name: >-
         Pre-populate tox envs: `${{ env.TOXENV }}`
       run: >-
-        python -Im
+        python -Xutf8 -Im
         tox
         --parallel auto
         --parallel-live
         --skip-missing-interpreters false
+        ${{ inputs.tox-provision-args }}
         ${{
           inputs.built-wheel-names != ''
           && format('--installpkg dist/{0}', inputs.built-wheel-names)
           || ''
         }}
         --notest
-    - name: Initialize pre-commit envs if needed
-      if: inputs.toxenv == 'pre-commit'
+    - name: Pre-heat the `${{ env.TOXENV }}` tox env
+      if: inputs.post-toxenv-preparation-command != ''
       run: >-
-        python -Im
+        python -Xutf8 -Im
         tox
         exec
         --skip-pkg-install
         --quiet
         --
-        python -Im pre_commit install-hooks
+        ${{ inputs.post-toxenv-preparation-command }}
     - name: >-
         Run tox envs: `${{ env.TOXENV }}`
       id: tox-run
       run: >-
-        python -Im
+        python -Xutf8 -Im
         tox
         --parallel auto
         --parallel-live
         --skip-missing-interpreters false
         --skip-pkg-install
         --quiet
+        ${{ inputs.tox-run-args }}
         ${{
           inputs.tox-run-posargs != ''
           && format('-- {0}', inputs.tox-run-posargs)
@@ -314,13 +343,14 @@ jobs:
         && failure()
         && inputs.tox-rerun-posargs != ''
       run: >-  # `exit 1` makes sure that the job remains red with flaky runs
-        python -Im
+        python -Xutf8 -Im
         tox
         --parallel auto
         --parallel-live
         --skip-missing-interpreters false
         -vvvvv
         --skip-pkg-install
+        ${{ inputs.tox-rerun-args }}
         --
         ${{ inputs.tox-rerun-posargs }}
         && exit 1
@@ -329,7 +359,7 @@ jobs:
       if: >-
         !cancelled()
         && steps.tox-run.outputs.cov-report-files != ''
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         disable_search: true
         fail_ci_if_error: >-
