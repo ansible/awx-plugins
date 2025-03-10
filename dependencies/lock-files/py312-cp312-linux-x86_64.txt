@@ -7,8 +7,10 @@
 adal==1.2.7
     # via msrestazure
 attrs==25.1.0
-    # via hypothesis
-awx-plugins-interfaces==0.0.1a4
+    # via
+    #   hypothesis
+    #   pytest-subtests
+awx-plugins-interfaces==0.0.1a5
     # via awx-plugins-core (pyproject.toml)
 azure-core==1.32.0
     # via
@@ -27,9 +29,9 @@ azure-keyvault-keys==4.10.0
     # via azure-keyvault
 azure-keyvault-secrets==4.9.0
     # via azure-keyvault
-boto3==1.37.4
+boto3==1.37.9
     # via awx-plugins-core (pyproject.toml)
-botocore==1.37.4
+botocore==1.37.9
     # via
     #   boto3
     #   s3transfer
@@ -65,7 +67,7 @@ deprecated==1.2.18
     # via pygithub
 execnet==2.1.1
     # via pytest-xdist
-hypothesis==6.127.4
+hypothesis==6.128.2
     # via -r dependencies/direct/py.in
 idna==3.10
     # via requests
@@ -77,7 +79,7 @@ isodate==0.7.2
     #   azure-keyvault-keys
     #   azure-keyvault-secrets
     #   msrest
-jinja2==3.1.5
+jinja2==3.1.6
     # via -r dependencies/direct/py.in
 jmespath==1.0.1
     # via
@@ -120,10 +122,13 @@ pytest==8.3.5
     #   -r dependencies/direct/py.in
     #   pytest-cov
     #   pytest-mock
+    #   pytest-subtests
     #   pytest-xdist
 pytest-cov==6.0.0
     # via -r dependencies/direct/py.in
 pytest-mock==3.14.0
+    # via -r dependencies/direct/py.in
+pytest-subtests==0.14.1
     # via -r dependencies/direct/py.in
 pytest-xdist==3.6.1
     # via -r dependencies/direct/py.in
@@ -150,7 +155,7 @@ requests==2.32.3
     #   requests-oauthlib
 requests-oauthlib==2.0.0
     # via msrest
-s3transfer==0.11.3
+s3transfer==0.11.4
     # via boto3
 six==1.17.0
     # via
