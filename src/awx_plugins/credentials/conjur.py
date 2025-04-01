@@ -140,6 +140,7 @@ def conjur_backend(**kwargs):
                     token.encode('utf-8'),
                 ).decode('utf-8'),
             ),
+            'Cache-Control': 'no-cache',
         },
         'allow_redirects': False,
     }
