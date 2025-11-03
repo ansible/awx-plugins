@@ -22,7 +22,7 @@ https://results.pre-commit.ci/latest/github/ansible/awx-plugins/devel
 [PyPI Badge]: https://img.shields.io/pypi/v/awx-plugins-core
 [PyPI]: https://pypi.org/p/awx-plugins-core
 
-[PyPI Supported Versions Badge]: https://img.shields.io/pypi/pyversions/awx-plugins-core.svg
+[PyPI Supported Versions Multiple Badge]: https://img.shields.io/pypi/pyversions/awx-plugins-core.svg
 [PyPI Supported Versions]: https://pypi.org/p/awx-plugins-core
 
 [Codecov Badge]:
