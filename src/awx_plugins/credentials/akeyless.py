@@ -5,7 +5,7 @@
 
 import json
 from collections.abc import Mapping
-from typing import Any, NotRequired, TypedDict, Unpack, cast
+from typing import NotRequired, Protocol, TypedDict, Unpack, cast
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -48,6 +48,41 @@ class _AkeylessSshBackendKwargs(_AkeylessCommonKwargs):
     cert_username: str
     public_key_data: str
     ttl: NotRequired[int | str | None]
+
+
+class _AuthResponse(Protocol):
+    token: str | None
+
+
+class _StaticSecretInfo(Protocol):
+    format: str
+
+
+class _ItemGeneralInfo(Protocol):
+    static_secret_info: _StaticSecretInfo
+
+
+class _DescribeItemResponse(Protocol):
+    item_type: str
+    item_sub_type: str
+    item_general_info: _ItemGeneralInfo
+
+
+class _SshCertResponse(Protocol):
+    data: str | None
+
+
+class _AkeylessApi(Protocol):
+    def auth(self, auth: Auth) -> _AuthResponse: ...
+
+    def describe_item(self, req: DescribeItem) -> _DescribeItemResponse: ...
+
+    def get_secret_value(self, req: GetSecretValue) -> Mapping[str, str]: ...
+
+    def get_ssh_certificate(
+        self,
+        req: GetSSHCertificate,
+    ) -> _SshCertResponse: ...
 
 
 common_plugin_inputs = [
@@ -168,7 +203,7 @@ akeyless_ssh_inputs = {
 }
 
 
-def _setup_client(gateway_url: str, ca_cert_path: str | None) -> Any:
+def _setup_client(gateway_url: str, ca_cert_path: str | None) -> _AkeylessApi:
     client_configuration = Configuration(host=gateway_url)
     if ca_cert_path:
         client_configuration.ssl_ca_cert = ca_cert_path
@@ -179,7 +214,11 @@ def _setup_client(gateway_url: str, ca_cert_path: str | None) -> Any:
     return V2Api(api_client)
 
 
-def _authenticate(api_instance: Any, access_id: str, access_key: str) -> str:
+def _authenticate(
+    api_instance: _AkeylessApi,
+    access_id: str,
+    access_key: str,
+) -> str:
     auth_response = api_instance.auth(
         Auth(
             access_id=access_id,
@@ -268,7 +307,7 @@ def _ensure_supported_item_type(secret_path: str, item_type: str) -> None:
 
 
 def _fetch_secret_value(
-    api_instance: Any,
+    api_instance: _AkeylessApi,
     token: str,
     secret_path: str,
     secret_key: str | None,
@@ -333,7 +372,7 @@ def _coerce_ttl(ttl_value: int | str | None) -> int | None:
 
 
 def _fetch_ssh_certificate(
-    api_instance: Any,
+    api_instance: _AkeylessApi,
     token: str,
     ssh_inputs: _AkeylessSshBackendKwargs,
 ) -> str:
