@@ -5,7 +5,7 @@
 
 import json
 from collections.abc import Mapping
-from typing import NotRequired, TypedDict, Unpack, cast
+from typing import Any, NotRequired, TypedDict, Unpack, cast
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -168,7 +168,7 @@ akeyless_ssh_inputs = {
 }
 
 
-def _setup_client(gateway_url: str, ca_cert_path: str | None) -> V2Api:
+def _setup_client(gateway_url: str, ca_cert_path: str | None) -> Any:
     client_configuration = Configuration(host=gateway_url)
     if ca_cert_path:
         client_configuration.ssl_ca_cert = ca_cert_path
@@ -179,7 +179,7 @@ def _setup_client(gateway_url: str, ca_cert_path: str | None) -> V2Api:
     return V2Api(api_client)
 
 
-def _authenticate(api_instance: V2Api, access_id: str, access_key: str) -> str:
+def _authenticate(api_instance: Any, access_id: str, access_key: str) -> str:
     auth_response = api_instance.auth(
         Auth(
             access_id=access_id,
@@ -268,7 +268,7 @@ def _ensure_supported_item_type(secret_path: str, item_type: str) -> None:
 
 
 def _fetch_secret_value(
-    api_instance: V2Api,
+    api_instance: Any,
     token: str,
     secret_path: str,
     secret_key: str | None,
@@ -333,7 +333,7 @@ def _coerce_ttl(ttl_value: int | str | None) -> int | None:
 
 
 def _fetch_ssh_certificate(
-    api_instance: V2Api,
+    api_instance: Any,
     token: str,
     ssh_inputs: _AkeylessSshBackendKwargs,
 ) -> str:
