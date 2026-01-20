@@ -75,6 +75,8 @@ centrify_vault_kv = "awx_plugins.credentials.centrify_vault:centrify_plugin"
 thycotic_dsv = "awx_plugins.credentials.dsv:dsv_plugin"
 thycotic_tss = "awx_plugins.credentials.tss:tss_plugin"
 aws_secretsmanager_credential = "awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin"
+akeyless = "awx_plugins.credentials.akeyless:akeyless_plugin"
+akeyless_ssh = "awx_plugins.credentials.akeyless:akeyless_ssh_plugin"
 github_app_lookup = "awx_plugins.credentials.github_app:github_app_lookup"
 
 [project.entry-points."awx_plugins.managed_credentials"] # new entry points group name
@@ -178,6 +180,14 @@ credentials-thycotic-tss = [
 credentials-aws-secretsmanager-credential = [
   "awx_plugins.interfaces",
   "boto3",
+]
+credentials-akeyless = [
+  "awx_plugins.interfaces",
+  "akeyless >= 5.0.8",
+]
+credentials-akeyless-ssh = [
+  "awx_plugins.interfaces",
+  "akeyless >= 5.0.8",
 ]
 inventory-azure-rm = [
   "awx_plugins.interfaces",
