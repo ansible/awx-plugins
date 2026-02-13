@@ -35,6 +35,7 @@ changelog
 
 Code Of Conduct <contributing/code_of_conduct>
 contributing/guidelines
+contributing/testing
 contributing/communication
 contributing/security
 Private unsupported (dev) API autodoc <pkg/awx_plugins.credentials>
