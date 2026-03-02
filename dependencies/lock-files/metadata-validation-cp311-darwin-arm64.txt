@@ -6,7 +6,7 @@
 #
 backports-tarfile==1.2.0
     # via jaraco-context
-certifi==2026.1.4
+certifi==2026.2.25
     # via requests
 charset-normalizer==3.4.4
     # via requests
