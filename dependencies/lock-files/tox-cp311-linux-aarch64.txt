@@ -4,7 +4,7 @@
 #
 #    tox run -qq -e pip-compile-tox-env-lock -- tox --upgrade
 #
-cachetools==7.0.1
+cachetools==7.0.2
     # via tox
 colorama==0.4.6
     # via tox
@@ -30,7 +30,7 @@ pyproject-api==1.10.0
     # via tox
 python-discovery==1.1.0
     # via virtualenv
-tox==4.47.0
+tox==4.47.3
     # via -r dependencies/direct/tox.in
 virtualenv==21.1.0
     # via tox
