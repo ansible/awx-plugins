@@ -16,6 +16,7 @@ class CredentialPlugin(typing.NamedTuple):
     name: str
     inputs: _types.PluginInputs
     backend: object
+    plugin_description: str = ''
 
 
 def raise_for_status(resp):

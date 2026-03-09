@@ -649,10 +649,12 @@ hashivault_kv_oidc_plugin = CredentialPlugin(
     'HashiCorp Vault Secret Lookup (OIDC)',
     inputs=hashi_kv_oidc_inputs,
     backend=kv_backend,
+    plugin_description='Uses OIDC/JWT authentication for enhanced security with short-lived tokens',
 )
 
 hashivault_ssh_oidc_plugin = CredentialPlugin(
     'HashiCorp Vault Signed SSH (OIDC)',
     inputs=hashi_ssh_oidc_inputs,
     backend=ssh_backend,
+    plugin_description='Uses OIDC/JWT authentication for enhanced security with short-lived tokens',
 )
