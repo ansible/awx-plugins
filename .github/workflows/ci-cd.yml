@@ -540,6 +540,7 @@ jobs:
         --no-cov
         -vvvvv
         --lf
+        --last-failed-no-failures none
       tox-tool-deps: tox
       xfail: >-
         ${{
