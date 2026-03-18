@@ -234,6 +234,12 @@ nitpick_ignore = [
         'awx_plugins.interfaces._temporary_private_credential_api.Credential',
     ),
     ('py:class', 'EnvVarsType'),
+    # Akeyless SDK types: auto-generated from OpenAPI
+    # without type annotations or .pyi stubs
+    ('py:class', 'akeyless.models.auth.Auth'),
+    ('py:class', 'akeyless.models.describe_item.DescribeItem'),
+    ('py:class', 'akeyless.models.get_secret_value.GetSecretValue'),
+    ('py:class', 'akeyless.models.get_ssh_certificate.GetSSHCertificate'),
 ]
 
 
