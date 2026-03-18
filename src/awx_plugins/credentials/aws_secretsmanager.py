@@ -8,10 +8,11 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 import boto3
 from botocore.exceptions import ClientError
 
+from . import _types
 from .plugin import CredentialPlugin
 
 
-secrets_manager_inputs = {
+secrets_manager_inputs: _types.PluginInputs = {
     'fields': [
         {
             'id': 'aws_access_key',

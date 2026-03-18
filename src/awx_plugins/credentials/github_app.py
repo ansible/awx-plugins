@@ -11,7 +11,7 @@ Functions:
 - ``github_app_lookup``: Defines the credential plugin interface.
 """
 
-from typing import NotRequired, TypedDict, Unpack
+from typing import TypedDict, Unpack
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -28,43 +28,14 @@ from github.GithubException import (
     UnknownObjectException,
 )
 
+from . import _types
 from .plugin import CredentialPlugin
 
 
 __all__ = ('github_app_lookup',)  # noqa: WPS410
 
 
-class FieldDict(TypedDict):
-    """A single UI field schema."""
-
-    id: str
-    label: str
-    type: str
-    format: NotRequired[str]
-    secret: NotRequired[bool]
-    multiline: NotRequired[bool]
-    help_text: str
-    default: NotRequired[str]
-
-
-class MetadataDict(TypedDict):
-    """Schema for input metadata."""
-
-    id: str
-    label: NotRequired[str]
-    type: str
-    help_text: str
-
-
-class GitHubAppInputs(TypedDict):
-    """Schema for a collection of plugin input fields."""
-
-    fields: list[FieldDict]
-    metadata: list[MetadataDict]
-    required: list[str]
-
-
-github_app_inputs: GitHubAppInputs = {
+github_app_inputs: _types.PluginInputs = {
     'fields': [
         {
             'id': 'github_api_url',

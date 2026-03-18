@@ -38,7 +38,7 @@ repos:
   - id: no_optional
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.13.3
+  rev: v0.14.10
   hooks:
   - id: ruff
     args:
@@ -46,19 +46,19 @@ repos:
     - --fix  # NOTE: When `--fix` is used, linting should be before ruff-format
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.13.3
+  rev: v0.14.10
   hooks:
   - id: ruff-format
     alias: ruff-format-first-pass
     name: ruff-format (first pass)
 
 - repo: https://github.com/asottile/add-trailing-comma.git
-  rev: v3.2.0
+  rev: v4.0.0
   hooks:
   - id: add-trailing-comma
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.13.3
+  rev: v0.14.10
   hooks:
   - id: ruff-format
     alias: ruff-format-second-pass
@@ -70,7 +70,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.34.0
+  rev: 0.36.0
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -87,7 +87,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/andreoliwa/nitpick.git
-  rev: v0.36.0
+  rev: v0.38.1
   hooks:
   - id: nitpick-check
     pass_filenames: false
@@ -171,15 +171,22 @@ repos:
   hooks:
   - id: flake8
     additional_dependencies:
-    - flake8-annotations ~= 3.1.1
-    - flake8-comprehensions ~= 3.15.0
+    - flake8-annotations ~= 3.2.0
+    - flake8-comprehensions ~= 3.17.0
     - flake8-cognitive-complexity ~= 0.1.0
     - flake8-docstrings ~= 1.7.0
     - flake8-length ~= 0.3.1
-    - flake8-logging ~= 1.6.0
-    - flake8-logging-format ~= 2024.24.12
-    - flake8-pytest-style ~= 2.0.0
-    - wemake-python-styleguide ~= 1.1.0
+    - flake8-logging ~= 1.8.0
+    # NOTE: `flake8-logging-format` hasn't had updates since 2024 and
+    # NOTE: thus gained an unresolved incompatibility with Python 3.14.
+    - flake8-logging-format ~= 2024.24.12; python_version < "3.14"
+    - flake8-pytest-style ~= 2.2.0
+    # NOTE: `setuptools` provides `pkg_resources` needed by
+    # NOTE: `flake8-logging-format`. `setuptools` stopped being bundled
+    # NOTE: in CPython starting Python 3.12. The latest version of
+    # NOTE: `setuptools` that's a part of Python 3.11.14 is v79.0.1.
+    - setuptools < 81; python_version >= "3.12" and python_version < "3.14"
+    - wemake-python-styleguide ~= 1.5.0
     language_version: python3
 
 - repo: https://github.com/Lucas-C/pre-commit-hooks-lxml.git
@@ -188,7 +195,7 @@ repos:
   - id: forbid-html-img-without-alt-text
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v1.18.2
+  rev: v1.19.1
   hooks:
   - id: mypy
     alias: mypy-py313
@@ -294,7 +301,7 @@ repos:
     pass_filenames: false
 
 - repo: https://github.com/PyCQA/pylint.git
-  rev: v3.3.9
+  rev: v4.0.4
   hooks:
   - id: pylint
     additional_dependencies:
@@ -307,7 +314,7 @@ repos:
     - hypothesis  # needed by pylint-pytest due to pytest-cov loading coverage
     - msrestazure  # needed by credentials.azure_kv
     - PyGithub  # needed by credentials.github_app
-    - pylint-pytest ~= 2.0.0a0
+    - pylint-pytest ~= 2.0.0a1
     - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
     - pytest-mock  # needed by pylint-pytest since it picks up pytest's args
     - pytest-subtests  # needed by pylint-pytest since it picks up pytest's args
@@ -316,9 +323,12 @@ repos:
     - PyYAML  # needed by credentials.injectors, inventory.plugins
     - Sphinx  # needed by the Sphinx extension stub
     - tox  # needed by `toxfile.py`
+    # FIXME: drop the chardet constraint hack once `requests > 2.32.5` is out
+    - >-  # Ref: https://github.com/psf/requests/issues/7219
+      chardet < 6
 
 - repo: https://github.com/rhysd/actionlint.git
-  rev: v1.7.8
+  rev: v1.7.10
   hooks:
   - id: actionlint
 

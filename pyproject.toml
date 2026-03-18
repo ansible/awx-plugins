@@ -69,6 +69,8 @@ name = "Ansible maintainers and contributors"
 conjur = "awx_plugins.credentials.conjur:conjur_plugin"
 hashivault_kv = "awx_plugins.credentials.hashivault:hashivault_kv_plugin"
 hashivault_ssh = "awx_plugins.credentials.hashivault:hashivault_ssh_plugin"
+hashivault-kv-oidc = "awx_plugins.credentials.hashivault:hashivault_kv_oidc_plugin"
+hashivault-ssh-oidc = "awx_plugins.credentials.hashivault:hashivault_ssh_oidc_plugin"
 azure_kv = "awx_plugins.credentials.azure_kv:azure_keyvault_plugin"
 aim = "awx_plugins.credentials.aim:aim_plugin"
 centrify_vault_kv = "awx_plugins.credentials.centrify_vault:centrify_plugin"
@@ -148,6 +150,14 @@ credentials-hashivault-kv = [
   "requests",
 ]
 credentials-hashivault-ssh = [
+  "awx_plugins.interfaces",
+  "requests",
+]
+credentials-hashivault-kv-oidc = [
+  "awx_plugins.interfaces",
+  "requests",
+]
+credentials-hashivault-ssh-oidc = [
   "awx_plugins.interfaces",
   "requests",
 ]

@@ -188,9 +188,13 @@ linkcheck_ignore = [
     r'https://github\.com(/[^/]+){2}/actions',  # 404 if no auth
     r'^https://chat\.ansible\.im/#',  # these render fully on front-end
     r'^https://matrix\.to/#',  # these render fully on front-end from anchors
+    # Ref: https://github.com/ansible/awx-plugins/pull/172#issuecomment-4038249530
+    # GitHub rate-limits unauthenticated HTTP requests aggressively, causing
+    # linkcheck timeouts on blob URLs.
+    r'https://github\.com(/[^/]+){2}/blob',
 ]
 linkcheck_anchors_ignore_for_url = (
-    r'^https://ansible\.r(eadthedocs|tfd)\.io'
+    r'^https://ansible\.r(eadthedocs|tfd)\.io'  # noqa: ISC004  # intentional
     r'/projects/awx/en/latest/rest_api/api_ref\.html$',
 )
 linkcheck_workers = 25

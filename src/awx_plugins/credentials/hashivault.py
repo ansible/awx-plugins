@@ -1,7 +1,6 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="arg-type, no-untyped-call, no-untyped-def"
 
-import copy
 import os
 import pathlib
 import time
@@ -13,249 +12,420 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 
 import requests
 
+from . import _types
 from .plugin import CertFiles, CredentialPlugin, raise_for_status
 
 
-base_inputs = {
+# Base input fields
+url_field: _types.FieldDict = {
+    'id': 'url',
+    'label': _('Server URL'),
+    'type': 'string',
+    'format': 'url',
+    'help_text': _('The URL to the HashiCorp Vault'),
+}
+
+token_field: _types.FieldDict = {
+    'id': 'token',
+    'label': _('Token'),
+    'type': 'string',
+    'secret': True,
+    'help_text': _(
+        'The access token used to authenticate to the Vault server',
+    ),
+}
+
+cacert_field: _types.FieldDict = {
+    'id': 'cacert',
+    'label': _('CA Certificate'),
+    'type': 'string',
+    'multiline': True,
+    'help_text': _(
+        'The CA certificate used to verify the SSL certificate of '
+        'the Vault server',
+    ),
+}
+
+role_id_field: _types.FieldDict = {
+    'id': 'role_id',
+    'label': _('AppRole role_id'),
+    'type': 'string',
+    'multiline': False,
+    'help_text': _('The Role ID for AppRole Authentication'),
+}
+
+secret_id_field: _types.FieldDict = {
+    'id': 'secret_id',
+    'label': _('AppRole secret_id'),
+    'type': 'string',
+    'multiline': False,
+    'secret': True,
+    'help_text': _('The Secret ID for AppRole Authentication'),
+}
+
+client_cert_public_field: _types.FieldDict = {
+    'id': 'client_cert_public',
+    'label': _('Client Certificate'),
+    'type': 'string',
+    'multiline': True,
+    'help_text': _(
+        'The PEM-encoded client certificate used for TLS client '
+        'authentication. This should include the certificate and any '
+        'intermediate certificates.',
+    ),
+}
+
+client_cert_private_field: _types.FieldDict = {
+    'id': 'client_cert_private',
+    'label': _('Client Certificate Key'),
+    'type': 'string',
+    'multiline': True,
+    'secret': True,
+    'help_text': _(
+        'The certificate private key used for TLS client authentication.',
+    ),
+}
+
+client_cert_role_field: _types.FieldDict = {
+    'id': 'client_cert_role',
+    'label': _('TLS Authentication Role'),
+    'type': 'string',
+    'multiline': False,
+    'help_text': _(
+        'The role configured in Hashicorp Vault for TLS client '
+        'authentication. If not provided, Hashicorp Vault may assign '
+        'roles based on the certificate used.',
+    ),
+}
+
+namespace_field: _types.FieldDict = {
+    'id': 'namespace',
+    'label': _('Namespace name (Vault Enterprise only)'),
+    'type': 'string',
+    'multiline': False,
+    'help_text': _(
+        'Name of the namespace to use when authenticate and retrieve secrets',
+    ),
+}
+
+kubernetes_role_field: _types.FieldDict = {
+    'id': 'kubernetes_role',
+    'label': _('Kubernetes role'),
+    'type': 'string',
+    'multiline': False,
+    'help_text': _(
+        'The Role for Kubernetes Authentication. This is the named '
+        'role, configured in Vault server, for AWX pod auth policies. '
+        'see https://www.vaultproject.io/docs/auth/kubernetes'
+        '#configuration',
+    ),
+}
+
+username_field: _types.FieldDict = {
+    'id': 'username',
+    'label': _('Username'),
+    'type': 'string',
+    'secret': False,
+    'help_text': _('Username for user authentication.'),
+}
+
+password_field: _types.FieldDict = {
+    'id': 'password',
+    'label': _('Password'),
+    'type': 'string',
+    'secret': True,
+    'help_text': _('Password for user authentication.'),
+}
+
+default_auth_path_field: _types.FieldDict = {
+    'id': 'default_auth_path',
+    'label': _('Path to Auth'),
+    'type': 'string',
+    'multiline': False,
+    'default': 'approle',
+    'help_text': _(
+        "The Authentication path to use if one isn't provided in the "
+        'metadata when linking to an input field. '
+        "Defaults to 'approle'",
+    ),
+}
+
+# OIDC-specific fields
+jwt_auth_path_field: _types.FieldDict = {
+    'id': 'default_auth_path',
+    'label': _('Path to Auth'),
+    'type': 'string',
+    'multiline': False,
+    'default': 'jwt',
+    'help_text': _(
+        'The path where the JWT authentication method is mounted. '
+        "Defaults to 'jwt'.",
+    ),
+}
+
+jwt_auth_path_metadata: _types.MetadataDict = {
+    'id': 'default_auth_path',
+    'label': _('Path to Auth'),
+    'type': 'string',
+    'multiline': False,
+    'help_text': _(
+        'The path where the JWT authentication method is mounted e.g, jwt',
+    ),
+}
+
+jwt_role_field: _types.FieldDict = {
+    'id': 'jwt_role',
+    'label': _('JWT Role'),
+    'type': 'string',
+    'multiline': False,
+    'help_text': _(
+        'The name of the Vault role configured for JWT authentication. '
+        'This role defines what policies and secrets the authenticated '
+        'job can access. Example: controller-automation, aap-production-jobs. '
+        'This must match a role created in Vault at auth/jwt/role/<role-name>.',
+    ),
+}
+
+jwt_audience_field: _types.FieldDict = {
+    'id': 'jwt_aud',
+    'label': _('JWT Audience'),
+    'type': 'string',
+    'multiline': False,
+    'help_text': _(
+        'Identifies this Vault instance as the intended recipient of JWTs. '
+        'This value must match the bound_audiences configuration in your '
+        'Vault JWT auth method. Examples: hashicorp-vault-prod-01, '
+        'https://vault.example.com, or vault-production.',
+    ),
+}
+
+workload_identity_token_field: _types.FieldDict = {
+    'id': 'workload_identity_token',
+    'label': _('Workload Identity Token'),
+    'type': 'string',
+    'secret': True,
+    'internal': True,
+    'help_text': _(
+        'JWT token for workload identity authentication. '
+        'Automatically populated by the system.',
+    ),
+}
+
+# Base metadata fields
+secret_path_metadata: _types.MetadataDict = {
+    'id': 'secret_path',
+    'label': _('Path to Secret'),
+    'type': 'string',
+    'help_text': _(
+        (
+            'The path to the secret stored in the secret backend e.g, '
+            '/some/secret/. It is recommended that you use the secret '
+            'backend field to identify the storage backend and to use '
+            'this field for locating a specific secret within that '
+            'store. However, if you prefer to fully identify both the '
+            'secret backend and one of its secrets using only this '
+            'field, join their locations into a single path without '
+            'any additional separators, '
+            'e.g, /location/of/backend/some/secret.'
+        ),
+    ),
+}
+
+auth_path_metadata: _types.MetadataDict = {
+    'id': 'auth_path',
+    'label': _('Path to Auth'),
+    'type': 'string',
+    'multiline': False,
+    'help_text': _(
+        'The path where the Authentication method is mounted e.g, approle',
+    ),
+}
+
+# KV-specific fields and metadata
+api_version_field: _types.FieldDict = {
+    'id': 'api_version',
+    'label': _('API Version'),
+    'type': 'string',
+    'choices': ['v1', 'v2'],
+    'help_text': _(
+        'API v1 is for static key/value lookups.  API v2 is for versioned '
+        'key/value lookups.',
+    ),
+    'default': 'v1',
+}
+
+secret_backend_metadata: _types.MetadataDict = {
+    'id': 'secret_backend',
+    'label': _('Name of Secret Backend'),
+    'type': 'string',
+    'help_text': _(
+        'The name of the kv secret backend (if left empty, the first '
+        'segment of the secret path will be used).',
+    ),
+}
+
+secret_key_metadata: _types.MetadataDict = {
+    'id': 'secret_key',
+    'label': _('Key Name'),
+    'type': 'string',
+    'help_text': _('The name of the key to look up in the secret.'),
+}
+
+secret_version_metadata: _types.MetadataDict = {
+    'id': 'secret_version',
+    'label': _('Secret Version (v2 only)'),
+    'type': 'string',
+    'help_text': _(
+        'Used to specify a specific secret version (if left empty, '
+        'the latest version will be used).',
+    ),
+}
+
+# SSH-specific metadata
+public_key_metadata: _types.MetadataDict = {
+    'id': 'public_key',
+    'label': _('Unsigned Public Key'),
+    'type': 'string',
+    'multiline': True,
+}
+
+role_metadata: _types.MetadataDict = {
+    'id': 'role',
+    'label': _('Role Name'),
+    'type': 'string',
+    'help_text': _('The name of the role used to sign.'),
+}
+
+valid_principals_metadata: _types.MetadataDict = {
+    'id': 'valid_principals',
+    'label': _('Valid Principals'),
+    'type': 'string',
+    'help_text': _(
+        'Valid principals (either usernames or hostnames) that the '
+        'certificate should be signed for.',
+    ),
+}
+
+
+hashi_kv_inputs: _types.PluginInputs = {
     'fields': [
-        {
-            'id': 'url',
-            'label': _('Server URL'),
-            'type': 'string',
-            'format': 'url',
-            'help_text': _('The URL to the HashiCorp Vault'),
-        },
-        {
-            'id': 'token',
-            'label': _('Token'),
-            'type': 'string',
-            'secret': True,
-            'help_text': _(
-                'The access token used to authenticate to the Vault server',
-            ),
-        },
-        {
-            'id': 'cacert',
-            'label': _('CA Certificate'),
-            'type': 'string',
-            'multiline': True,
-            'help_text': _(
-                'The CA certificate used to verify the SSL certificate of '
-                'the Vault server',
-            ),
-        },
-        {
-            'id': 'role_id',
-            'label': _('AppRole role_id'),
-            'type': 'string',
-            'multiline': False,
-            'help_text': _('The Role ID for AppRole Authentication'),
-        },
-        {
-            'id': 'secret_id',
-            'label': _('AppRole secret_id'),
-            'type': 'string',
-            'multiline': False,
-            'secret': True,
-            'help_text': _('The Secret ID for AppRole Authentication'),
-        },
-        {
-            'id': 'client_cert_public',
-            'label': _('Client Certificate'),
-            'type': 'string',
-            'multiline': True,
-            'help_text': _(
-                'The PEM-encoded client certificate used for TLS client '
-                'authentication. This should include the certificate and any '
-                'intermediate certififcates.',
-            ),
-        },
-        {
-            'id': 'client_cert_private',
-            'label': _('Client Certificate Key'),
-            'type': 'string',
-            'multiline': True,
-            'secret': True,
-            'help_text': _(
-                'The certificate private key used for TLS client '
-                'authentication.',
-            ),
-        },
-        {
-            'id': 'client_cert_role',
-            'label': _('TLS Authentication Role'),
-            'type': 'string',
-            'multiline': False,
-            'help_text': _(
-                'The role configured in Hashicorp Vault for TLS client '
-                'authentication. If not provided, Hashicorp Vault may assign '
-                'roles based on the certificate used.',
-            ),
-        },
-        {
-            'id': 'namespace',
-            'label': _('Namespace name (Vault Enterprise only)'),
-            'type': 'string',
-            'multiline': False,
-            'help_text': _(
-                'Name of the namespace to use when authenticate and retrieve '
-                'secrets',
-            ),
-        },
-        {
-            'id': 'kubernetes_role',
-            'label': _('Kubernetes role'),
-            'type': 'string',
-            'multiline': False,
-            'help_text': _(
-                'The Role for Kubernetes Authentication. This is the named '
-                'role, configured in Vault server, for AWX pod auth policies. '
-                'see https://www.vaultproject.io/docs/auth/kubernetes'
-                '#configuration',
-            ),
-        },
-        {
-            'id': 'username',
-            'label': _('Username'),
-            'type': 'string',
-            'secret': False,
-            'help_text': _('Username for user authentication.'),
-        },
-        {
-            'id': 'password',
-            'label': _('Password'),
-            'type': 'string',
-            'secret': True,
-            'help_text': _('Password for user authentication.'),
-        },
-        {
-            'id': 'default_auth_path',
-            'label': _('Path to Auth'),
-            'type': 'string',
-            'multiline': False,
-            'default': 'approle',
-            'help_text': _(
-                "The Authentication path to use if one isn't provided in the "
-                'metadata when linking to an input field. '
-                "Defaults to 'approle'",
-            ),
-        },
+        url_field,
+        token_field,
+        cacert_field,
+        role_id_field,
+        secret_id_field,
+        client_cert_public_field,
+        client_cert_private_field,
+        client_cert_role_field,
+        namespace_field,
+        kubernetes_role_field,
+        username_field,
+        password_field,
+        default_auth_path_field,
+        api_version_field,
     ],
     'metadata': [
-        {
-            'id': 'secret_path',
-            'label': _('Path to Secret'),
-            'type': 'string',
-            'help_text': _(
-                (
-                    'The path to the secret stored in the secret backend e.g, '
-                    '/some/secret/. It is recommended that you use the secret '
-                    'backend field to identify the storage backend and to use '
-                    'this field for locating a specific secret within that '
-                    'store. However, if you prefer to fully identify both the '
-                    'secret backend and one of its secrets using only this '
-                    'field, join their locations into a single path without '
-                    'any additional separators, '
-                    'e.g, /location/of/backend/some/secret.'
-                ),
-            ),
-        },
-        {
-            'id': 'auth_path',
-            'label': _('Path to Auth'),
-            'type': 'string',
-            'multiline': False,
-            'help_text': _(
-                'The path where the Authentication method is mounted e.g, approle',
-            ),
-        },
+        secret_backend_metadata,
+        secret_path_metadata,
+        auth_path_metadata,
+        secret_key_metadata,
+        secret_version_metadata,
     ],
     'required': [
-        'url',
-        'secret_path',
+        url_field['id'],
+        secret_path_metadata['id'],
+        api_version_field['id'],
+        secret_key_metadata['id'],
     ],
 }
 
-hashi_kv_inputs = copy.deepcopy(base_inputs)
-hashi_kv_inputs['fields'].append(  # type: ignore[attr-defined]  # FIXME
-    {
-        'id': 'api_version',
-        'label': _('API Version'),
-        'choices': ['v1', 'v2'],
-        'help_text': _(
-            'API v1 is for static key/value lookups.  API v2 is for versioned '
-            'key/value lookups.',
-        ),
-        'default': 'v1',
-    },
-)
-hashi_kv_inputs['metadata'] = (
-    [  # type: ignore[operator]  # FIXME
-        {
-            'id': 'secret_backend',
-            'label': _('Name of Secret Backend'),
-            'type': 'string',
-            'help_text': _(
-                'The name of the kv secret backend (if left empty, the first '
-                'segment of the secret path will be used).',
-            ),
-        },
-    ]
-    + hashi_kv_inputs['metadata']
-    + [
-        {
-            'id': 'secret_key',
-            'label': _('Key Name'),
-            'type': 'string',
-            'help_text': _('The name of the key to look up in the secret.'),
-        },
-        {
-            'id': 'secret_version',
-            'label': _('Secret Version (v2 only)'),
-            'type': 'string',
-            'help_text': _(
-                'Used to specify a specific secret version (if left empty, '
-                'the latest version will be used).',
-            ),
-        },
-    ]
-)
-hashi_kv_inputs['required'].extend(  # type: ignore[attr-defined]  # FIXME
-    ['api_version', 'secret_key'],
-)
+hashi_kv_oidc_inputs: _types.PluginInputs = {
+    'fields': [
+        url_field,
+        api_version_field,
+        cacert_field,
+        jwt_auth_path_field,
+        jwt_role_field,
+        jwt_audience_field,
+        namespace_field,
+        workload_identity_token_field,
+    ],
+    'metadata': [
+        secret_backend_metadata,
+        secret_path_metadata,
+        jwt_auth_path_metadata,
+        secret_key_metadata,
+        secret_version_metadata,
+    ],
+    'required': [
+        url_field['id'],
+        api_version_field['id'],
+        jwt_auth_path_field['id'],
+        jwt_role_field['id'],
+        jwt_audience_field['id'],
+        secret_path_metadata['id'],
+        secret_key_metadata['id'],
+    ],
+}
 
-hashi_ssh_inputs = copy.deepcopy(base_inputs)
-hashi_ssh_inputs['metadata'] = (
-    [  # type: ignore[operator]  # FIXME
-        {
-            'id': 'public_key',
-            'label': _('Unsigned Public Key'),
-            'type': 'string',
-            'multiline': True,
-        },
-    ]
-    + hashi_ssh_inputs['metadata']
-    + [
-        {
-            'id': 'role',
-            'label': _('Role Name'),
-            'type': 'string',
-            'help_text': _('The name of the role used to sign.'),
-        },
-        {
-            'id': 'valid_principals',
-            'label': _('Valid Principals'),
-            'type': 'string',
-            'help_text': _(
-                'Valid principals (either usernames or hostnames) that the '
-                'certificate should be signed for.',
-            ),
-        },
-    ]
-)
-hashi_ssh_inputs['required'].extend(  # type: ignore[attr-defined]  # FIXME
-    ['public_key', 'role'],
-)
+hashi_ssh_inputs: _types.PluginInputs = {
+    'fields': [
+        url_field,
+        token_field,
+        cacert_field,
+        role_id_field,
+        secret_id_field,
+        client_cert_public_field,
+        client_cert_private_field,
+        client_cert_role_field,
+        namespace_field,
+        kubernetes_role_field,
+        username_field,
+        password_field,
+        default_auth_path_field,
+    ],
+    'metadata': [
+        public_key_metadata,
+        secret_path_metadata,
+        auth_path_metadata,
+        role_metadata,
+        valid_principals_metadata,
+    ],
+    'required': [
+        url_field['id'],
+        secret_path_metadata['id'],
+        public_key_metadata['id'],
+        role_metadata['id'],
+    ],
+}
+
+hashi_ssh_oidc_inputs: _types.PluginInputs = {
+    'fields': [
+        url_field,
+        cacert_field,
+        jwt_auth_path_field,
+        jwt_role_field,
+        jwt_audience_field,
+        namespace_field,
+        workload_identity_token_field,
+    ],
+    'metadata': [
+        public_key_metadata,
+        secret_path_metadata,
+        jwt_auth_path_metadata,
+        role_metadata,
+        valid_principals_metadata,
+    ],
+    'required': [
+        url_field['id'],
+        jwt_auth_path_field['id'],
+        jwt_role_field['id'],
+        jwt_audience_field['id'],
+        secret_path_metadata['id'],
+        public_key_metadata['id'],
+        role_metadata['id'],
+    ],
+}
 
 
 def handle_auth(**kwargs):
@@ -272,6 +442,11 @@ def handle_auth(**kwargs):
         'client_cert_private',
     ):
         token = method_auth(**kwargs, auth_param=client_cert_auth(**kwargs))
+    elif kwargs.get('workload_identity_token'):
+        token = method_auth(
+            **kwargs,
+            auth_param=workload_identity_auth(**kwargs),
+        )
     else:
         raise Exception(
             'Token, Username/Password, AppRole, Kubernetes, or TLS authentication parameters must be set',
@@ -298,6 +473,12 @@ def kubernetes_auth(**kwargs):
 
 def client_cert_auth(**kwargs):
     return {'name': kwargs.get('client_cert_role')}
+
+
+def workload_identity_auth(**kwargs):
+    """JWT representing a workload. Issued by an OIDC entity trusted by Vault."""
+    workload_identity_token = kwargs.get('workload_identity_token')
+    return {'role': kwargs.get('jwt_role'), 'jwt': workload_identity_token}
 
 
 def method_auth(**kwargs):
@@ -473,5 +654,17 @@ hashivault_kv_plugin = CredentialPlugin(
 hashivault_ssh_plugin = CredentialPlugin(
     'HashiCorp Vault Signed SSH',
     inputs=hashi_ssh_inputs,
+    backend=ssh_backend,
+)
+
+hashivault_kv_oidc_plugin = CredentialPlugin(
+    'HashiCorp Vault Secret Lookup (OIDC)',
+    inputs=hashi_kv_oidc_inputs,
+    backend=kv_backend,
+)
+
+hashivault_ssh_oidc_plugin = CredentialPlugin(
+    'HashiCorp Vault Signed SSH (OIDC)',
+    inputs=hashi_ssh_oidc_inputs,
     backend=ssh_backend,
 )

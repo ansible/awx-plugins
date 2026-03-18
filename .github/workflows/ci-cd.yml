@@ -379,6 +379,11 @@ jobs:
         - spellcheck-docs
         xfail:
         - false
+        include:
+        - python-version: 3.14
+          runner-vm-os: ubuntu-latest
+          toxenv: pre-commit
+          xfail: false
       fail-fast: false
 
     uses: tox-dev/workflow/.github/workflows/reusable-tox.yml@88781f74da62948ad3b87b803c95a6ad60c57028  # yamllint disable-line rule:line-length
@@ -442,7 +447,7 @@ jobs:
               fromJSON('["pre-commit", "spellcheck-docs"]'),
               matrix.toxenv
             )
-            && 4
+            && 5
             || 2
           )
         }}

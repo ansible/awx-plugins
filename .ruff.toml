@@ -110,6 +110,23 @@ task-tags = [
 [lint.flake8-pytest-style]
 parametrize-values-type = "tuple"
 
+[lint.flake8-tidy-imports.banned-api]
+"awx".msg = """
+Use `awx_plugins.interfaces._temporary_private_api` instead.
+Best design a public API that does not depend on AWX, though.
+"""
+"django".msg = """
+Use `awx_plugins.interfaces._temporary_private_django_api` instead.
+Best get rid of the indirect dependency on Django, though.
+"""
+"unittest".msg = """
+Use `pytest` instead. For mocking and spying, inject the `mocker` fixture \
+from the already-integrated `pytest-mock` plugin into your tests instead.
+`pytest` also has a built-in `monkeypatch` fixture that can be used in \
+simple cases or combined with `mocker`.
+The existing usage pattern can be found in the existing tests.
+"""
+
 [lint.flake8-quotes]
 inline-quotes = "single"
 
@@ -293,15 +310,12 @@ testing = [
 
 "tests/credential_plugins_test.py" = [
   # The following ignores must be fixed and the entries removed from this config:
-  "B017",
   "C419",
   "D100",
   "D102",
   "D103",
   "D205",
   "D209",
-  "D400",
-  "PT011",
 ]
 
 "toxfile.py" = [

@@ -47,6 +47,16 @@ credential_plugins = (
     ),
     EntryPointParam(
         'awx_plugins.credentials',
+        'hashivault-kv-oidc',
+        'awx_plugins.credentials.hashivault:hashivault_kv_oidc_plugin',
+    ),
+    EntryPointParam(
+        'awx_plugins.credentials',
+        'hashivault-ssh-oidc',
+        'awx_plugins.credentials.hashivault:hashivault_ssh_oidc_plugin',
+    ),
+    EntryPointParam(
+        'awx_plugins.credentials',
         'azure_kv',
         'awx_plugins.credentials.azure_kv:azure_keyvault_plugin',
     ),

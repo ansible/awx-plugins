@@ -31,6 +31,7 @@ from azure.keyvault.secrets import SecretClient
 # NOTE: Alternatively, the dependency can be replaced.
 from msrestazure import azure_cloud  # type: ignore[import-untyped]
 
+from . import _types
 from .plugin import CredentialPlugin
 
 
@@ -43,7 +44,7 @@ clouds = [
 default_cloud = vars(azure_cloud)['AZURE_PUBLIC_CLOUD']
 
 
-azure_keyvault_inputs = {
+azure_keyvault_inputs: _types.PluginInputs = {
     'fields': [
         {
             'id': 'url',

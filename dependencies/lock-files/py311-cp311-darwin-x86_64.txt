@@ -10,14 +10,14 @@ attrs==25.4.0
     # via pytest-subtests
 awx-plugins-interfaces==0.0.1a5
     # via awx-plugins-core (pyproject.toml)
-azure-core==1.36.0
+azure-core==1.38.2
     # via
     #   azure-identity
     #   azure-keyvault-certificates
     #   azure-keyvault-keys
     #   azure-keyvault-secrets
     #   msrest
-azure-identity==1.25.1
+azure-identity==1.25.2
     # via awx-plugins-core (pyproject.toml)
 azure-keyvault==4.2.0
     # via awx-plugins-core (pyproject.toml)
@@ -27,13 +27,13 @@ azure-keyvault-keys==4.11.0
     # via azure-keyvault
 azure-keyvault-secrets==4.10.0
     # via azure-keyvault
-boto3==1.40.69
+boto3==1.42.60
     # via awx-plugins-core (pyproject.toml)
-botocore==1.40.69
+botocore==1.42.60
     # via
     #   boto3
     #   s3transfer
-certifi==2025.10.5
+certifi==2026.2.25
     # via
     #   msrest
     #   requests
@@ -45,7 +45,7 @@ charset-normalizer==3.4.4
     # via requests
 covdefaults==2.3.0
     # via -r dependencies/direct/py.in
-coverage==7.11.3
+coverage==7.13.4
     # via
     #   -r dependencies/direct/py.in
     #   covdefaults
@@ -53,7 +53,7 @@ coverage==7.11.3
     #   pytest-cov
 coverage-enable-subprocess==1.0
     # via -r dependencies/direct/py.in
-cryptography==46.0.3
+cryptography==46.0.5
     # via
     #   -r dependencies/direct/py.in
     #   adal
@@ -61,9 +61,9 @@ cryptography==46.0.3
     #   azure-keyvault-keys
     #   msal
     #   pyjwt
-execnet==2.1.1
+execnet==2.1.2
     # via pytest-xdist
-hypothesis==6.147.0
+hypothesis==6.151.9
     # via -r dependencies/direct/py.in
 idna==3.11
     # via requests
@@ -77,13 +77,13 @@ isodate==0.7.2
     #   msrest
 jinja2==3.1.6
     # via -r dependencies/direct/py.in
-jmespath==1.0.1
+jmespath==1.1.0
     # via
     #   boto3
     #   botocore
 markupsafe==3.0.3
     # via jinja2
-msal==1.34.0
+msal==1.35.0
     # via
     #   azure-identity
     #   msal-extensions
@@ -95,27 +95,27 @@ msrestazure==0.6.4.post1
     # via awx-plugins-core (pyproject.toml)
 oauthlib==3.3.1
     # via requests-oauthlib
-packaging==25.0
+packaging==26.0
     # via pytest
 pluggy==1.6.0
     # via
     #   pytest
     #   pytest-cov
-pycparser==2.23
+pycparser==3.0
     # via cffi
 pygithub==2.8.1
     # via awx-plugins-core (pyproject.toml)
 pygments==2.19.2
     # via pytest
-pyjwt==2.10.1
+pyjwt==2.11.0
     # via
     #   -r dependencies/direct/py.in
     #   adal
     #   msal
     #   pygithub
-pynacl==1.6.0
+pynacl==1.6.2
     # via pygithub
-pytest==9.0.0
+pytest==9.0.2
     # via
     #   -r dependencies/direct/py.in
     #   pytest-cov
@@ -153,7 +153,7 @@ requests==2.32.5
     #   requests-oauthlib
 requests-oauthlib==2.0.0
     # via msrest
-s3transfer==0.14.0
+s3transfer==0.16.0
     # via boto3
 six==1.17.0
     # via
@@ -169,7 +169,7 @@ typing-extensions==4.15.0
     #   azure-keyvault-keys
     #   azure-keyvault-secrets
     #   pygithub
-urllib3==2.5.0
+urllib3==2.6.3
     # via
     #   botocore
     #   pygithub

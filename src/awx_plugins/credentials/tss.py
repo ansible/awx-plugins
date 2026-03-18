@@ -5,6 +5,7 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
     gettext_noop as _,
 )
 
+from . import _types
 from .plugin import CredentialPlugin
 
 
@@ -23,7 +24,7 @@ except ImportError:
         ServerSecret as ServerSecret,
     )
 
-tss_inputs = {
+tss_inputs: _types.PluginInputs = {
     'fields': [
         {
             'id': 'server_url',

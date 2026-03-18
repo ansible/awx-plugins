@@ -108,10 +108,6 @@ py-version = "3.11"
 # source root.
 # source-roots =
 
-# When enabled, pylint would attempt to guess common misconfiguration and emit
-# user-friendly hints instead of false-positive error messages.
-suggestion-mode = true
-
 # Allow loading of arbitrary C extensions. Extensions are imported into the
 # active Python interpreter and may run arbitrary code.
 # unsafe-load-any-extension =
@@ -357,7 +353,11 @@ single-line-if-stmt = false
 # allow-wildcard-with-all =
 
 # Deprecated modules which should not be used, separated by a comma.
-# deprecated-modules =
+deprecated-modules = [
+  "awx",
+  "django",
+  "unittest",
+]
 
 # Output a graph (.gv or any supported image format) of external dependencies to
 # the given file (report RP0402 must not be disabled).
@@ -382,8 +382,15 @@ known-third-party = [
 
 # Couples of modules and preferred modules, separated by a comma.
 preferred-modules = [
-  "awx:awx_plugins.interfaces",
-  "django:awx_plugins.interfaces",
+  # NOTE(webknjaz): The following entries are commented out in favor of the
+  # NOTE(webknjaz): `deprecated-modules` setting due to this rule following
+  # NOTE(webknjaz): imports and picking up the forbidden ones from the
+  # NOTE(webknjaz): `awx_plugins.interfaces` project that still has some. We
+  # NOTE(webknjaz): should be able to uncomment them once they are removed from
+  # NOTE(webknjaz): there and the platform components (`awx_plugins.*` modules)
+  # NOTE(webknjaz): are completely decoupled from `awx` and `django`.
+  # "awx:awx_plugins.interfaces",
+  # "django:awx_plugins.interfaces",
   "unittest:pytest",
 ]
 
@@ -437,9 +444,9 @@ disable = [
   "missing-timeout",
   "no-else-return",
   "no-member",
+  "no-name-in-module",  # false-positive: https://github.com/pylint-dev/pylint/issues/10147#issuecomment-3946199493
   "no-self-use",
   "pointless-string-statement",
-  "preferred-module",
   "raise-missing-from",
   "relative-beyond-top-level",
   "singleton-comparison",

@@ -7,12 +7,14 @@ import typing
 
 from requests.exceptions import HTTPError
 
+from . import _types
+
 
 class CredentialPlugin(typing.NamedTuple):
     """Schema for credential plugins."""
 
     name: str
-    inputs: object
+    inputs: _types.PluginInputs
     backend: object
 
 

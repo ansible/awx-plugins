@@ -41,7 +41,7 @@ Open a GitHub issue to report bugs or request features.
 
 ## Governance
 
-The Ansible PROJECTNAME uses the following governance model:
+The Ansible awx-plugins uses the following governance model:
 
 ---
 - A patch SHOULD have a minimum of 2 reviews from Members before it is merged.

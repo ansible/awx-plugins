@@ -12,6 +12,7 @@ from delinea.secrets.vault import (
     SecretsVault as SecretsVault,
 )
 
+from . import _types
 from .plugin import CredentialPlugin
 
 
@@ -24,7 +25,7 @@ class Settings:
 settings = Settings()
 
 
-dsv_inputs = {
+dsv_inputs: _types.PluginInputs = {
     'fields': [
         {
             'id': 'tenant',

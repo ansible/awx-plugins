@@ -9,10 +9,11 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 
 import requests as requests
 
+from . import _types
 from .plugin import CertFiles, CredentialPlugin, raise_for_status
 
 
-aim_inputs = {
+aim_inputs: _types.PluginInputs = {
     'fields': [
         {
             'id': 'url',
