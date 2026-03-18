@@ -117,6 +117,11 @@ per-file-ignores =
   # additionally test docstrings don't need param lists (DAR, DCO020):
   tests/**.py: DAR, DCO020, S101, S105, S108, S404, S603, WPS202, WPS210, WPS430, WPS436, WPS441, WPS442, WPS450
 
+  # The following ignores have been researched and should be considered permanent:
+  # WPS202: two-plugin module (secret store + SSH) with Protocol types, TypedDicts,
+  # and multiple helpers per plugin; restructuring would harm readability.
+  src/awx_plugins/credentials/akeyless.py: WPS202
+
   # The following ignores must be fixed and the entries removed from this config:
   src/awx_plugins/credentials/aim.py: ANN003, ANN201, B950, CCR001, D100, D103, LN001, Q003, WPS210, WPS221, WPS223, WPS231, WPS336, WPS432
   src/awx_plugins/credentials/aws_secretsmanager.py: ANN003, ANN201, D100, D103, WPS111, WPS210, WPS329, WPS529

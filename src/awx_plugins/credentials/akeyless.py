@@ -1,18 +1,20 @@
-"""Akeyless credential plugins for AWX."""  # noqa: WPS202
+"""Akeyless credential plugins for AWX."""
 # WPS202 is expected: implementing two credential plugins requires Protocol
 # types, TypedDicts, and multiple helper functions per plugin, which exceeds
 # the default module-member threshold.
 
-import collections.abc as _c
 import json as _json
 import typing as _t
+from collections.abc import Mapping as _Mapping
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
 )
 
 # The akeyless SDK does not ship type stubs; pylint cannot resolve its imports.
-# pylint: disable=import-error,no-name-in-module
+# When not installed, pylint misidentifies `from akeyless import` as a
+# self-import because this file is named akeyless.py (import-self).
+# pylint: disable=import-error,import-self,no-name-in-module
 from akeyless import (
     ApiClient,
     Auth,
@@ -23,8 +25,8 @@ from akeyless import (
 )
 from akeyless.models.get_ssh_certificate import GetSSHCertificate
 from akeyless.rest import ApiException
-# pylint: enable=import-error,no-name-in-module
 
+# pylint: enable=import-error,import-self,no-name-in-module
 from .plugin import CertFiles, CredentialPlugin
 
 
@@ -84,7 +86,7 @@ class _AkeylessApi(_t.Protocol):
     def get_secret_value(
         self: _t.Self,
         req: object,
-    ) -> _c.Mapping[str, str]: ...
+    ) -> _Mapping[str, str]: ...
 
     def get_ssh_certificate(
         self: _t.Self,
@@ -281,7 +283,7 @@ def _extract_structured_secret(
 
 
 def _extract_secret_value(
-    secret_response: _c.Mapping[str, str],
+    secret_response: _Mapping[str, str],
     secret_path: str,
     secret_key: str | None,
     static_secret_format: str,
@@ -357,6 +359,9 @@ def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
                 kwargs['access_id'],
                 kwargs['access_key'],
             )
+        except ValueError as exc:
+            raise RuntimeError(str(exc)) from exc
+        try:
             return _fetch_secret_value(
                 api_instance,
                 token,
@@ -367,8 +372,6 @@ def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
             raise RuntimeError(
                 f'Akeyless API error: {exc.reason} (Status: {exc.status})',
             ) from exc
-        except ValueError as exc:
-            raise RuntimeError(str(exc)) from exc
 
 
 def _coerce_ttl(ttl_value: int | str | None) -> int | None:
@@ -401,7 +404,9 @@ def _fetch_ssh_certificate(
     return response.data
 
 
-def akeyless_ssh_backend(**kwargs: _t.Unpack[_AkeylessSshBackendKwargs]) -> str:
+def akeyless_ssh_backend(
+    **kwargs: _t.Unpack[_AkeylessSshBackendKwargs],
+) -> str:
     """Generate a signed SSH certificate using Akeyless."""
     with CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
         api_instance = _setup_client(
@@ -414,6 +419,9 @@ def akeyless_ssh_backend(**kwargs: _t.Unpack[_AkeylessSshBackendKwargs]) -> str:
                 kwargs['access_id'],
                 kwargs['access_key'],
             )
+        except ValueError as exc:
+            raise RuntimeError(str(exc)) from exc
+        try:
             return _fetch_ssh_certificate(
                 api_instance,
                 token,
@@ -429,13 +437,13 @@ def akeyless_ssh_backend(**kwargs: _t.Unpack[_AkeylessSshBackendKwargs]) -> str:
 
 akeyless_plugin = CredentialPlugin(
     'Akeyless',
-    inputs=_akeyless_inputs,
+    inputs=_akeyless_inputs,  # type: ignore[arg-type]
     backend=akeyless_backend,
 )
 
 
 akeyless_ssh_plugin = CredentialPlugin(
     'Akeyless SSH',
-    inputs=_akeyless_ssh_inputs,
+    inputs=_akeyless_ssh_inputs,  # type: ignore[arg-type]
     backend=akeyless_ssh_backend,
 )
