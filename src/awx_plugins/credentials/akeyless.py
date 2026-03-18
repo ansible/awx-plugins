@@ -1,16 +1,18 @@
 """Akeyless credential plugins for AWX."""  # noqa: WPS202
-# pylint: disable=import-error, import-self, no-name-in-module
-# FIXME: the following violations must be addressed gradually and unignored
-# mypy: disable-error-code="import-not-found, import-untyped, no-untyped-def"
+# WPS202 is expected: implementing two credential plugins requires Protocol
+# types, TypedDicts, and multiple helper functions per plugin, which exceeds
+# the default module-member threshold.
 
-import json
-from collections.abc import Mapping
-from typing import NotRequired, Protocol, TypedDict, Unpack, cast
+import collections.abc as _c
+import json as _json
+import typing as _t
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
 )
 
+# The akeyless SDK does not ship type stubs; pylint cannot resolve its imports.
+# pylint: disable=import-error,no-name-in-module
 from akeyless import (
     ApiClient,
     Auth,
@@ -21,71 +23,76 @@ from akeyless import (
 )
 from akeyless.models.get_ssh_certificate import GetSSHCertificate
 from akeyless.rest import ApiException
+# pylint: enable=import-error,no-name-in-module
 
 from .plugin import CertFiles, CredentialPlugin
 
 
-SUPPORTED_ITEM_TYPES = frozenset(('STATIC_SECRET',))
+_SUPPORTED_ITEM_TYPES = frozenset(('STATIC_SECRET',))
 
-STRUCTURED_SECRET_FORMATS = frozenset(('json', 'key-value'))
-PASSWORD_KEYS = frozenset(('username', 'password'))
+_STRUCTURED_SECRET_FORMATS = frozenset(('json', 'key-value'))
+
+_PASSWORD_KEYS = frozenset(('username', 'password'))
 
 
-class _AkeylessCommonKwargs(TypedDict):
+class _AkeylessCommonKwargs(_t.TypedDict):
     gateway_url: str
     access_id: str
     access_key: str
-    ca_cert: NotRequired[str | None]
+    ca_cert: _t.NotRequired[str | None]
 
 
 class _AkeylessBackendKwargs(_AkeylessCommonKwargs):
     secret_path: str
-    secret_key: NotRequired[str | None]
+    secret_key: _t.NotRequired[str | None]
 
 
 class _AkeylessSshBackendKwargs(_AkeylessCommonKwargs):
     cert_issue_name: str
     cert_username: str
     public_key_data: str
-    ttl: NotRequired[int | str | None]
+    ttl: _t.NotRequired[int | str | None]
 
 
-class _AuthResponse(Protocol):
+class _AuthResponse(_t.Protocol):
     token: str | None
 
 
-class _StaticSecretInfo(Protocol):
+class _StaticSecretInfo(_t.Protocol):
     format: str
 
 
-class _ItemGeneralInfo(Protocol):
+class _ItemGeneralInfo(_t.Protocol):
     static_secret_info: _StaticSecretInfo
 
 
-class _DescribeItemResponse(Protocol):
+class _DescribeItemResponse(_t.Protocol):
     item_type: str
     item_sub_type: str
     item_general_info: _ItemGeneralInfo
 
 
-class _SshCertResponse(Protocol):
-    data: str | None
+class _SshCertResponse(_t.Protocol):
+    data: str | None  # noqa: WPS110  # must match the akeyless SDK response attribute name
 
 
-class _AkeylessApi(Protocol):
-    def auth(self, auth: object) -> _AuthResponse: ...
+class _AkeylessApi(_t.Protocol):
+    def auth(self: _t.Self, auth: object) -> _AuthResponse: ...
 
-    def describe_item(self, req: object) -> _DescribeItemResponse: ...
+    def describe_item(self: _t.Self, req: object) -> _DescribeItemResponse: ...
 
-    def get_secret_value(self, req: object) -> Mapping[str, str]: ...
+    def get_secret_value(
+        self: _t.Self,
+        req: object,
+    ) -> _c.Mapping[str, str]: ...
 
     def get_ssh_certificate(
-        self,
+        self: _t.Self,
         req: object,
     ) -> _SshCertResponse: ...
 
 
-common_plugin_inputs = [
+_common_plugin_inputs = [
     {
         'id': 'gateway_url',
         'label': _('Gateway URL'),
@@ -122,8 +129,8 @@ common_plugin_inputs = [
 ]
 
 
-akeyless_inputs = {
-    'fields': common_plugin_inputs,
+_akeyless_inputs = {
+    'fields': _common_plugin_inputs,
     'metadata': [
         {
             'id': 'secret_path',
@@ -153,8 +160,8 @@ akeyless_inputs = {
 }
 
 
-akeyless_ssh_inputs = {
-    'fields': common_plugin_inputs,
+_akeyless_ssh_inputs = {
+    'fields': _common_plugin_inputs,
     'metadata': [
         {
             'id': 'cert_issue_name',
@@ -226,7 +233,7 @@ def _authenticate(
         ),
     )
     if not auth_response.token:
-        raise RuntimeError(
+        raise ValueError(
             'Failed to authenticate with Akeyless: no token received.',
         )
     return auth_response.token
@@ -235,11 +242,11 @@ def _authenticate(
 def _extract_password_secret(secret_data: str, secret_key: str | None) -> str:
     if not secret_key:
         return secret_data
-    if secret_key not in PASSWORD_KEYS:
+    if secret_key not in _PASSWORD_KEYS:
         raise NotImplementedError(
             'Password secrets only support "username" or "password" keys.',
         )
-    secret_dict = cast('dict[str, str]', json.loads(secret_data))
+    secret_dict = _t.cast('dict[str, str]', _json.loads(secret_data))
     return secret_dict[secret_key]
 
 
@@ -264,7 +271,7 @@ def _extract_structured_secret(
 ) -> str:
     if not secret_key:
         return str(secret_data)
-    secret_dict = cast('dict[str, str]', json.loads(secret_data))
+    secret_dict = _t.cast('dict[str, str]', _json.loads(secret_data))
     try:
         return secret_dict[secret_key]
     except KeyError as exc:
@@ -274,7 +281,7 @@ def _extract_structured_secret(
 
 
 def _extract_secret_value(
-    secret_response: Mapping[str, str],
+    secret_response: _c.Mapping[str, str],
     secret_path: str,
     secret_key: str | None,
     static_secret_format: str,
@@ -287,7 +294,7 @@ def _extract_secret_value(
             secret_key,
             static_secret_sub_type,
         )
-    if static_secret_format in STRUCTURED_SECRET_FORMATS:
+    if static_secret_format in _STRUCTURED_SECRET_FORMATS:
         return _extract_structured_secret(
             secret_data,
             secret_key,
@@ -299,10 +306,10 @@ def _extract_secret_value(
 
 
 def _ensure_supported_item_type(secret_path: str, item_type: str) -> None:
-    if item_type not in SUPPORTED_ITEM_TYPES:
+    if item_type not in _SUPPORTED_ITEM_TYPES:
         raise NotImplementedError(
             f'Secret "{secret_path}" is of type "{item_type}". '
-            f'Supported types: {sorted(SUPPORTED_ITEM_TYPES)}.',
+            f'Supported types: {sorted(_SUPPORTED_ITEM_TYPES)}.',
         )
 
 
@@ -337,19 +344,19 @@ def _fetch_secret_value(
     )
 
 
-def akeyless_backend(**kwargs: Unpack[_AkeylessBackendKwargs]) -> str:
+def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
     """Retrieve a secret value from Akeyless."""
-    with CertFiles(kwargs.get('ca_cert') or None) as ca_cert_path:
+    with CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
         api_instance = _setup_client(
             kwargs['gateway_url'].rstrip('/'),
             ca_cert_path,
         )
-        token = _authenticate(
-            api_instance,
-            kwargs['access_id'],
-            kwargs['access_key'],
-        )
         try:
+            token = _authenticate(
+                api_instance,
+                kwargs['access_id'],
+                kwargs['access_key'],
+            )
             return _fetch_secret_value(
                 api_instance,
                 token,
@@ -360,6 +367,8 @@ def akeyless_backend(**kwargs: Unpack[_AkeylessBackendKwargs]) -> str:
             raise RuntimeError(
                 f'Akeyless API error: {exc.reason} (Status: {exc.status})',
             ) from exc
+        except ValueError as exc:
+            raise RuntimeError(str(exc)) from exc
 
 
 def _coerce_ttl(ttl_value: int | str | None) -> int | None:
@@ -386,25 +395,25 @@ def _fetch_ssh_certificate(
         ),
     )
     if not response.data:
-        raise RuntimeError(
+        raise ValueError(
             'Failed to generate signed SSH certificate: no data returned.',
         )
     return response.data
 
 
-def akeyless_ssh_backend(**kwargs: Unpack[_AkeylessSshBackendKwargs]) -> str:
+def akeyless_ssh_backend(**kwargs: _t.Unpack[_AkeylessSshBackendKwargs]) -> str:
     """Generate a signed SSH certificate using Akeyless."""
-    with CertFiles(kwargs.get('ca_cert') or None) as ca_cert_path:
+    with CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
         api_instance = _setup_client(
             kwargs['gateway_url'].rstrip('/'),
             ca_cert_path,
         )
-        token = _authenticate(
-            api_instance,
-            kwargs['access_id'],
-            kwargs['access_key'],
-        )
         try:
+            token = _authenticate(
+                api_instance,
+                kwargs['access_id'],
+                kwargs['access_key'],
+            )
             return _fetch_ssh_certificate(
                 api_instance,
                 token,
@@ -414,17 +423,19 @@ def akeyless_ssh_backend(**kwargs: Unpack[_AkeylessSshBackendKwargs]) -> str:
             raise RuntimeError(
                 f'Akeyless API error: {exc.reason} (Status: {exc.status})',
             ) from exc
+        except ValueError as exc:
+            raise RuntimeError(str(exc)) from exc
 
 
 akeyless_plugin = CredentialPlugin(
     'Akeyless',
-    inputs=akeyless_inputs,
+    inputs=_akeyless_inputs,
     backend=akeyless_backend,
 )
 
 
 akeyless_ssh_plugin = CredentialPlugin(
     'Akeyless SSH',
-    inputs=akeyless_ssh_inputs,
+    inputs=_akeyless_ssh_inputs,
     backend=akeyless_ssh_backend,
 )
