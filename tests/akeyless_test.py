@@ -241,8 +241,8 @@ def test_akeyless_ssh_backend_with_ttl(
     )
 
     assert signed_cert == 'signed-cert'
-    _, call_kwargs = mock_api.get_ssh_certificate.call_args
-    assert call_kwargs['body'].ttl == _ONE_HOUR_SEC
+    ssh_request = mock_api.get_ssh_certificate.call_args.args[0]
+    assert ssh_request.ttl == _ONE_HOUR_SEC
 
 
 def test_ssh_backend_no_cert_data_raises(
@@ -291,6 +291,7 @@ def test_coerce_ttl_valid_inputs(
     expected: int | None,
 ) -> None:
     """_coerce_ttl should convert numeric-like values and pass None/'' through."""
+    # WPS437: _coerce_ttl is private but is tested directly here intentionally
     # pylint: disable-next=protected-access
     assert akeyless_mod._coerce_ttl(ttl_input) == expected  # noqa: WPS437
 
@@ -298,5 +299,6 @@ def test_coerce_ttl_valid_inputs(
 def test_coerce_ttl_invalid_raises() -> None:
     """_coerce_ttl should raise ValueError for non-numeric strings."""
     with pytest.raises(ValueError, match='integer number of seconds'):
+        # WPS437: _coerce_ttl is private but is tested directly here intentionally
         # pylint: disable-next=protected-access
         akeyless_mod._coerce_ttl('not-a-number')  # noqa: WPS437

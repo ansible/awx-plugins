@@ -16,18 +16,28 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
 # self-import because this file is named akeyless.py (import-self).
 # pylint: disable=import-error,import-self,no-name-in-module
 from akeyless import (
-    ApiClient,
-    Auth,
-    Configuration,
-    DescribeItem,
-    GetSecretValue,
-    V2Api,
+    ApiClient as _ApiClient,
+    Auth as _Auth,
+    Configuration as _Configuration,
+    DescribeItem as _DescribeItem,
+    GetSecretValue as _GetSecretValue,
+    V2Api as _V2Api,
 )
-from akeyless.models.get_ssh_certificate import GetSSHCertificate
-from akeyless.rest import ApiException
+from akeyless.models.get_ssh_certificate import (
+    GetSSHCertificate as _GetSSHCertificate,
+)
+from akeyless.rest import ApiException as _ApiException
 
 # pylint: enable=import-error,import-self,no-name-in-module
-from .plugin import CertFiles, CredentialPlugin
+from . import plugin as _plugin
+
+
+__all__ = (  # noqa: WPS410
+    'akeyless_backend',
+    'akeyless_plugin',
+    'akeyless_ssh_backend',
+    'akeyless_ssh_plugin',
+)
 
 
 _SUPPORTED_ITEM_TYPES = frozenset(('STATIC_SECRET',))
@@ -79,18 +89,21 @@ class _SshCertResponse(_t.Protocol):
 
 
 class _AkeylessApi(_t.Protocol):
-    def auth(self: _t.Self, auth: object) -> _AuthResponse: ...
+    def auth(self: _t.Self, auth: _Auth) -> _AuthResponse: ...
 
-    def describe_item(self: _t.Self, req: object) -> _DescribeItemResponse: ...
+    def describe_item(
+        self: _t.Self,
+        req: _DescribeItem,
+    ) -> _DescribeItemResponse: ...
 
     def get_secret_value(
         self: _t.Self,
-        req: object,
+        req: _GetSecretValue,
     ) -> _Mapping[str, str]: ...
 
     def get_ssh_certificate(
         self: _t.Self,
-        req: object,
+        req: _GetSSHCertificate,
     ) -> _SshCertResponse: ...
 
 
@@ -213,14 +226,14 @@ _akeyless_ssh_inputs = {
 
 
 def _setup_client(gateway_url: str, ca_cert_path: str | None) -> _AkeylessApi:
-    client_configuration = Configuration(host=gateway_url)
+    client_configuration = _Configuration(host=gateway_url)
     if ca_cert_path:
         client_configuration.ssl_ca_cert = ca_cert_path
         client_configuration.verify_ssl = True
-    api_client = ApiClient(client_configuration)
+    api_client = _ApiClient(client_configuration)
     api_client.user_agent = 'AWX'
     api_client.default_headers['akeylessclienttype'] = 'AWX'
-    return V2Api(api_client)
+    return _V2Api(api_client)
 
 
 def _authenticate(
@@ -229,7 +242,7 @@ def _authenticate(
     access_key: str,
 ) -> str:
     auth_response = api_instance.auth(
-        Auth(
+        _Auth(
             access_id=access_id,
             access_key=access_key,
         ),
@@ -321,7 +334,7 @@ def _fetch_secret_value(
     secret_path: str,
     secret_key: str | None,
 ) -> str:
-    describe_item_request = DescribeItem(name=secret_path, token=token)
+    describe_item_request = _DescribeItem(name=secret_path, token=token)
     describe_item_response = api_instance.describe_item(describe_item_request)
     _ensure_supported_item_type(secret_path, describe_item_response.item_type)
 
@@ -331,7 +344,7 @@ def _fetch_secret_value(
     static_secret_sub_type = describe_item_response.item_sub_type
 
     secret_response = api_instance.get_secret_value(
-        GetSecretValue(
+        _GetSecretValue(
             names=[secret_path],
             token=token,
         ),
@@ -348,7 +361,7 @@ def _fetch_secret_value(
 
 def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
     """Retrieve a secret value from Akeyless."""
-    with CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
+    with _plugin.CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
         api_instance = _setup_client(
             kwargs['gateway_url'].rstrip('/'),
             ca_cert_path,
@@ -359,8 +372,8 @@ def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
                 kwargs['access_id'],
                 kwargs['access_key'],
             )
-        except ValueError as exc:
-            raise RuntimeError(str(exc)) from exc
+        except ValueError as val_err:
+            raise RuntimeError(str(val_err)) from val_err
         try:
             return _fetch_secret_value(
                 api_instance,
@@ -368,10 +381,11 @@ def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
                 kwargs['secret_path'],
                 kwargs.get('secret_key'),
             )
-        except ApiException as exc:
+        except _ApiException as api_exc:
             raise RuntimeError(
-                f'Akeyless API error: {exc.reason} (Status: {exc.status})',
-            ) from exc
+                f'Akeyless API error: {api_exc.reason}'
+                f' (Status: {api_exc.status})',
+            ) from api_exc
 
 
 def _coerce_ttl(ttl_value: int | str | None) -> int | None:
@@ -389,7 +403,7 @@ def _fetch_ssh_certificate(
     ssh_inputs: _AkeylessSshBackendKwargs,
 ) -> str:
     response = api_instance.get_ssh_certificate(
-        GetSSHCertificate(
+        _GetSSHCertificate(
             token=token,
             cert_issuer_name=ssh_inputs['cert_issue_name'],
             cert_username=ssh_inputs['cert_username'],
@@ -408,7 +422,7 @@ def akeyless_ssh_backend(
     **kwargs: _t.Unpack[_AkeylessSshBackendKwargs],
 ) -> str:
     """Generate a signed SSH certificate using Akeyless."""
-    with CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
+    with _plugin.CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
         api_instance = _setup_client(
             kwargs['gateway_url'].rstrip('/'),
             ca_cert_path,
@@ -419,30 +433,31 @@ def akeyless_ssh_backend(
                 kwargs['access_id'],
                 kwargs['access_key'],
             )
-        except ValueError as exc:
-            raise RuntimeError(str(exc)) from exc
+        except ValueError as val_err:
+            raise RuntimeError(str(val_err)) from val_err
         try:
             return _fetch_ssh_certificate(
                 api_instance,
                 token,
                 kwargs,
             )
-        except ApiException as exc:
+        except _ApiException as api_exc:
             raise RuntimeError(
-                f'Akeyless API error: {exc.reason} (Status: {exc.status})',
-            ) from exc
-        except ValueError as exc:
-            raise RuntimeError(str(exc)) from exc
+                f'Akeyless API error: {api_exc.reason}'
+                f' (Status: {api_exc.status})',
+            ) from api_exc
+        except ValueError as val_err:
+            raise RuntimeError(str(val_err)) from val_err
 
 
-akeyless_plugin = CredentialPlugin(
+akeyless_plugin = _plugin.CredentialPlugin(
     'Akeyless',
     inputs=_akeyless_inputs,  # type: ignore[arg-type]
     backend=akeyless_backend,
 )
 
 
-akeyless_ssh_plugin = CredentialPlugin(
+akeyless_ssh_plugin = _plugin.CredentialPlugin(
     'Akeyless SSH',
     inputs=_akeyless_ssh_inputs,  # type: ignore[arg-type]
     backend=akeyless_ssh_backend,
