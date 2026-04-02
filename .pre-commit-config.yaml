@@ -185,7 +185,11 @@ repos:
     # NOTE: `flake8-logging-format`. `setuptools` stopped being bundled
     # NOTE: in CPython starting Python 3.12. The latest version of
     # NOTE: `setuptools` that's a part of Python 3.11.14 is v79.0.1.
-    - setuptools < 81; python_version >= "3.12" and python_version < "3.14"
+    # NOTE: This may also happen under Python 3.11.15 security release
+    # NOTE: as the underlying `virtualenv` invocation seems to be coming
+    # NOTE: pre-installing the newest available version of `setuptools`
+    # NOTE: from PyPI via its seeding mechanism.
+    - setuptools < 81; python_version < "3.14"
     - wemake-python-styleguide ~= 1.5.0
     language_version: python3
 

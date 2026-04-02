@@ -131,7 +131,7 @@ per-file-ignores =
   src/awx_plugins/credentials/dsv.py: ANN003, ANN201, D100, D103, P103, WPS210
   # NOTE: `awx_plugins.credentials.github_app` may need restructuring to comply with WPS 202.
   src/awx_plugins/credentials/github_app.py: WPS202
-  src/awx_plugins/credentials/hashivault.py: ANN003, ANN201, B950, C901, CCR001, D100, D103, LN001, N400, WPS202, WPS204, WPS210, WPS221, WPS223, WPS229, WPS231, WPS232, WPS331, WPS336, WPS337, WPS432, WPS454
+  src/awx_plugins/credentials/hashivault.py: ANN003, ANN201, B950, C901, CCR001, D100, D103, LN001, N400, WPS201, WPS202, WPS204, WPS210, WPS221, WPS223, WPS229, WPS231, WPS232, WPS331, WPS336, WPS337, WPS432, WPS454
   src/awx_plugins/credentials/injectors.py: ANN001, ANN201, ANN202, C408, D100, D103, WPS110, WPS111, WPS202, WPS210, WPS347, WPS433, WPS440
   src/awx_plugins/credentials/plugin.py: ANN001, ANN002, ANN101, ANN201, ANN204, B010, D100, D101, D103, D105, D107, D205, D400, E731, WPS432, WPS433, WPS440, WPS442, WPS601
   src/awx_plugins/credentials/plugins.py: B950,D100, D101, D103, D105, D107, D205, D400, LN001, WPS204, WPS229, WPS433, WPS440

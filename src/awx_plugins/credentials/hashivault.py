@@ -1,9 +1,14 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="arg-type, no-untyped-call, no-untyped-def"
 
+import contextlib as _ctx
+import contextvars as _ctx_vars
+import functools as _functools
 import os
 import pathlib
 import time
+import typing as _t
+from collections import abc as _abc
 from urllib.parse import urljoin
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
@@ -14,6 +19,14 @@ import requests
 
 from . import _types
 from .plugin import CertFiles, CredentialPlugin, raise_for_status
+
+
+_AUTH_TOKEN: _ctx_vars.ContextVar[str] = _ctx_vars.ContextVar('_AUTH_TOKEN')
+"""Authentication token for use in plugin handlers."""
+
+
+class _EmptyKwargs(_t.TypedDict):
+    """Schema for zero keyword arguments."""
 
 
 # Base input fields
@@ -481,6 +494,76 @@ def workload_identity_auth(**kwargs):
     return {'role': kwargs.get('jwt_role'), 'jwt': workload_identity_token}
 
 
+def _revoke_self_token(
+    *,
+    vault_token: str,
+    url: str,
+    namespace: str,
+    cacert: str | None = None,
+) -> None:
+    """Revoke the passed-in Vault token."""
+    url = urljoin(url, 'v1/auth/token/revoke-self')
+    sess = requests.Session()
+    sess.headers['X-Vault-Token'] = vault_token
+    if namespace != '':
+        sess.headers['X-Vault-Namespace'] = namespace
+    with CertFiles(cacert) as cert:
+        resp = sess.post(url, verify=cert, timeout=30)
+    resp.raise_for_status()
+
+
+@_ctx.contextmanager
+def _vault_token(**kwargs: str) -> _abc.Iterator[str]:
+    """Context manager that yields a Vault token and revokes it on exit if obtained via workload identity."""
+    is_oidc_context = 'workload_identity_token' in kwargs
+    token = handle_auth(**kwargs)
+    try:
+        yield token
+    finally:
+        # Only revoke tokens obtained via OIDC authentication
+        if is_oidc_context:
+            _revoke_self_token(
+                vault_token=token,
+                url=kwargs['url'],
+                namespace=kwargs.get('namespace', ''),
+                cacert=kwargs.get('cacert'),
+            )
+
+
+@_ctx.contextmanager
+def _token_in_context(token: str, /) -> _abc.Iterator[None]:
+    """Set a token for the execution context lifetime."""
+    var_ctx_token = _AUTH_TOKEN.set(token)
+    try:
+        yield
+    finally:
+        _AUTH_TOKEN.reset(var_ctx_token)
+
+
+# Param Spec to represent decorated function parameters
+_PT = _t.ParamSpec(  # FIXME: Use [_RT, **_PT] in the signature in Python 3.12
+    '_PT',
+)
+# TypeVar to represent decorated function return type
+_RT = _t.TypeVar('_RT')
+
+
+def _inject_auth_token_with_revocation(
+    decorated_function: _t.Callable[_PT, _RT],
+    /,
+) -> _t.Callable[_PT, _RT]:
+    @_functools.wraps(decorated_function)
+    def _decorate_the_function_with_revocation(  # noqa: WPS430 -- in-decorator
+        *args: _PT.args,
+        **kwargs: _PT.kwargs,
+    ) -> _RT:
+        with _vault_token(**kwargs) as token:
+            with _token_in_context(token):
+                return decorated_function(*args, **kwargs)
+
+    return _decorate_the_function_with_revocation
+
+
 def method_auth(**kwargs):
     # get auth method specific params
     request_kwargs = {'json': kwargs['auth_param'], 'timeout': 30}
@@ -522,15 +605,22 @@ def method_auth(**kwargs):
     return token
 
 
-def kv_backend(**kwargs):
-    token = handle_auth(**kwargs)
-    url = kwargs['url']
-    secret_path = kwargs['secret_path']
-    secret_backend = kwargs.get('secret_backend')
-    secret_key = kwargs.get('secret_key')
-    cacert = kwargs.get('cacert')
-    api_version = kwargs['api_version']
-
+@_inject_auth_token_with_revocation
+# NOTE: The "too many args" rules of flake8 and pylint are disabled due to such
+# NOTE: many arguments being a common public plugin API at the moment.
+# pylint: disable-next=too-many-arguments
+def kv_backend(  # noqa: WPS211 -- the same as too-many-arguments
+    *,
+    url: str,
+    api_version: str,
+    secret_path: str,
+    secret_key: str | None = None,
+    secret_backend: str | None = None,
+    secret_version: str | None = None,
+    cacert: str | None = None,
+    namespace: str | None = None,
+    **_discarded_kwargs: _t.Unpack[_EmptyKwargs],
+) -> str:
     request_kwargs = {
         'timeout': 30,
         'allow_redirects': False,
@@ -538,16 +628,16 @@ def kv_backend(**kwargs):
 
     sess = requests.Session()
     sess.mount(url, requests.adapters.HTTPAdapter(max_retries=5))
-    sess.headers['Authorization'] = f'Bearer {token}'
+    sess.headers['Authorization'] = f'Bearer {_AUTH_TOKEN.get()}'
     # Compatibility header for older installs of Hashicorp Vault
-    sess.headers['X-Vault-Token'] = token
-    if kwargs.get('namespace'):
-        sess.headers['X-Vault-Namespace'] = kwargs['namespace']
+    sess.headers['X-Vault-Token'] = _AUTH_TOKEN.get()
+    if namespace:
+        sess.headers['X-Vault-Namespace'] = namespace
 
     if api_version == 'v2':
-        if kwargs.get('secret_version'):
+        if secret_version:
             request_kwargs['params'] = {  # type: ignore[assignment]  # FIXME
-                'version': kwargs['secret_version'],
+                'version': secret_version,
             }
         if secret_backend:
             path_segments = [secret_backend, 'data', secret_path]
@@ -556,7 +646,6 @@ def kv_backend(**kwargs):
                 mount_point, *path = pathlib.Path(
                     secret_path.lstrip(os.sep),
                 ).parts
-                '/'.join(path)
             except Exception:
                 mount_point, path = secret_path, []
             # https://www.vaultproject.io/api/secret/kv/kv-v2.html#read-secret-version
@@ -593,40 +682,51 @@ def kv_backend(**kwargs):
                 )
                 and ('data' in json['data'])
             ):
-                return json['data']['data'][secret_key]
-            return json['data'][secret_key]
+                return str(json['data']['data'][secret_key])
+            return str(json['data'][secret_key])
         except KeyError:
-            raise RuntimeError(f'{secret_key} is not present at {secret_path}')
-    return json['data']
+            raise RuntimeError(
+                f'{secret_key} is not present at {secret_path}',
+            )
+    return str(json['data'])
 
 
-def ssh_backend(**kwargs):
-    token = handle_auth(**kwargs)
-    url = urljoin(kwargs['url'], 'v1')
-    secret_path = kwargs['secret_path']
-    role = kwargs['role']
-    cacert = kwargs.get('cacert')
+@_inject_auth_token_with_revocation
+# NOTE: The "too many args" rules of flake8 and pylint are disabled due to such
+# NOTE: many arguments being a common public plugin API at the moment.
+# pylint: disable-next=too-many-arguments
+def ssh_backend(  # noqa: WPS211 -- the same as too-many-arguments
+    *,
+    url: str,
+    secret_path: str,
+    role: str,
+    public_key: str,
+    cacert: str | None = None,
+    namespace: str | None = None,
+    valid_principals: str | None = None,
+    **_discarded_kwargs: _t.Unpack[_EmptyKwargs],
+) -> str:
+    url = urljoin(url, 'v1')
 
     request_kwargs = {
         'timeout': 30,
         'allow_redirects': False,
+        'json': {
+            'public_key': public_key,
+        },
     }
-
-    request_kwargs['json'] = {  # type: ignore[assignment]  # FIXME
-        'public_key': kwargs['public_key'],
-    }
-    if kwargs.get('valid_principals'):
+    if valid_principals:
         request_kwargs['json'][  # type: ignore[index]  # FIXME
             'valid_principals'
-        ] = kwargs['valid_principals']
+        ] = valid_principals
 
     sess = requests.Session()
     sess.mount(url, requests.adapters.HTTPAdapter(max_retries=5))
-    sess.headers['Authorization'] = f'Bearer {token}'
-    if kwargs.get('namespace'):
-        sess.headers['X-Vault-Namespace'] = kwargs['namespace']
+    sess.headers['Authorization'] = f'Bearer {_AUTH_TOKEN.get()}'
+    if namespace:
+        sess.headers['X-Vault-Namespace'] = namespace
     # Compatibility header for older installs of Hashicorp Vault
-    sess.headers['X-Vault-Token'] = token
+    sess.headers['X-Vault-Token'] = _AUTH_TOKEN.get()
     # https://www.vaultproject.io/api/secret/ssh/index.html#sign-ssh-key
     request_url = '/'.join([url, secret_path, 'sign', role]).rstrip('/')
 
@@ -642,7 +742,7 @@ def ssh_backend(**kwargs):
             else:
                 break
     raise_for_status(resp)
-    return resp.json()['data']['signed_key']
+    return str(resp.json()['data']['signed_key'])
 
 
 hashivault_kv_plugin = CredentialPlugin(
@@ -661,10 +761,12 @@ hashivault_kv_oidc_plugin = CredentialPlugin(
     'HashiCorp Vault Secret Lookup (OIDC)',
     inputs=hashi_kv_oidc_inputs,
     backend=kv_backend,
+    plugin_description='Uses OIDC/JWT authentication for enhanced security with short-lived tokens',
 )
 
 hashivault_ssh_oidc_plugin = CredentialPlugin(
     'HashiCorp Vault Signed SSH (OIDC)',
     inputs=hashi_ssh_oidc_inputs,
     backend=ssh_backend,
+    plugin_description='Uses OIDC/JWT authentication for enhanced security with short-lived tokens',
 )

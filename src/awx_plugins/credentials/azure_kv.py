@@ -18,6 +18,7 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
     gettext_noop as _,
 )
 
+from azure.core import exceptions as _az_exc
 from azure.core.credentials import TokenCredential
 from azure.identity import (
     ClientSecretCredential,
@@ -157,6 +158,15 @@ def azure_keyvault_backend(  # noqa: WPS211
             'feature is unavailable. Please provide the full Client ID, '
             'Client Secret, and Tenant ID or run the software on an Azure VM.',
         ) from secret_lookup_err
+    except _az_exc.ServiceRequestError as request_err:
+        raise RuntimeError(
+            f'Failed to connect to Azure Key Vault: {request_err}',
+        ) from request_err
+    except _az_exc.AzureError as catchall_azure_error:
+        raise RuntimeError(
+            'Error retrieving secret from Azure Key Vault: '
+            f'{catchall_azure_error}',
+        ) from catchall_azure_error
     return keyvault_secret.value
 
 

@@ -3,6 +3,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
+from azure.core.exceptions import AzureError
 from azure.identity import CredentialUnavailableError
 from azure.keyvault.secrets import (
     KeyVaultSecret,
@@ -26,7 +27,6 @@ class _FakeSecretClient(SecretClient):
 
 def test_azure_kv_invalid_env(
     mocker: MockerFixture,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test running outside of Azure raises error.
 
@@ -36,13 +36,12 @@ def test_azure_kv_invalid_env(
     a DNS error before the credential check, so we mock SecretClient to
     simulate the expected CredentialUnavailableError.
     """
-    mock_client = mocker.Mock()
+    mock_client = mocker.patch.object(azure_kv, 'SecretClient', autospec=True)
     mock_client.return_value.get_secret.side_effect = (
         CredentialUnavailableError(
             message='ManagedIdentityCredential authentication unavailable.',
         )
     )
-    monkeypatch.setattr(azure_kv, 'SecretClient', mock_client)
 
     error_msg = (
         'You are not operating on an Azure VM, so the Managed Identity '
@@ -55,8 +54,47 @@ def test_azure_kv_invalid_env(
         match=error_msg,
     ):
         azure_kv.azure_keyvault_backend(
-            url='https://test.vault.azure.net',
+            url='https://keyvault.test',
             client='',
+            secret='client-secret',
+            tenant='tenant-id',
+            secret_field='secret',
+            secret_version='',
+        )
+
+
+def test_azure_kv_dns_error() -> None:
+    """Test DNS resolution error is converted to RuntimeError."""
+    with pytest.raises(
+        RuntimeError,
+        match=r'^Failed to connect to Azure Key Vault: .',
+    ):
+        azure_kv.azure_keyvault_backend(
+            url='https://keyvault.test',
+            client='client-id',
+            secret='client-secret',
+            tenant='tenant-id',
+            secret_field='secret',
+            secret_version='',
+        )
+
+
+def test_azure_kv_generic_azure_error(
+    mocker: MockerFixture,
+) -> None:
+    """Test generic AzureError is converted to RuntimeError."""
+    mock_client = mocker.patch.object(azure_kv, 'SecretClient', autospec=True)
+    mock_client.return_value.get_secret.side_effect = AzureError(
+        message='Secret not found or access denied',
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match=r'^Error retrieving secret from Azure Key Vault: .',
+    ):
+        azure_kv.azure_keyvault_backend(
+            url='https://keyvault.test',
+            client='client-id',
             secret='client-secret',
             tenant='tenant-id',
             secret_field='secret',
@@ -90,7 +128,7 @@ def test_azure_kv_valid_auth(
     )
 
     keyvault_secret = azure_kv.azure_keyvault_backend(
-        url='https://test.vault.azure.net',
+        url='https://keyvault.test',
         client=client,
         secret=secret,
         tenant=tenant,

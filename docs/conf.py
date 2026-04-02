@@ -233,6 +233,12 @@ nitpick_ignore = [
         'py:class',
         'awx_plugins.interfaces._temporary_private_credential_api.Credential',
     ),
+    (  # generic return type variable:
+        'py:class',
+        'awx_plugins.credentials.hashivault._RT',
+    ),
+    ('py:class', '_PT'),  # generic ParamSpec type variable
+    ('py:class', '_contextvars.ContextVar'),  # unresolved context var type
     ('py:class', 'EnvVarsType'),
     # Akeyless SDK types: auto-generated from OpenAPI
     # without type annotations or .pyi stubs
