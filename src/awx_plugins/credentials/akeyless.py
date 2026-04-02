@@ -1,7 +1,4 @@
 """Akeyless credential plugins for AWX."""
-# WPS202 is expected: implementing two credential plugins requires Protocol
-# types, TypedDicts, and multiple helper functions per plugin, which exceeds
-# the default module-member threshold.
 
 import json as _json
 import typing as _t
@@ -11,10 +8,7 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
     gettext_noop as _,
 )
 
-# The akeyless SDK does not ship type stubs; pylint cannot resolve its imports.
-# When not installed, pylint misidentifies `from akeyless import` as a
-# self-import because this file is named akeyless.py (import-self).
-# pylint: disable=import-error,import-self,no-name-in-module
+# pylint: disable=import-error,import-self
 from akeyless import (
     ApiClient as _ApiClient,
     Auth as _Auth,
@@ -28,7 +22,7 @@ from akeyless.models.get_ssh_certificate import (
 )
 from akeyless.rest import ApiException as _ApiException
 
-# pylint: enable=import-error,import-self,no-name-in-module
+# pylint: enable=import-error,import-self
 from . import plugin as _plugin
 
 
@@ -233,7 +227,7 @@ def _setup_client(gateway_url: str, ca_cert_path: str | None) -> _AkeylessApi:
     api_client = _ApiClient(client_configuration)
     api_client.user_agent = 'AWX'
     api_client.default_headers['akeylessclienttype'] = 'AWX'
-    return _V2Api(api_client)
+    return _V2Api(api_client)  # type: ignore[return-value]
 
 
 def _authenticate(
@@ -372,6 +366,11 @@ def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
                 kwargs['access_id'],
                 kwargs['access_key'],
             )
+        except _ApiException as api_exc:
+            raise RuntimeError(
+                f'Akeyless API error: {api_exc.reason}'
+                f' (Status: {api_exc.status})',
+            ) from api_exc
         except ValueError as val_err:
             raise RuntimeError(str(val_err)) from val_err
         try:
@@ -433,6 +432,11 @@ def akeyless_ssh_backend(
                 kwargs['access_id'],
                 kwargs['access_key'],
             )
+        except _ApiException as api_exc:
+            raise RuntimeError(
+                f'Akeyless API error: {api_exc.reason}'
+                f' (Status: {api_exc.status})',
+            ) from api_exc
         except ValueError as val_err:
             raise RuntimeError(str(val_err)) from val_err
         try:

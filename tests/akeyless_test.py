@@ -1,5 +1,7 @@
 """Tests for Akeyless credential plugins."""
+# mypy: disable-error-code="arg-type,explicit-any"
 
+import dataclasses
 from collections.abc import Callable
 
 import pytest
@@ -15,12 +17,44 @@ _ACCESS_ID = 'p-test123'
 _ACCESS_KEY = 'test-key'
 _GATEWAY_URL = 'https://api.akeyless.io'
 
+_HTTP_UNAUTHORIZED = 401
 _HTTP_FORBIDDEN = 403
 _HTTP_NOT_FOUND = 404
 _ONE_HOUR_SEC = 3600
 _TWO_HOURS_SEC = 7200
 
 _MockApiFactory = Callable[..., object]
+
+
+@dataclasses.dataclass
+class _FakeStaticSecretInfo:
+    format: str = 'text'  # noqa: WPS125
+
+
+@dataclasses.dataclass
+class _FakeItemGeneralInfo:
+    static_secret_info: _FakeStaticSecretInfo = dataclasses.field(
+        default_factory=_FakeStaticSecretInfo,
+    )
+
+
+@dataclasses.dataclass
+class _FakeDescribeItemResponse:
+    item_type: str = 'STATIC_SECRET'
+    item_sub_type: str = 'generic'
+    item_general_info: _FakeItemGeneralInfo = dataclasses.field(
+        default_factory=_FakeItemGeneralInfo,
+    )
+
+
+@dataclasses.dataclass
+class _FakeAuthResponse:
+    token: str | None = 'test-token'
+
+
+@dataclasses.dataclass
+class _FakeSshCertResponse:
+    data: str | None = 'ssh-rsa-SIGNED-CERT'  # noqa: WPS110
 
 
 def _make_mock_api(  # noqa: WPS211  # pylint: disable=too-many-arguments
@@ -35,22 +69,19 @@ def _make_mock_api(  # noqa: WPS211  # pylint: disable=too-many-arguments
     ssh_cert_data: str | None = 'ssh-rsa-SIGNED-CERT',
 ) -> object:
     """Create a mock Akeyless API instance with configurable responses."""
-    mock_static_info = mocker.MagicMock()
-    mock_static_info.format = secret_format
-
-    mock_general_info = mocker.MagicMock()
-    mock_general_info.static_secret_info = mock_static_info
-
-    mock_describe = mocker.MagicMock()
-    mock_describe.item_type = item_type
-    mock_describe.item_sub_type = item_sub_type
-    mock_describe.item_general_info = mock_general_info
-
-    mock_api = mocker.MagicMock()
-    mock_api.auth.return_value.token = token
-    mock_api.describe_item.return_value = mock_describe
+    mock_api = mocker.Mock()
+    mock_api.auth.return_value = _FakeAuthResponse(token=token)
+    mock_api.describe_item.return_value = _FakeDescribeItemResponse(
+        item_type=item_type,
+        item_sub_type=item_sub_type,
+        item_general_info=_FakeItemGeneralInfo(
+            static_secret_info=_FakeStaticSecretInfo(format=secret_format),
+        ),
+    )
     mock_api.get_secret_value.return_value = {secret_path: secret_data}
-    mock_api.get_ssh_certificate.return_value.data = ssh_cert_data
+    mock_api.get_ssh_certificate.return_value = _FakeSshCertResponse(
+        data=ssh_cert_data,
+    )
     return mock_api
 
 
@@ -196,6 +227,23 @@ def test_backend_auth_failure_raises(
     patch_setup_client(token=None)
 
     with pytest.raises(RuntimeError, match='no token received'):
+        akeyless_mod.akeyless_backend(**_backend_kwargs())
+
+
+def test_backend_auth_api_exc_raises(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """An ApiException from auth should surface as RuntimeError."""
+    mock_api = patch_setup_client()
+    mock_api.auth.side_effect = ApiException(
+        status=_HTTP_UNAUTHORIZED,
+        reason='Unauthorized',
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match=r'Akeyless API error: Unauthorized \(Status: 401\)',
+    ):
         akeyless_mod.akeyless_backend(**_backend_kwargs())
 
 

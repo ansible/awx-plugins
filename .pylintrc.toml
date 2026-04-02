@@ -106,10 +106,9 @@ py-version = "3.11"
 # source root is an absolute path or a path relative to the current working
 # directory used to determine a package namespace for modules located under the
 # source root.
-# Setting src/ prevents pylint from adding individual credential module
-# directories to sys.path, which would cause false "module imports itself"
-# warnings and circular-import errors for files with the same name as their
-# third-party dependencies (e.g. akeyless.py vs the akeyless SDK):
+# Complements init-hook: init-hook adjusts runtime sys.path while source-roots
+# controls pylint's static module discovery, preventing it from resolving
+# akeyless.py as the top-level 'akeyless' package instead of the SDK.
 source-roots = ["src"]
 
 # Allow loading of arbitrary C extensions. Extensions are imported into the
