@@ -19,7 +19,9 @@ class _FakeSecretClient(SecretClient):
         self: '_FakeSecretClient',
         name: str,
         version: str | None = None,
-        **kwargs: str,
+        *,
+        out_content_type: object | None = None,
+        **kwargs: object,
     ) -> KeyVaultSecret:
         props = SecretProperties()
         return KeyVaultSecret(properties=props, value='test-secret')
