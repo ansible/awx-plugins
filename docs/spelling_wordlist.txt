@@ -25,6 +25,7 @@ lookups
 namespace
 natively
 OAuth
+Okta
 OpenShift
 Ovirt
 ovirt
@@ -36,6 +37,7 @@ selinux
 Submodules
 Subpackages
 sudo
+synchronisation
 systemd
 templating
 Thycotic
