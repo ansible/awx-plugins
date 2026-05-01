@@ -89,7 +89,7 @@ def _extract_error_detail(resp: requests.Response) -> str:
     :returns: An error description string.
     """
     try:
-        body = resp.json()
+        body: object = resp.json()
     except ValueError:
         return resp.text
 
@@ -134,7 +134,7 @@ def _extract_access_token(resp: requests.Response) -> str:
         is not a JSON object, or lacks ``access_token``.
     """
     try:
-        body = resp.json()
+        body: object = resp.json()
     except ValueError as parse_exc:
         raise ValueError(
             'Token endpoint response did not contain an access_token field',
