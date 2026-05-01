@@ -14,8 +14,11 @@ TOKEN_URL = (
     'https://login.microsoftonline.com'
     '/00000000-0000-0000-0000-000000000000/oauth2/v2.0/token'
 )
-CLIENT_ID = '11111111-1111-1111-1111-111111111111'
-CLIENT_SECRET = 'test-secret-value'  # noqa: S105
+_COMMON_BACKEND_KWARGS: dict[str, str] = {
+    'token_url': TOKEN_URL,
+    'client_id': '11111111-1111-1111-1111-111111111111',
+    'client_secret': 'test-secret-value',  # noqa: S105
+}
 ADO_SCOPE = '499b84ac-1321-427f-aa17-267ca6975798/.default'
 FAKE_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.fake.token'  # noqa: S105
 
@@ -104,9 +107,7 @@ def test_successful_token_fetch(mocker: MockerFixture) -> None:
     )
 
     token = oauth2_mod.oauth2_client_credentials_backend(
-        token_url=TOKEN_URL,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
+        **_COMMON_BACKEND_KWARGS,
         scope=ADO_SCOPE,
     )
 
@@ -125,16 +126,15 @@ def test_request_includes_grant_type(mocker: MockerFixture) -> None:
     )
 
     oauth2_mod.oauth2_client_credentials_backend(
-        token_url=TOKEN_URL,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
+        **_COMMON_BACKEND_KWARGS,
         scope=ADO_SCOPE,
     )
 
     call_kwargs = mock_post.call_args
-    assert call_kwargs[1]['data']['grant_type'] == 'client_credentials'
-    assert call_kwargs[1]['data']['client_id'] == CLIENT_ID
-    assert call_kwargs[1]['data']['scope'] == ADO_SCOPE
+    post_data = call_kwargs[1]['data']
+    assert post_data['grant_type'] == 'client_credentials'
+    assert post_data['client_id'] == _COMMON_BACKEND_KWARGS['client_id']
+    assert post_data['scope'] == ADO_SCOPE
 
 
 @pytest.mark.parametrize(
@@ -158,11 +158,7 @@ def test_no_scope_omits_scope_from_request(
         ),
     )
 
-    kwargs: dict[str, str] = {
-        'token_url': TOKEN_URL,
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET,
-    }
+    kwargs = dict(_COMMON_BACKEND_KWARGS)
     if scope_value is not None:
         kwargs['scope'] = scope_value
 
@@ -206,9 +202,7 @@ def test_works_with_various_providers(
     )
 
     token = oauth2_mod.oauth2_client_credentials_backend(
-        token_url=token_url,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
+        **{**_COMMON_BACKEND_KWARGS, 'token_url': token_url},
     )
 
     assert token == FAKE_TOKEN
@@ -259,9 +253,7 @@ def test_http_errors_raise_value_error(
 
     with pytest.raises(ValueError, match=error_pattern):
         oauth2_mod.oauth2_client_credentials_backend(
-            token_url=TOKEN_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
+            **_COMMON_BACKEND_KWARGS,
         )
 
 
@@ -281,9 +273,7 @@ def test_non_json_error_response(mocker: MockerFixture) -> None:
         match=r'HTTP 503.*Service Unavailable',
     ):
         oauth2_mod.oauth2_client_credentials_backend(
-            token_url=TOKEN_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
+            **_COMMON_BACKEND_KWARGS,
         )
 
 
@@ -308,9 +298,7 @@ def test_missing_access_token_in_response(
         match=r'did not contain an access_token',
     ):
         oauth2_mod.oauth2_client_credentials_backend(
-            token_url=TOKEN_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
+            **_COMMON_BACKEND_KWARGS,
         )
 
 
@@ -332,9 +320,7 @@ def test_non_dict_json_success_response(
         match=r'did not contain an access_token',
     ):
         oauth2_mod.oauth2_client_credentials_backend(
-            token_url=TOKEN_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
+            **_COMMON_BACKEND_KWARGS,
         )
 
 
@@ -357,9 +343,7 @@ def test_non_dict_json_error_response(
         match=r'HTTP 400.*Bad Request',
     ):
         oauth2_mod.oauth2_client_credentials_backend(
-            token_url=TOKEN_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
+            **_COMMON_BACKEND_KWARGS,
         )
 
 
@@ -381,9 +365,7 @@ def test_unparseable_json_success_response(
         match=r'did not contain an access_token',
     ):
         oauth2_mod.oauth2_client_credentials_backend(
-            token_url=TOKEN_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
+            **_COMMON_BACKEND_KWARGS,
         )
 
 
@@ -402,9 +384,7 @@ def test_connection_error(mocker: MockerFixture) -> None:
         match=r'Could not connect to token endpoint',
     ):
         oauth2_mod.oauth2_client_credentials_backend(
-            token_url=TOKEN_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
+            **_COMMON_BACKEND_KWARGS,
         )
 
 
@@ -423,9 +403,7 @@ def test_timeout_error(mocker: MockerFixture) -> None:
         match=r'Timed out requesting token',
     ):
         oauth2_mod.oauth2_client_credentials_backend(
-            token_url=TOKEN_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
+            **_COMMON_BACKEND_KWARGS,
         )
 
 
@@ -441,9 +419,7 @@ def test_discarded_kwargs_are_ignored(mocker: MockerFixture) -> None:
     )
 
     token = oauth2_mod.oauth2_client_credentials_backend(
-        token_url=TOKEN_URL,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
+        **_COMMON_BACKEND_KWARGS,
         description='some metadata that may be passed',  # type: ignore[call-arg]
     )
 
