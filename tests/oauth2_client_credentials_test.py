@@ -363,6 +363,30 @@ def test_non_dict_json_error_response(
         )
 
 
+def test_unparseable_json_success_response(
+    mocker: MockerFixture,
+) -> None:
+    """Test handling of a 200 response with non-JSON body."""
+    mocker.patch.object(
+        oauth2_mod.requests,
+        'post',
+        return_value=_FakeResponse(
+            status_code=http.HTTPStatus.OK,
+            text='not json at all',
+        ),
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r'did not contain an access_token',
+    ):
+        oauth2_mod.oauth2_client_credentials_backend(
+            token_url=TOKEN_URL,
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,
+        )
+
+
 def test_connection_error(mocker: MockerFixture) -> None:
     """Test that connection errors are wrapped in ValueError."""
     mocker.patch.object(
