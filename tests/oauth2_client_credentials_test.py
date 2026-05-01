@@ -1,7 +1,7 @@
 """Tests for the OAuth2 Client Credentials Token credential plugin."""
 
 import http
-from collections.abc import Callable
+from typing import NamedTuple, Protocol
 
 import pytest
 from pytest_mock import MockerFixture
@@ -18,7 +18,24 @@ TOKEN_URL = (
 ADO_SCOPE = '499b84ac-1321-427f-aa17-267ca6975798/.default'
 FAKE_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.fake.token'  # noqa: S105
 
-_BackendCaller = Callable[..., str]
+
+class _BackendCaller(Protocol):
+    """Typing protocol for the ``call_backend`` fixture."""
+
+    def __call__(
+        self,  # noqa: ANN101
+        **overrides: str,
+    ) -> str:
+        """Call the backend with optional credential overrides."""
+
+
+class _ErrorCase(NamedTuple):
+    """Parameters for an HTTP error test case."""
+
+    status_code: int
+    json_data: object
+    text: str
+    error_pattern: str
 
 
 class _FakeResponse:
@@ -169,10 +186,10 @@ def test_no_scope_omits_scope_from_request(
         ),
     )
 
-    if scope_value is not None:
-        call_backend(scope=scope_value)
-    else:
+    if scope_value is None:
         call_backend()
+    else:
+        call_backend(scope=scope_value)
 
     post_data = mock_post.call_args[1]['data']
     assert 'scope' not in post_data
@@ -216,45 +233,50 @@ def test_works_with_various_providers(
 
 
 @pytest.mark.parametrize(
-    (
-        'status_code',
-        'json_data',
-        'text',
-        'error_pattern',
-    ),
+    'error_case',
     (
         pytest.param(
-            http.HTTPStatus.UNAUTHORIZED,
-            {
-                'error': 'invalid_client',
-                'error_description': 'Invalid client secret provided.',
-            },
-            '',
-            r'Token request failed.*HTTP 401.*Invalid client secret',
+            _ErrorCase(
+                status_code=http.HTTPStatus.UNAUTHORIZED,
+                json_data={
+                    'error': 'invalid_client',
+                    'error_description': 'Invalid client secret provided.',
+                },
+                text='',
+                error_pattern=(
+                    r'Token request failed.*HTTP 401.*Invalid client secret'
+                ),
+            ),
             id='invalid-credentials',
         ),
         pytest.param(
-            http.HTTPStatus.BAD_REQUEST,
-            {
-                'error': 'invalid_request',
-                'error_description': 'Tenant not found.',
-            },
-            '',
-            r'Tenant not found',
+            _ErrorCase(
+                status_code=http.HTTPStatus.BAD_REQUEST,
+                json_data={
+                    'error': 'invalid_request',
+                    'error_description': 'Tenant not found.',
+                },
+                text='',
+                error_pattern=r'Tenant not found',
+            ),
             id='bad-request',
         ),
         pytest.param(
-            http.HTTPStatus.SERVICE_UNAVAILABLE,
-            None,
-            'Service Unavailable',
-            r'HTTP 503.*Service Unavailable',
+            _ErrorCase(
+                status_code=http.HTTPStatus.SERVICE_UNAVAILABLE,
+                json_data=None,
+                text='Service Unavailable',
+                error_pattern=r'HTTP 503.*Service Unavailable',
+            ),
             id='non-json-error',
         ),
         pytest.param(
-            http.HTTPStatus.BAD_REQUEST,
-            ['not', 'a', 'dict'],
-            'Bad Request',
-            r'HTTP 400.*Bad Request',
+            _ErrorCase(
+                status_code=http.HTTPStatus.BAD_REQUEST,
+                json_data=['not', 'a', 'dict'],
+                text='Bad Request',
+                error_pattern=r'HTTP 400.*Bad Request',
+            ),
             id='non-dict-json-error',
         ),
     ),
@@ -262,23 +284,20 @@ def test_works_with_various_providers(
 def test_http_errors_raise_value_error(
     mocker: MockerFixture,
     call_backend: _BackendCaller,
-    status_code: int,
-    json_data: object,
-    text: str,
-    error_pattern: str,
+    error_case: _ErrorCase,
 ) -> None:
     """Test that HTTP errors are converted to ValueError."""
     mocker.patch.object(
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=status_code,
-            json_data=json_data,
-            text=text,
+            status_code=error_case.status_code,
+            json_data=error_case.json_data,
+            text=error_case.text,
         ),
     )
 
-    with pytest.raises(ValueError, match=error_pattern):
+    with pytest.raises(ValueError, match=error_case.error_pattern):
         call_backend()
 
 
