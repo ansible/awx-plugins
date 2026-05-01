@@ -220,7 +220,7 @@ def test_works_with_various_providers(
     token_url: str,
 ) -> None:
     """Verify the plugin works with different OAuth2 provider URLs."""
-    mocker.patch.object(
+    mock_post = mocker.patch.object(
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
@@ -230,6 +230,7 @@ def test_works_with_various_providers(
     )
 
     assert call_backend(token_url=token_url) == FAKE_TOKEN
+    assert mock_post.call_args[0][0] == token_url
 
 
 @pytest.mark.parametrize(
