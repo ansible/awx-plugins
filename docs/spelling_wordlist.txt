@@ -11,11 +11,13 @@ doas
 ec
 ec2
 edu
+Entra
 Hashi
 hasn
 hostvars
 https
 ini
+Keycloak
 Kerberos
 keylogging
 Kubernetes
