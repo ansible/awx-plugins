@@ -17,11 +17,11 @@ Functions:
 
 from typing import TypedDict, Unpack
 
-import requests
-
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
 )
+
+import requests
 
 from . import _types
 from .plugin import CredentialPlugin
@@ -137,14 +137,12 @@ def _extract_access_token(resp: requests.Response) -> str:
         body = resp.json()
     except ValueError as parse_exc:
         raise ValueError(
-            'Token endpoint response did not contain '
-            'an access_token field',
+            'Token endpoint response did not contain an access_token field',
         ) from parse_exc
 
     if not isinstance(body, dict) or 'access_token' not in body:
         raise ValueError(
-            'Token endpoint response did not contain '
-            'an access_token field',
+            'Token endpoint response did not contain an access_token field',
         )
     return str(body['access_token'])
 

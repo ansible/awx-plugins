@@ -9,6 +9,7 @@ from awx_plugins.credentials import (
     oauth2_client_credentials as oauth2_mod,
 )
 
+
 TOKEN_URL = (
     'https://login.microsoftonline.com'
     '/00000000-0000-0000-0000-000000000000/oauth2/v2.0/token'
