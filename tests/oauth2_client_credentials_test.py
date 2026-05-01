@@ -1,6 +1,6 @@
 """Tests for the OAuth2 Client Credentials Token credential plugin."""
 
-from typing import Any
+import http
 
 import pytest
 from pytest_mock import MockerFixture
@@ -8,7 +8,6 @@ from pytest_mock import MockerFixture
 from awx_plugins.credentials import (
     oauth2_client_credentials as oauth2_mod,
 )
-
 
 TOKEN_URL = (
     'https://login.microsoftonline.com'
@@ -23,17 +22,18 @@ FAKE_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.fake.token'  # noqa: S105
 class _FakeResponse:
     """Minimal stand-in for ``requests.Response``."""
 
-    def __init__(
+    def __init__(  # noqa: ANN101
         self,
         status_code: int,
-        json_data: dict[str, Any] | None = None,
+        json_data: object = None,
         text: str = '',
     ) -> None:
         self.status_code = status_code
         self._json_data = json_data
         self.text = text
 
-    def json(self) -> dict[str, Any]:
+    def json(self) -> object:  # noqa: ANN101
+        """Return the stored JSON payload or raise."""
         if self._json_data is None:
             raise ValueError('No JSON')
         return self._json_data
@@ -93,7 +93,7 @@ def test_successful_token_fetch(mocker: MockerFixture) -> None:
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=200,
+            status_code=http.HTTPStatus.OK,
             json_data={
                 'access_token': FAKE_TOKEN,
                 'token_type': 'Bearer',
@@ -118,7 +118,7 @@ def test_request_includes_grant_type(mocker: MockerFixture) -> None:
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=200,
+            status_code=http.HTTPStatus.OK,
             json_data={'access_token': FAKE_TOKEN},
         ),
     )
@@ -152,12 +152,12 @@ def test_no_scope_omits_scope_from_request(
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=200,
+            status_code=http.HTTPStatus.OK,
             json_data={'access_token': FAKE_TOKEN},
         ),
     )
 
-    kwargs: dict[str, Any] = {
+    kwargs: dict[str, str] = {
         'token_url': TOKEN_URL,
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
@@ -199,7 +199,7 @@ def test_works_with_various_providers(
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=200,
+            status_code=http.HTTPStatus.OK,
             json_data={'access_token': FAKE_TOKEN},
         ),
     )
@@ -221,7 +221,7 @@ def test_works_with_various_providers(
     ),
     (
         pytest.param(
-            401,
+            http.HTTPStatus.UNAUTHORIZED,
             {
                 'error': 'invalid_client',
                 'error_description': 'Invalid client secret provided.',
@@ -230,7 +230,7 @@ def test_works_with_various_providers(
             id='invalid-credentials',
         ),
         pytest.param(
-            400,
+            http.HTTPStatus.BAD_REQUEST,
             {
                 'error': 'invalid_request',
                 'error_description': 'Tenant not found.',
@@ -270,7 +270,7 @@ def test_non_json_error_response(mocker: MockerFixture) -> None:
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=503,
+            status_code=http.HTTPStatus.SERVICE_UNAVAILABLE,
             text='Service Unavailable',
         ),
     )
@@ -294,7 +294,7 @@ def test_missing_access_token_in_response(
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=200,
+            status_code=http.HTTPStatus.OK,
             json_data={
                 'token_type': 'Bearer',
                 'expires_in': 3600,
@@ -321,7 +321,7 @@ def test_non_dict_json_success_response(
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=200,
+            status_code=http.HTTPStatus.OK,
             json_data=['not', 'a', 'dict'],
         ),
     )
@@ -345,7 +345,7 @@ def test_non_dict_json_error_response(
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=400,
+            status_code=http.HTTPStatus.BAD_REQUEST,
             json_data=['not', 'a', 'dict'],
             text='Bad Request',
         ),
@@ -410,7 +410,7 @@ def test_discarded_kwargs_are_ignored(mocker: MockerFixture) -> None:
         oauth2_mod.requests,
         'post',
         return_value=_FakeResponse(
-            status_code=200,
+            status_code=http.HTTPStatus.OK,
             json_data={'access_token': FAKE_TOKEN},
         ),
     )
@@ -419,7 +419,7 @@ def test_discarded_kwargs_are_ignored(mocker: MockerFixture) -> None:
         token_url=TOKEN_URL,
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
-        description='some metadata AWX may pass',
+        description='some metadata that may be passed',  # type: ignore[call-arg]
     )
 
     assert token == FAKE_TOKEN
