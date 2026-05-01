@@ -10,6 +10,7 @@ from awx_plugins.credentials import (
     oauth2_client_credentials as oauth2_mod,
 )
 
+
 TOKEN_URL = (
     'https://login.microsoftonline.com'
     '/00000000-0000-0000-0000-000000000000/oauth2/v2.0/token'
@@ -43,6 +44,7 @@ class _FakeResponse:
 @pytest.fixture
 def call_backend() -> _BackendCaller:
     """Return a helper that calls the backend with default credentials."""
+
     def _invoke(**overrides: str) -> str:
         kwargs: dict[str, str] = {
             'token_url': TOKEN_URL,
@@ -51,6 +53,7 @@ def call_backend() -> _BackendCaller:
         }
         kwargs.update(overrides)
         return oauth2_mod.oauth2_client_credentials_backend(**kwargs)
+
     return _invoke
 
 
