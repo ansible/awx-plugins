@@ -125,10 +125,10 @@ def oauth2_client_credentials_backend(
         error_detail = ''
         try:
             body = resp.json()
-            error_detail = body.get(
-                'error_description',
-                resp.text,
-            )
+            if isinstance(body, dict):
+                error_detail = body.get('error_description', resp.text)
+            else:
+                error_detail = resp.text
         except ValueError:
             error_detail = resp.text
 
@@ -138,11 +138,18 @@ def oauth2_client_credentials_backend(
         )
 
     try:
-        return resp.json()['access_token']
-    except (KeyError, ValueError) as parse_exc:
+        body = resp.json()
+    except ValueError as parse_exc:
         raise ValueError(
             'Token endpoint response did not contain an access_token field',
         ) from parse_exc
+
+    if not isinstance(body, dict) or 'access_token' not in body:
+        raise ValueError(
+            'Token endpoint response did not contain '
+            'an access_token field',
+        )
+    return body['access_token']
 
 
 oauth2_client_credentials_plugin = CredentialPlugin(

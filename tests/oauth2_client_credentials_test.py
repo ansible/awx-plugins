@@ -313,6 +313,55 @@ def test_missing_access_token_in_response(
         )
 
 
+def test_non_dict_json_success_response(
+    mocker: MockerFixture,
+) -> None:
+    """Test handling of a 200 response whose JSON is not an object."""
+    mocker.patch.object(
+        oauth2_mod.requests,
+        'post',
+        return_value=_FakeResponse(
+            status_code=200,
+            json_data=['not', 'a', 'dict'],
+        ),
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r'did not contain an access_token',
+    ):
+        oauth2_mod.oauth2_client_credentials_backend(
+            token_url=TOKEN_URL,
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,
+        )
+
+
+def test_non_dict_json_error_response(
+    mocker: MockerFixture,
+) -> None:
+    """Test handling of an error response whose JSON is not an object."""
+    mocker.patch.object(
+        oauth2_mod.requests,
+        'post',
+        return_value=_FakeResponse(
+            status_code=400,
+            json_data=['not', 'a', 'dict'],
+            text='Bad Request',
+        ),
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r'HTTP 400.*Bad Request',
+    ):
+        oauth2_mod.oauth2_client_credentials_backend(
+            token_url=TOKEN_URL,
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,
+        )
+
+
 def test_connection_error(mocker: MockerFixture) -> None:
     """Test that connection errors are wrapped in ValueError."""
     mocker.patch.object(
