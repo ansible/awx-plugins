@@ -107,7 +107,7 @@ def _post_token_request(
     :param token_url: The full OAuth2 token endpoint URL.
     :param post_data: The form data to send.
     :returns: The HTTP response.
-    :raises ValueError: On timeout or connection failure.
+    :raises ValueError: On any transport-level failure.
     """
     try:
         return requests.post(
@@ -123,6 +123,10 @@ def _post_token_request(
         raise ValueError(
             f'Could not connect to token endpoint: {token_url!s}',
         ) from conn_exc
+    except requests.exceptions.RequestException as req_exc:
+        raise ValueError(
+            f'Failed requesting token from endpoint: {token_url!s}',
+        ) from req_exc
 
 
 def _extract_access_token(resp: requests.Response) -> str:
