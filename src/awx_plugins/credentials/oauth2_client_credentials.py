@@ -17,14 +17,15 @@ Functions:
 
 from typing import TypedDict, Unpack
 
-import requests
-
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
 )
 
+import requests
+
 from . import _types
 from .plugin import CredentialPlugin
+
 
 __all__ = ('oauth2_client_credentials_plugin',)  # noqa: WPS410
 
@@ -113,13 +114,11 @@ def oauth2_client_credentials_backend(
         resp = requests.post(token_url, data=post_data, timeout=30)
     except requests.exceptions.Timeout as timeout_exc:
         raise ValueError(
-            'Timed out requesting token from '
-            f'{token_url!s}',
+            f'Timed out requesting token from {token_url!s}',
         ) from timeout_exc
     except requests.exceptions.ConnectionError as conn_exc:
         raise ValueError(
-            'Could not connect to token endpoint: '
-            f'{token_url!s}',
+            f'Could not connect to token endpoint: {token_url!s}',
         ) from conn_exc
 
     if resp.status_code != 200:  # noqa: WPS432
@@ -142,8 +141,7 @@ def oauth2_client_credentials_backend(
         return resp.json()['access_token']
     except (KeyError, ValueError) as parse_exc:
         raise ValueError(
-            'Token endpoint response did not contain '
-            'an access_token field',
+            'Token endpoint response did not contain an access_token field',
         ) from parse_exc
 
 
