@@ -388,6 +388,26 @@ def test_timeout_error(
         call_backend()
 
 
+def test_generic_request_exception(
+    mocker: MockerFixture,
+    call_backend: _BackendCaller,
+) -> None:
+    """Test that other RequestException subclasses are wrapped."""
+    mocker.patch.object(
+        oauth2_mod.requests,
+        'post',
+        side_effect=oauth2_mod.requests.exceptions.TooManyRedirects(
+            'Exceeded 30 redirects',
+        ),
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r'Failed requesting token from endpoint',
+    ):
+        call_backend()
+
+
 def test_discarded_kwargs_are_ignored(
     mocker: MockerFixture,
 ) -> None:
