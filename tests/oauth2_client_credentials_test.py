@@ -23,8 +23,8 @@ FAKE_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.fake.token'  # noqa: S105
 class _FakeResponse:
     """Minimal stand-in for ``requests.Response``."""
 
-    def __init__(  # noqa: ANN101
-        self,
+    def __init__(
+        self,  # noqa: ANN101
         status_code: int,
         json_data: object = None,
         text: str = '',
