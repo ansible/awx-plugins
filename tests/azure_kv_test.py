@@ -138,3 +138,25 @@ def test_azure_kv_valid_auth(
         secret_version='',
     )
     assert keyvault_secret == 'test-secret'
+
+
+def test_azure_kv_with_cloud_name(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test that cloud_name input field does not cause a TypeError."""
+    monkeypatch.setattr(
+        azure_kv,
+        'SecretClient',
+        _FakeSecretClient,
+    )
+
+    keyvault_secret = azure_kv.azure_keyvault_backend(
+        url='https://keyvault.test',
+        client='client-id',
+        secret='client-secret',
+        tenant='tenant-id',
+        secret_field='secret',
+        secret_version='',
+        cloud_name='AzureCloud',
+    )
+    assert keyvault_secret == 'test-secret'
