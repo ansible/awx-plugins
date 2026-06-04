@@ -128,6 +128,7 @@ def azure_keyvault_backend(  # noqa: WPS211
     tenant: str = '',
     secret_field: str,
     secret_version: str = '',
+    **kwargs: str,
 ) -> str | None:
     """Get a credential and retrieve a secret from an Azure Key Vault.
 
