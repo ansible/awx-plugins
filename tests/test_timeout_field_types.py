@@ -58,9 +58,15 @@ def is_numeric_field(field_id: str, help_text: str | None = None) -> bool:
     # Check help text for timeout/duration mentions
     if help_text:
         help_lower = help_text.lower()
-        if any(word in help_lower for word in ['timeout', 'seconds', 'milliseconds']):
+        if any(
+            word in help_lower
+            for word in ['timeout', 'seconds', 'milliseconds']
+        ):
             # But exclude if it's clearly about a string/path
-            if not any(word in help_lower for word in ['url', 'path', 'string', 'name']):
+            if not any(
+                word in help_lower
+                for word in ['url', 'path', 'string', 'name']
+            ):
                 return True
 
     return False
@@ -68,10 +74,23 @@ def is_numeric_field(field_id: str, help_text: str | None = None) -> bool:
 
 @pytest.mark.parametrize(
     'namespace,field',
-    [(ns, f) for ns, f in get_all_fields() if is_numeric_field(f['id'], f.get('help_text'))],
-    ids=lambda params: f"{params[0]}.{params[1]['id']}" if isinstance(params, tuple) and len(params) == 2 and isinstance(params[1], dict) else None,
+    [
+        (ns, f)
+        for ns, f in get_all_fields()
+        if is_numeric_field(f['id'], f.get('help_text'))
+    ],
+    ids=lambda params: (
+        f'{params[0]}.{params[1]["id"]}'
+        if isinstance(params, tuple)
+        and len(params) == 2
+        and isinstance(params[1], dict)
+        else None
+    ),
 )
-def test_numeric_fields_have_numeric_types(namespace: str, field: dict) -> None:
+def test_numeric_fields_have_numeric_types(
+    namespace: str,
+    field: dict,
+) -> None:
     """Test that fields with numeric semantics have numeric types.
 
     This test identifies fields that should be numeric based on their name
@@ -95,7 +114,5 @@ def test_numeric_fields_have_numeric_types(namespace: str, field: dict) -> None:
         default = field['default']
         assert isinstance(default, (int, float)), (
             f"Field '{namespace}.{field_id}' has type '{field_type}' "
-            f"but default value {default!r} is type {type(default).__name__}"
+            f'but default value {default!r} is type {type(default).__name__}'
         )
-
-
