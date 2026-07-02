@@ -323,6 +323,16 @@ def test_http_errors_raise_value_error(
             'not json at all',
             id='unparseable-json',
         ),
+        pytest.param(
+            {'access_token': None},
+            '',
+            id='null-access-token',
+        ),
+        pytest.param(
+            {'access_token': ''},
+            '',
+            id='empty-access-token',
+        ),
     ),
 )
 def test_malformed_success_response(
@@ -347,6 +357,24 @@ def test_malformed_success_response(
         match=r'did not contain an access_token',
     ):
         call_backend()
+
+
+def test_rejects_non_https_token_url(
+    mocker: MockerFixture,
+    call_backend: _BackendCaller,
+) -> None:
+    """Verify non-https token endpoints are rejected before posting."""
+    mock_post = mocker.patch.object(oauth2_mod.requests, 'post')
+
+    with pytest.raises(ValueError, match=r'must use https'):
+        call_backend(
+            token_url=(
+                'http://login.microsoftonline.com'
+                '/00000000-0000-0000-0000-000000000000/oauth2/v2.0/token'
+            ),
+        )
+
+    mock_post.assert_not_called()
 
 
 def test_connection_error(
