@@ -98,6 +98,19 @@ def _extract_error_detail(resp: requests.Response) -> str:
     return str(body.get('error_description', resp.text))
 
 
+def _require_https(token_url: str) -> None:
+    """Ensure the token endpoint uses ``https`` before sending secrets.
+
+    :param token_url: The full OAuth2 token endpoint URL.
+    :raises ValueError: If ``token_url`` does not use the ``https``
+        scheme.
+    """
+    if not token_url.lower().startswith('https://'):
+        raise ValueError(
+            f'Token endpoint must use https: {token_url!s}',
+        )
+
+
 def _post_token_request(
     token_url: str,
     post_data: dict[str, str],
@@ -109,6 +122,8 @@ def _post_token_request(
     :returns: The HTTP response.
     :raises ValueError: On any transport-level failure.
     """
+    _require_https(token_url)
+
     try:
         return requests.post(
             token_url,
@@ -144,11 +159,12 @@ def _extract_access_token(resp: requests.Response) -> str:
             'Token endpoint response did not contain an access_token field',
         ) from parse_exc
 
-    if not isinstance(body, dict) or 'access_token' not in body:
+    token = body.get('access_token') if isinstance(body, dict) else None
+    if not token:
         raise ValueError(
             'Token endpoint response did not contain an access_token field',
         )
-    return str(body['access_token'])
+    return str(token)
 
 
 def oauth2_client_credentials_backend(
