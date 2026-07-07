@@ -11,9 +11,6 @@ namespace-packages = [
 quote-style = "single"
 
 [lint]
-external = [
-  "WPS",  # Do not remove noqa for wemake-python-style (WPS) checks
-]
 ignore = [
   "CPY001",  # Skip copyright notice requirement at top of files
 
@@ -92,8 +89,6 @@ ignore = [
   "TRY203",  # useless-try-except  # FIXME
 
   "RUF005",  # collection-literal-concatenation  # FIXME
-  "RUF100",  # Ruff doesn't know about WPS
-  "RUF102",  # Ruff doesn't know about WPS
 ]
 preview = true  # Live dangerously
 select = [

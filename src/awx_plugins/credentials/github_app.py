@@ -13,7 +13,7 @@ Functions:
 
 from typing import TypedDict, Unpack
 
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop as _,
 )
 
@@ -32,7 +32,7 @@ from . import _types
 from .plugin import CredentialPlugin
 
 
-__all__ = ('github_app_lookup',)  # noqa: WPS410
+__all__ = ('github_app_lookup',)
 
 
 github_app_inputs: _types.PluginInputs = {
@@ -101,7 +101,7 @@ class EmptyKwargs(TypedDict):
     """Schema for zero keyword arguments."""
 
 
-def extract_github_app_install_token(  # noqa: WPS210
+def extract_github_app_install_token(
     *,
     github_api_url: str,
     app_or_client_id: int | str,

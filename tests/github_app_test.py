@@ -29,7 +29,7 @@ from jwt import decode as decode_jwt
 from awx_plugins.credentials import github_app as gh_app_plugin_mod
 
 
-RSA_PUBLIC_EXPONENT = 65_537  # noqa: WPS303
+RSA_PUBLIC_EXPONENT = 65_537
 MINIMUM_RSA_KEY_SIZE = 1024  # the lowest value chosen for performance in tests
 TEST_APP_ID = 123
 
@@ -204,7 +204,7 @@ class _FakeAppInstallationAuth(AppInstallationAuth):
     'jwt.warnings.InsecureKeyLengthWarning',
 )
 # pylint: disable-next=too-many-arguments,too-many-positional-arguments
-def test_github_app_github_authentication(  # noqa: WPS211
+def test_github_app_github_authentication(
     application_or_client_id: int | str,
     installation_id: int | str,
     mocker: MockerFixture,
@@ -235,7 +235,7 @@ def test_github_app_github_authentication(  # noqa: WPS211
     observed_pygithub_obj = github_initializer_spy.spy_return
     observed_gh_install_auth_obj = get_installation_auth_spy.spy_return
     # pylint: disable-next=protected-access
-    signed_jwt = observed_gh_install_auth_obj._app_auth.token  # noqa: WPS437
+    signed_jwt = observed_gh_install_auth_obj._app_auth.token
 
     assert token == 'token-sentinel'
 
@@ -263,5 +263,5 @@ def test_github_app_github_authentication(  # noqa: WPS211
         },
         audience=None,  # GH App JWT don't set the audience claim
         issuer=str(application_or_client_id),
-        leeway=0.001,  # noqa: WPS432
+        leeway=0.001,
     )

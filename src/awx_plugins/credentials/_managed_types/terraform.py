@@ -1,9 +1,9 @@
 """HCP Terraform managed credential type."""
 
-from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_api import (
     ManagedCredentialType,
 )
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop,
 )
 
