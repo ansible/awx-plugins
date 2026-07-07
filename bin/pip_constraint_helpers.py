@@ -9,7 +9,7 @@ import subprocess  # noqa: S404 -- pip/pip-tools don't have importable APIs
 import sys
 
 
-PYTHON_IMPLEMENTATION_MAP = {  # noqa: WPS407
+PYTHON_IMPLEMENTATION_MAP = {
     'cpython': 'cp',
     'ironpython': 'ip',
     'jython': 'jy',
@@ -38,7 +38,7 @@ def get_runtime_python_tag() -> str:
     return f'{python_tag_prefix!s}{python_minor_ver_tag!s}'
 
 
-def get_constraint_file_path(  # noqa: WPS210 -- no way to drop vars
+def get_constraint_file_path(
     req_dir: pathlib.Path | str,
     toxenv: str,
     python_tag: str,
@@ -73,5 +73,5 @@ def run_cmd(cmd: list[str] | tuple[str, ...]) -> None:
     :param cmd: The command to invoke.
     """
     escaped_cmd = shlex.join(cmd)
-    print(f'Invoking the following command: {escaped_cmd!s}')  # noqa: T201, WPS421
+    print(f'Invoking the following command: {escaped_cmd!s}')  # noqa: T201
     subprocess.check_call(cmd)  # noqa: S603

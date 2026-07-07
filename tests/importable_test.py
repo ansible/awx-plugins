@@ -231,7 +231,7 @@ def test_entry_points_exposed(entry_point: EntryPointParam) -> None:
 def test_entry_points_are_credential_plugin(
     entry_point: EntryPointParam,
 ) -> None:
-    """Ensure all exposed credential plugins are of the same class."""  # noqa: D200  ; FIXME
+    """Ensure all exposed credential plugins are of the same class."""
     entry_points = _discover_entry_points(group=entry_point.group)
     loaded_plugin_class = entry_points[entry_point.name].load()
 
@@ -243,7 +243,7 @@ def test_entry_points_are_credential_plugin(
 def test_entry_points_are_managed_credential_type(
     entry_point: EntryPointParam,
 ) -> None:
-    """Ensure all exposed managed credential plugins are of the same class."""  # noqa: D200  ; FIXME
+    """Ensure all exposed managed credential plugins are of the same class."""
     entry_points = _discover_entry_points(group=entry_point.group)
     loaded_plugin_class = entry_points[entry_point.name].load()
 
@@ -255,7 +255,7 @@ def test_entry_points_are_managed_credential_type(
 def test_entry_points_are_inventory_plugin(
     entry_point: EntryPointParam,
 ) -> None:
-    """Ensure all exposed inventory plugins are of the same class."""  # noqa: D200  ; FIXME
+    """Ensure all exposed inventory plugins are of the same class."""
     entry_points = _discover_entry_points(group=entry_point.group)
     loaded_plugin_class = entry_points[entry_point.name].load()
 

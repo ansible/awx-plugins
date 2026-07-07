@@ -202,7 +202,7 @@ def tox_after_run_commands(tox_env: ToxEnv) -> None:
             encoding=UNICODE_ENCODING,
             mode=FILE_APPEND_MODE,
         ) as outputs_file:
-            print(  # noqa: T201
+            print(
                 'combined-dists-base64-encoded-sha256-hash='
                 f'{emulated_base64_w0_output!s}',
                 file=outputs_file,
@@ -237,8 +237,7 @@ class PinnedPipInstaller(PipInstaller):
                 constraint_file_path,
             )
             logger.debug(
-                'tox-lock:%s> Injecting `%s` into the install '
-                'command...',
+                'tox-lock:%s> Injecting `%s` into the install command...',
                 self._env.name,
                 constraint_cli_arg,
             )
@@ -354,8 +353,7 @@ def tox_extend_envs() -> tuple[str, ...]:
     """Declare plugin-provided pip-compile in-memory tox envs."""
     pip_compile_envs = tuple(env_cls.name for env_cls in pip_compile_env_clss)
     logger.debug(
-        'tox-lock:tox_extend_envs> '
-        'Adding ephemeral tox envs: %s',
+        'tox-lock:tox_extend_envs> Adding ephemeral tox envs: %s',
         ', '.join(pip_compile_envs),
     )
     return pip_compile_envs
@@ -510,7 +508,7 @@ pip_compile_env_clss = {
 
 @impl
 def tox_add_core_config(
-    core_conf: ConfigSet,  # noqa: ARG001  # pylint: disable=unused-argument
+    core_conf: ConfigSet,  # pylint: disable=unused-argument
     state: State,
 ) -> None:
     """Define pip-compile in-memory tox environment configs."""
