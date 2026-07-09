@@ -62,6 +62,11 @@ credential_plugins = (
     ),
     EntryPointParam(
         'awx_plugins.credentials',
+        'azure_token',
+        'awx_plugins.credentials.azure_token:azure_oidc_plugin',
+    ),
+    EntryPointParam(
+        'awx_plugins.credentials',
         'centrify_vault_kv',
         'awx_plugins.credentials.centrify_vault:centrify_plugin',
     ),
