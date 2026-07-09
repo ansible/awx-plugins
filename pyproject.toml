@@ -72,6 +72,7 @@ hashivault_ssh = "awx_plugins.credentials.hashivault:hashivault_ssh_plugin"
 hashivault-kv-oidc = "awx_plugins.credentials.hashivault:hashivault_kv_oidc_plugin"
 hashivault-ssh-oidc = "awx_plugins.credentials.hashivault:hashivault_ssh_oidc_plugin"
 azure_kv = "awx_plugins.credentials.azure_kv:azure_keyvault_plugin"
+azure_token = "awx_plugins.credentials.azure_token:azure_oidc_plugin"
 aim = "awx_plugins.credentials.aim:aim_plugin"
 centrify_vault_kv = "awx_plugins.credentials.centrify_vault:centrify_plugin"
 thycotic_dsv = "awx_plugins.credentials.dsv:dsv_plugin"
@@ -165,6 +166,12 @@ credentials-azure-kv = [
   "azure-keyvault",
   "msrestazure",
 ]
+credentials-azure-token = [
+  "awx_plugin.interfaces",
+  "azure-identity",
+  "msrestazure",
+]
+
 credentials-github-app = [
   "awx_plugins.interfaces",
   "PyGithub",
