@@ -16,6 +16,7 @@ _SECRET_PATH = '/test/secret'
 _ACCESS_ID = 'p-test123'
 _ACCESS_KEY = 'test-key'
 _GATEWAY_URL = 'https://api.akeyless.io'
+_WORKLOAD_JWT = 'eyJhbGciOiJSUzI1NiJ9.e30.c2ln'  # noqa: S105
 
 _HTTP_UNAUTHORIZED = 401
 _HTTP_FORBIDDEN = 403
@@ -139,6 +140,28 @@ def _ssh_kwargs(
     if ca_cert is not None:
         kwargs['ca_cert'] = ca_cert
     return kwargs
+
+
+def _oidc_backend_kwargs() -> dict[str, object]:
+    """Build kwargs as the controller sends them for the OIDC secret type."""
+    return {
+        'url': _GATEWAY_URL,
+        'access_id': _ACCESS_ID,
+        'workload_identity_token': _WORKLOAD_JWT,
+        'secret_path': _SECRET_PATH,
+    }
+
+
+def _oidc_ssh_kwargs() -> dict[str, object]:
+    """Build kwargs as the controller sends them for the OIDC SSH type."""
+    return {
+        'url': _GATEWAY_URL,
+        'access_id': _ACCESS_ID,
+        'workload_identity_token': _WORKLOAD_JWT,
+        'cert_issue_name': '/ssh/issuers/my-issuer',
+        'cert_username': 'ubuntu',
+        'public_key_data': 'ssh-rsa AAAAB3NzaC1yc2E...',
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -350,3 +373,108 @@ def test_coerce_ttl_invalid_raises() -> None:
         # WPS437: _coerce_ttl is private but is tested directly here intentionally
         # pylint: disable-next=protected-access
         akeyless_mod._coerce_ttl('not-a-number')  # noqa: WPS437
+
+
+# ---------------------------------------------------------------------------
+# OIDC / workload identity authentication
+# ---------------------------------------------------------------------------
+
+
+def test_oidc_backend_authenticates_with_jwt(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """A workload identity token should be exchanged via JWT auth."""
+    mock_api = patch_setup_client(secret_data='oidc-secret')
+
+    secret_value = akeyless_mod.akeyless_backend(**_oidc_backend_kwargs())
+
+    assert secret_value == 'oidc-secret'
+    auth_request = mock_api.auth.call_args.args[0]
+    assert auth_request.access_type == 'jwt'
+    assert auth_request.jwt == _WORKLOAD_JWT
+    assert auth_request.access_id == _ACCESS_ID
+    assert auth_request.access_key is None
+
+
+def test_oidc_ssh_backend_authenticates_with_jwt(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """SSH certificate issuance should also support workload identity."""
+    mock_api = patch_setup_client(ssh_cert_data='oidc-signed-cert')
+
+    signed_cert = akeyless_mod.akeyless_ssh_backend(**_oidc_ssh_kwargs())
+
+    assert signed_cert == 'oidc-signed-cert'
+    auth_request = mock_api.auth.call_args.args[0]
+    assert auth_request.access_type == 'jwt'
+    assert auth_request.jwt == _WORKLOAD_JWT
+
+
+def test_workload_identity_token_takes_precedence(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """A workload identity token should win over a stale access key."""
+    mock_api = patch_setup_client()
+
+    akeyless_mod.akeyless_backend(
+        **_oidc_backend_kwargs(),
+        access_key=_ACCESS_KEY,
+    )
+
+    auth_request = mock_api.auth.call_args.args[0]
+    assert auth_request.access_type == 'jwt'
+
+
+def test_missing_auth_material_raises(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """Neither an access key nor a token should be a clear failure."""
+    patch_setup_client()
+    kwargs = _oidc_backend_kwargs()
+    del kwargs['workload_identity_token']  # noqa: WPS420
+
+    with pytest.raises(
+        RuntimeError,
+        match='Access Key or a workload identity',
+    ):
+        akeyless_mod.akeyless_backend(**kwargs)
+
+
+def test_missing_gateway_url_raises(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """Neither `url` nor `gateway_url` should be a clear failure."""
+    patch_setup_client()
+    kwargs = _oidc_backend_kwargs()
+    del kwargs['url']  # noqa: WPS420
+
+    with pytest.raises(ValueError, match='Gateway URL must be set'):
+        akeyless_mod.akeyless_backend(**kwargs)
+
+
+@pytest.mark.parametrize(
+    'plugin',
+    (
+        pytest.param(akeyless_mod.akeyless_oidc_plugin, id='secret'),
+        pytest.param(akeyless_mod.akeyless_ssh_oidc_plugin, id='ssh'),
+    ),
+)
+def test_oidc_plugins_workload_contract(
+    plugin: object,
+) -> None:
+    """The OIDC types must match what the controller looks for.
+
+    It only injects a token into credential types exposing an internal
+    ``workload_identity_token`` field, and it reads the audience of that
+    token from the input named ``url``.
+    """
+    fields = plugin.inputs['fields']
+    token_fields = [
+        field for field in fields if field['id'] == 'workload_identity_token'
+    ]
+
+    assert [field['id'] for field in fields].count('url') == 1
+    assert len(token_fields) == 1
+    assert token_fields[0]['internal'] is True
+    assert token_fields[0]['secret'] is True
+    assert 'access_key' not in {field['id'] for field in fields}

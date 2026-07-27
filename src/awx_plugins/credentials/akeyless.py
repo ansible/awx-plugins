@@ -28,8 +28,10 @@ from . import plugin as _plugin
 
 __all__ = (  # noqa: WPS410
     'akeyless_backend',
+    'akeyless_oidc_plugin',
     'akeyless_plugin',
     'akeyless_ssh_backend',
+    'akeyless_ssh_oidc_plugin',
     'akeyless_ssh_plugin',
 )
 
@@ -42,9 +44,14 @@ _PASSWORD_KEYS = frozenset(('username', 'password'))
 
 
 class _AkeylessCommonKwargs(_t.TypedDict):
-    gateway_url: str
     access_id: str
-    access_key: str
+    # `gateway_url` on the API key credential types, `url` on the OIDC ones.
+    gateway_url: _t.NotRequired[str]
+    url: _t.NotRequired[str]
+    # `access_key` is supplied by the user, `workload_identity_token` is
+    # injected by the controller for the OIDC credential types.
+    access_key: _t.NotRequired[str]
+    workload_identity_token: _t.NotRequired[str]
     ca_cert: _t.NotRequired[str | None]
 
 
@@ -101,38 +108,160 @@ class _AkeylessApi(_t.Protocol):
     ) -> _SshCertResponse: ...
 
 
+_gateway_url_field = {
+    'id': 'gateway_url',
+    'label': _('Gateway URL'),
+    'type': 'string',
+    'help_text': _(
+        'The URL of your Akeyless Gateway (e.g., https://api.akeyless.io, '
+        'https://my.akeyless.gw/api/v2)',
+    ),
+    'default': 'https://api.akeyless.io',
+}
+
+
+# The OIDC credential types must name this field `url`: the controller reads
+# the audience of the workload identity token it mints from the input with
+# that exact name.
+_url_field = {
+    'id': 'url',
+    'label': _('Gateway URL'),
+    'type': 'string',
+    'help_text': _(
+        'The URL of your Akeyless Gateway (e.g., https://api.akeyless.io, '
+        'https://my.akeyless.gw/api/v2). This value is also sent as the '
+        'audience of the workload identity token, so it must match the '
+        'audience configured on the Akeyless JWT auth method.',
+    ),
+    'default': 'https://api.akeyless.io',
+}
+
+
+_access_id_field = {
+    'id': 'access_id',
+    'label': _('Access ID'),
+    'type': 'string',
+    'help_text': _('Your Akeyless API Access ID'),
+}
+
+
+_oidc_access_id_field = {
+    'id': 'access_id',
+    'label': _('Access ID'),
+    'type': 'string',
+    'help_text': _(
+        'The Access ID of the Akeyless JWT auth method that trusts your '
+        'automation platform as an OIDC issuer (e.g., p-1a2b3c4d5e6f).',
+    ),
+}
+
+
+_access_key_field = {
+    'id': 'access_key',
+    'label': _('Access Key'),
+    'type': 'string',
+    'help_text': _('Your Akeyless API Access Key'),
+    'secret': True,
+}
+
+
+_ca_cert_field = {
+    'id': 'ca_cert',
+    'label': _('CA Certificate'),
+    'type': 'string',
+    'multiline': True,
+    'help_text': _(
+        'CA certificate (PEM format) used to verify the gateway TLS '
+        'certificate.',
+    ),
+}
+
+
+_workload_identity_token_field = {
+    'id': 'workload_identity_token',
+    'label': _('Workload Identity Token'),
+    'type': 'string',
+    'secret': True,
+    'internal': True,
+    'help_text': _(
+        'JWT token for workload identity authentication. '
+        'Automatically populated by the system.',
+    ),
+}
+
+
 _common_plugin_inputs = [
+    _gateway_url_field,
+    _access_id_field,
+    _access_key_field,
+    _ca_cert_field,
+]
+
+
+_common_oidc_plugin_inputs = [
+    _url_field,
+    _oidc_access_id_field,
+    _ca_cert_field,
+    _workload_identity_token_field,
+]
+
+
+_secret_metadata = [
     {
-        'id': 'gateway_url',
-        'label': _('Gateway URL'),
+        'id': 'secret_path',
+        'label': _('Secret Path'),
         'type': 'string',
         'help_text': _(
-            'The URL of your Akeyless Gateway (e.g., https://api.akeyless.io, '
-            'https://my.akeyless.gw/api/v2)',
+            'The path to the secret in Akeyless (e.g., '
+            '/myapp/database/password).',
         ),
-        'default': 'https://api.akeyless.io',
     },
     {
-        'id': 'access_id',
-        'label': _('Access ID'),
+        'id': 'secret_key',
+        'label': _('Secret Key'),
         'type': 'string',
-        'help_text': _('Your Akeyless API Access ID'),
-    },
-    {
-        'id': 'access_key',
-        'label': _('Access Key'),
-        'type': 'string',
-        'help_text': _('Your Akeyless API Access Key'),
-        'secret': True,
-    },
-    {
-        'id': 'ca_cert',
-        'label': _('CA Certificate'),
-        'type': 'string',
-        'multiline': True,
         'help_text': _(
-            'CA certificate (PEM format) used to verify the gateway TLS '
-            'certificate.',
+            'Optional key within the secret to retrieve (for JSON or '
+            'key-value secrets).',
+        ),
+    },
+]
+
+
+_ssh_metadata = [
+    {
+        'id': 'cert_issue_name',
+        'label': _('Certificate Issuer Name'),
+        'type': 'string',
+        'help_text': _(
+            'The full path to the certificate issuer in Akeyless (e.g., '
+            '/remote/ssh/certificate/issuer).',
+        ),
+    },
+    {
+        'id': 'cert_username',
+        'label': _('Certificate Username'),
+        'type': 'string',
+        'help_text': _(
+            'The username(s) to sign into the SSH certificate in a '
+            'comma-separated list, e.g., "ubuntu,nobody,nonroot".',
+        ),
+    },
+    {
+        'id': 'public_key_data',
+        'label': _('Public Key Data'),
+        'type': 'string',
+        'help_text': _(
+            'The public key data to sign (e.g. "ssh-rsa AAAAB3NzaC1yc2E...").',
+        ),
+    },
+    {
+        'id': 'ttl',
+        'label': _('TTL'),
+        'type': 'number',
+        'help_text': _(
+            'Time to live in seconds for the SSH certificate. If not '
+            'defined, the default issuer TTL is used.',
         ),
     },
 ]
@@ -140,26 +269,7 @@ _common_plugin_inputs = [
 
 _akeyless_inputs = {
     'fields': _common_plugin_inputs,
-    'metadata': [
-        {
-            'id': 'secret_path',
-            'label': _('Secret Path'),
-            'type': 'string',
-            'help_text': _(
-                'The path to the secret in Akeyless (e.g., '
-                '/myapp/database/password).',
-            ),
-        },
-        {
-            'id': 'secret_key',
-            'label': _('Secret Key'),
-            'type': 'string',
-            'help_text': _(
-                'Optional key within the secret to retrieve (for JSON or '
-                'key-value secrets).',
-            ),
-        },
-    ],
+    'metadata': _secret_metadata,
     'required': [
         'gateway_url',
         'access_id',
@@ -169,49 +279,37 @@ _akeyless_inputs = {
 }
 
 
+_akeyless_oidc_inputs = {
+    'fields': _common_oidc_plugin_inputs,
+    'metadata': _secret_metadata,
+    'required': [
+        'url',
+        'access_id',
+        'secret_path',
+    ],
+}
+
+
 _akeyless_ssh_inputs = {
     'fields': _common_plugin_inputs,
-    'metadata': [
-        {
-            'id': 'cert_issue_name',
-            'label': _('Certificate Issuer Name'),
-            'type': 'string',
-            'help_text': _(
-                'The full path to the certificate issuer in Akeyless (e.g., '
-                '/remote/ssh/certificate/issuer).',
-            ),
-        },
-        {
-            'id': 'cert_username',
-            'label': _('Certificate Username'),
-            'type': 'string',
-            'help_text': _(
-                'The username(s) to sign into the SSH certificate in a '
-                'comma-separated list, e.g., "ubuntu,nobody,nonroot".',
-            ),
-        },
-        {
-            'id': 'public_key_data',
-            'label': _('Public Key Data'),
-            'type': 'string',
-            'help_text': _(
-                'The public key data to sign (e.g. "ssh-rsa AAAAB3NzaC1yc2E...").',
-            ),
-        },
-        {
-            'id': 'ttl',
-            'label': _('TTL'),
-            'type': 'number',
-            'help_text': _(
-                'Time to live in seconds for the SSH certificate. If not '
-                'defined, the default issuer TTL is used.',
-            ),
-        },
-    ],
+    'metadata': _ssh_metadata,
     'required': [
         'gateway_url',
         'access_id',
         'access_key',
+        'cert_issue_name',
+        'cert_username',
+        'public_key_data',
+    ],
+}
+
+
+_akeyless_ssh_oidc_inputs = {
+    'fields': _common_oidc_plugin_inputs,
+    'metadata': _ssh_metadata,
+    'required': [
+        'url',
+        'access_id',
         'cert_issue_name',
         'cert_username',
         'public_key_data',
@@ -230,17 +328,39 @@ def _setup_client(gateway_url: str, ca_cert_path: str | None) -> _AkeylessApi:
     return _V2Api(api_client)  # type: ignore[return-value]
 
 
-def _authenticate(
-    api_instance: _AkeylessApi,
-    access_id: str,
-    access_key: str,
-) -> str:
-    auth_response = api_instance.auth(
-        _Auth(
+def _resolve_gateway_url(kwargs: _AkeylessCommonKwargs) -> str:
+    gateway_url = kwargs.get('url') or kwargs.get('gateway_url')
+    if not gateway_url:
+        raise ValueError('An Akeyless Gateway URL must be set.')
+    return gateway_url.rstrip('/')
+
+
+def _build_auth_request(kwargs: _AkeylessCommonKwargs) -> _Auth:
+    access_id = kwargs['access_id']
+    workload_identity_token = kwargs.get('workload_identity_token')
+    if workload_identity_token:
+        return _Auth(
+            access_type='jwt',
+            access_id=access_id,
+            jwt=workload_identity_token,
+        )
+    access_key = kwargs.get('access_key')
+    if access_key:
+        return _Auth(
             access_id=access_id,
             access_key=access_key,
-        ),
+        )
+    raise ValueError(
+        'Either an Access Key or a workload identity token is required '
+        'to authenticate with Akeyless.',
     )
+
+
+def _authenticate(
+    api_instance: _AkeylessApi,
+    kwargs: _AkeylessCommonKwargs,
+) -> str:
+    auth_response = api_instance.auth(_build_auth_request(kwargs))
     if not auth_response.token:
         raise ValueError(
             'Failed to authenticate with Akeyless: no token received.',
@@ -357,15 +477,11 @@ def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
     """Retrieve a secret value from Akeyless."""
     with _plugin.CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
         api_instance = _setup_client(
-            kwargs['gateway_url'].rstrip('/'),
+            _resolve_gateway_url(kwargs),
             ca_cert_path,
         )
         try:
-            token = _authenticate(
-                api_instance,
-                kwargs['access_id'],
-                kwargs['access_key'],
-            )
+            token = _authenticate(api_instance, kwargs)
         except _ApiException as api_exc:
             raise RuntimeError(
                 f'Akeyless API error: {api_exc.reason}'
@@ -423,15 +539,11 @@ def akeyless_ssh_backend(
     """Generate a signed SSH certificate using Akeyless."""
     with _plugin.CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
         api_instance = _setup_client(
-            kwargs['gateway_url'].rstrip('/'),
+            _resolve_gateway_url(kwargs),
             ca_cert_path,
         )
         try:
-            token = _authenticate(
-                api_instance,
-                kwargs['access_id'],
-                kwargs['access_key'],
-            )
+            token = _authenticate(api_instance, kwargs)
         except _ApiException as api_exc:
             raise RuntimeError(
                 f'Akeyless API error: {api_exc.reason}'
@@ -454,6 +566,12 @@ def akeyless_ssh_backend(
             raise RuntimeError(str(val_err)) from val_err
 
 
+_OIDC_PLUGIN_DESCRIPTION = (
+    'Uses OIDC/JWT authentication for enhanced security with short-lived '
+    'tokens'
+)
+
+
 akeyless_plugin = _plugin.CredentialPlugin(
     'Akeyless',
     inputs=_akeyless_inputs,  # type: ignore[arg-type]
@@ -465,4 +583,20 @@ akeyless_ssh_plugin = _plugin.CredentialPlugin(
     'Akeyless SSH',
     inputs=_akeyless_ssh_inputs,  # type: ignore[arg-type]
     backend=akeyless_ssh_backend,
+)
+
+
+akeyless_oidc_plugin = _plugin.CredentialPlugin(
+    'Akeyless (OIDC)',
+    inputs=_akeyless_oidc_inputs,  # type: ignore[arg-type]
+    backend=akeyless_backend,
+    plugin_description=_OIDC_PLUGIN_DESCRIPTION,
+)
+
+
+akeyless_ssh_oidc_plugin = _plugin.CredentialPlugin(
+    'Akeyless SSH (OIDC)',
+    inputs=_akeyless_ssh_oidc_inputs,  # type: ignore[arg-type]
+    backend=akeyless_ssh_backend,
+    plugin_description=_OIDC_PLUGIN_DESCRIPTION,
 )

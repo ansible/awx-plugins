@@ -14,11 +14,15 @@ class ApiClient:
 class Auth:
     access_id: str
     access_key: str
+    access_type: str
+    jwt: str
     def __init__(
         self,
         *,
         access_id: str = ...,
         access_key: str = ...,
+        access_type: str = ...,
+        jwt: str = ...,
     ) -> None: ...
 
 class AuthOutput:
