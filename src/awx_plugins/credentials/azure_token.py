@@ -67,7 +67,9 @@ azure_oidc_inputs: _types.PluginInputs = {
             'id': 'cloud_name',
             'label': _('Cloud Environment'),
             'help_text': _('Specify which azure cloud environment to use.'),
-            'choices': list({default_cloud.name} | {cloud.name for cloud in clouds}),
+            'choices': list(
+                {default_cloud.name} | {cloud.name for cloud in clouds},
+            ),
             'default': default_cloud.name,
         },
     ],
@@ -131,8 +133,10 @@ def match_cloud(
     if len(matched_clouds) == 1:
         cloud_environment = matched_clouds[0]
     elif len(matched_clouds) > 1:
-        message = "Azure SDK failure: more than one cloud matched " \
-                  f"for cloud_environment name '{cloud_name}'"
+        message = (
+            'Azure SDK failure: more than one cloud matched '
+            f"for cloud_environment name '{cloud_name}'"
+        )
         raise RuntimeError(message)
     else:
         message = f"cloud_environment '{cloud_name}' could not be resolved."
