@@ -37,12 +37,12 @@ from .plugin import CredentialPlugin
 
 
 # https://github.com/Azure/msrestazure-for-python/blob/master/msrestazure/azure_cloud.py
-clouds = [
-    x[1]
-    for x in inspect.getmembers(azure_cloud)
-    if isinstance(x[1], azure_cloud.Cloud)
+clouds: list[azure_cloud.Cloud] = [
+    cloud[1]
+    for cloud in inspect.getmembers(azure_cloud)
+    if isinstance(cloud[1], azure_cloud.Cloud)
 ]
-default_cloud = azure_cloud.AZURE_PUBLIC_CLOUD
+default_cloud: azure_cloud.Cloud = azure_cloud.AZURE_PUBLIC_CLOUD
 
 
 azure_oidc_inputs: _types.PluginInputs = {
@@ -67,7 +67,7 @@ azure_oidc_inputs: _types.PluginInputs = {
             'id': 'cloud_name',
             'label': _('Cloud Environment'),
             'help_text': _('Specify which azure cloud environment to use.'),
-            'choices': list({default_cloud.name} | {c.name for c in clouds}),
+            'choices': list({default_cloud.name} | {cloud.name for cloud in clouds}),
             'default': default_cloud.name,
         },
     ],
@@ -118,6 +118,28 @@ def _initialize_credential(
     )
 
 
+def match_cloud(
+    cloud_name: str,
+) -> azure_cloud.Cloud:
+    """Match a cloud_environment from cloud_name.
+
+    :param cloud_name: The Name of the Azure Cloud to target.
+    """
+    matched_clouds: list[azure_cloud.Cloud] = [
+        cloud for cloud in clouds if cloud.name == cloud_name
+    ]
+    if len(matched_clouds) == 1:
+        cloud_environment = matched_clouds[0]
+    elif len(matched_clouds) > 1:
+        message = "Azure SDK failure: more than one cloud matched " \
+                  f"for cloud_environment name '{cloud_name}'"
+        raise RuntimeError(message)
+    else:
+        message = f"cloud_environment '{cloud_name}' could not be resolved."
+        raise RuntimeError(message)
+    return cloud_environment
+
+
 # WPS211 "too many args" is controlled externally
 # pylint: disable-next=too-many-arguments,too-many-positional-arguments
 def azure_oidc_backend(  # noqa: WPS211
@@ -142,15 +164,7 @@ def azure_oidc_backend(  # noqa: WPS211
     :raises RuntimeError: If the software is not being run on an Azure
         VM.
     """
-    matched_clouds = [x for x in clouds if x.name == cloud_name]
-    if len(matched_clouds) == 1:
-        cloud_environment = matched_clouds[0]
-    elif len(matched_clouds) > 1:
-        message = f"Azure SDK failure: more than one cloud matched for cloud_environment name '{cloud_name}'"
-        raise RuntimeError(message)
-    else:
-        message = f"cloud_environment '{cloud_name}' could not be resolved."
-        raise RuntimeError(message)
+    cloud_environment = match_cloud(cloud_name)
     chosen_credential = _initialize_credential(
         cloud_environment,
         tenant,
