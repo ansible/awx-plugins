@@ -2,6 +2,7 @@
 # mypy: disable-error-code="arg-type,explicit-any"
 
 import dataclasses
+import pathlib
 from collections.abc import Callable
 
 import pytest
@@ -17,6 +18,11 @@ _ACCESS_ID = 'p-test123'
 _ACCESS_KEY = 'test-key'
 _GATEWAY_URL = 'https://api.akeyless.io'
 _WORKLOAD_JWT = 'eyJhbGciOiJSUzI1NiJ9.e30.c2ln'  # noqa: S105
+_CA_CERT_PEM = (
+    '-----BEGIN CERTIFICATE-----\n'
+    'ZmFrZS1jZXJ0aWZpY2F0ZQ==\n'
+    '-----END CERTIFICATE-----\n'
+)
 
 _HTTP_UNAUTHORIZED = 401
 _HTTP_FORBIDDEN = 403
@@ -198,10 +204,61 @@ def test_akeyless_backend_json_secret_with_key(
     assert fetched_secret == 's3cr3t'
 
 
-def test_backend_password_secret_username_key(
+def test_backend_key_value_secret_with_key(
     patch_setup_client: _MockApiFactory,
 ) -> None:
-    """Retrieve the 'username' field from a text/password sub-type secret."""
+    """Retrieve a specific key from a key-value format secret."""
+    patch_setup_client(
+        secret_format='key-value',
+        secret_data='{"api_key": "kv-value", "region": "us-east-1"}',
+    )
+
+    fetched_secret = akeyless_mod.akeyless_backend(
+        **_backend_kwargs(secret_key='api_key'),
+    )
+
+    assert fetched_secret == 'kv-value'
+
+
+@pytest.mark.parametrize(
+    ('item_sub_type', 'secret_format'),
+    (
+        pytest.param('password', 'text', id='password'),
+        pytest.param('generic', 'json', id='json'),
+        pytest.param('generic', 'key-value', id='key-value'),
+    ),
+)
+def test_backend_secret_without_key(
+    item_sub_type: str,
+    secret_format: str,
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """Without a secret key, the whole payload is returned verbatim."""
+    payload = '{"username": "myuser", "password": "mypass"}'
+    patch_setup_client(
+        item_sub_type=item_sub_type,
+        secret_format=secret_format,
+        secret_data=payload,
+    )
+
+    fetched_secret = akeyless_mod.akeyless_backend(**_backend_kwargs())
+
+    assert fetched_secret == payload
+
+
+@pytest.mark.parametrize(
+    ('secret_key', 'expected'),
+    (
+        pytest.param('username', 'myuser', id='username'),
+        pytest.param('password', 'mypass', id='password'),
+    ),
+)
+def test_backend_password_secret_keys(
+    secret_key: str,
+    expected: str,
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """Retrieve either field of a text/password sub-type secret."""
     payload = '{"username": "myuser", "password": "mypass"}'
     patch_setup_client(
         item_sub_type='password',
@@ -210,10 +267,38 @@ def test_backend_password_secret_username_key(
     )
 
     fetched_secret = akeyless_mod.akeyless_backend(
-        **_backend_kwargs(secret_key='username'),
+        **_backend_kwargs(secret_key=secret_key),
     )
 
-    assert fetched_secret == 'myuser'
+    assert fetched_secret == expected
+
+
+def test_backend_pwd_secret_missing_key_raises(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """A password payload lacking the requested field is a clear failure."""
+    patch_setup_client(
+        item_sub_type='password',
+        secret_format='text',
+        secret_data='{"username": "myuser"}',
+    )
+
+    with pytest.raises(RuntimeError, match='not found in the password secret'):
+        akeyless_mod.akeyless_backend(**_backend_kwargs(secret_key='password'))
+
+
+def test_backend_pwd_secret_bad_key_raises(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """Password secrets expose only their username and password fields."""
+    patch_setup_client(
+        item_sub_type='password',
+        secret_format='text',
+        secret_data='{"username": "myuser", "token": "nope"}',
+    )
+
+    with pytest.raises(NotImplementedError, match='"username" or "password"'):
+        akeyless_mod.akeyless_backend(**_backend_kwargs(secret_key='token'))
 
 
 def test_backend_pwd_secret_invalid_json_raises(
@@ -300,6 +385,31 @@ def test_backend_missing_json_key_raises(
         )
 
 
+def test_backend_structured_invalid_json_raises(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """A JSON-format secret holding malformed data is a clear failure."""
+    patch_setup_client(
+        secret_format='json',
+        secret_data='{"db_password": "s3cr3t"',
+    )
+
+    with pytest.raises(RuntimeError, match='Secret data not valid JSON'):
+        akeyless_mod.akeyless_backend(
+            **_backend_kwargs(secret_key='db_password'),
+        )
+
+
+def test_backend_path_missing_in_response(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """A response that omits the requested path should name that path."""
+    patch_setup_client(secret_path='/some/other/secret')
+
+    with pytest.raises(RuntimeError, match=f'No secret data.*{_SECRET_PATH}'):
+        akeyless_mod.akeyless_backend(**_backend_kwargs())
+
+
 # ---------------------------------------------------------------------------
 # akeyless_ssh_backend - SSH certificate plugin
 # ---------------------------------------------------------------------------
@@ -359,7 +469,72 @@ def test_ssh_api_exc_wraps_runtime(
 
 
 # ---------------------------------------------------------------------------
-# _coerce_ttl helper
+# CA certificate handling
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    'ca_cert_path',
+    (
+        pytest.param(None, id='no-ca-cert'),
+        pytest.param('/opt/certs/ca.pem', id='ca-cert'),
+    ),
+)
+def test_setup_client_configuration(ca_cert_path: str | None) -> None:
+    """The client identifies itself as AWX and honours a CA certificate."""
+    # WPS437: private helper, tested directly here intentionally
+    # pylint: disable-next=protected-access
+    api_client = akeyless_mod._setup_client(  # noqa: WPS437
+        _GATEWAY_URL,
+        ca_cert_path,
+    ).api_client
+
+    assert api_client.user_agent == 'AWX'
+    assert api_client.default_headers['akeylessclienttype'] == 'AWX'
+    assert api_client.configuration.host == _GATEWAY_URL
+    assert api_client.configuration.ssl_ca_cert == ca_cert_path
+
+
+@pytest.mark.parametrize(
+    ('backend', 'backend_kwargs'),
+    (
+        pytest.param(
+            akeyless_mod.akeyless_backend,
+            _backend_kwargs(ca_cert=_CA_CERT_PEM),
+            id='secret',
+        ),
+        pytest.param(
+            akeyless_mod.akeyless_ssh_backend,
+            _ssh_kwargs(ca_cert=_CA_CERT_PEM),
+            id='ssh',
+        ),
+    ),
+)
+def test_backend_ca_cert_reaches_client(
+    backend: Callable[..., str],
+    backend_kwargs: dict[str, object],
+    patch_setup_client: _MockApiFactory,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A CA certificate should reach the client as a file on disk."""
+    mock_api = patch_setup_client()
+    written_certs: list[str] = []
+
+    def _capture_ca_cert(_gateway_url: str, ca_cert_path: str) -> object:
+        written_certs.append(
+            pathlib.Path(ca_cert_path).read_text(encoding='utf-8'),
+        )
+        return mock_api
+
+    monkeypatch.setattr(akeyless_mod, '_setup_client', _capture_ca_cert)
+
+    backend(**backend_kwargs)
+
+    assert written_certs == [_CA_CERT_PEM]
+
+
+# ---------------------------------------------------------------------------
+# _coerce_ttl and _resolve_gateway_url helpers
 # ---------------------------------------------------------------------------
 
 
@@ -388,6 +563,40 @@ def test_coerce_ttl_invalid_raises() -> None:
         # WPS437: _coerce_ttl is private but is tested directly here intentionally
         # pylint: disable-next=protected-access
         akeyless_mod._coerce_ttl('not-a-number')  # noqa: WPS437
+
+
+@pytest.mark.parametrize(
+    ('gateway_kwargs', 'expected'),
+    (
+        pytest.param(
+            {'gateway_url': f'{_GATEWAY_URL}/'},
+            _GATEWAY_URL,
+            id='trailing-slash-stripped',
+        ),
+        pytest.param(
+            {'gateway_url': 'https://my.gw/api/v2///'},
+            'https://my.gw/api/v2',
+            id='repeated-slashes-stripped',
+        ),
+        pytest.param(
+            {'url': f'{_GATEWAY_URL}/', 'gateway_url': 'https://stale.gw'},
+            _GATEWAY_URL,
+            id='oidc-url-wins',
+        ),
+    ),
+)
+def test_resolve_gateway_url(
+    gateway_kwargs: dict[str, str],
+    expected: str,
+) -> None:
+    """_resolve_gateway_url should prefer `url` and drop trailing slashes."""
+    # WPS437: private helper, tested directly here intentionally
+    # pylint: disable-next=protected-access
+    resolved_url = akeyless_mod._resolve_gateway_url(  # noqa: WPS437
+        gateway_kwargs,
+    )
+
+    assert resolved_url == expected
 
 
 # ---------------------------------------------------------------------------
@@ -481,9 +690,13 @@ def test_oidc_plugins_workload_contract(
 
     It only injects a token into credential types exposing an internal
     ``workload_identity_token`` field, and it reads the audience of that
-    token from the input named ``url``.
+    token from the input named ``url``. A second URL input would make the
+    audience ambiguous, so ``gateway_url`` must be absent.
     """
     fields = plugin.inputs['fields']
+    declared_ids = {field['id'] for field in fields} | set(
+        plugin.inputs['required'],
+    )
     token_fields = [
         field for field in fields if field['id'] == 'workload_identity_token'
     ]
@@ -492,4 +705,4 @@ def test_oidc_plugins_workload_contract(
     assert len(token_fields) == 1
     assert token_fields[0]['internal'] is True
     assert token_fields[0]['secret'] is True
-    assert 'access_key' not in {field['id'] for field in fields}
+    assert not declared_ids & {'access_key', 'gateway_url'}
