@@ -375,7 +375,12 @@ def _extract_password_secret(secret_data: str, secret_key: str | None) -> str:
         raise NotImplementedError(
             'Password secrets only support "username" or "password" keys.',
         )
-    secret_dict = _t.cast('dict[str, str]', _json.loads(secret_data))
+    try:
+        secret_dict = _t.cast('dict[str, str]', _json.loads(secret_data))
+    except _json.JSONDecodeError as exc:
+        raise ValueError(
+            'Secret data not valid JSON',
+        ) from exc
     return secret_dict[secret_key]
 
 
@@ -400,7 +405,12 @@ def _extract_structured_secret(
 ) -> str:
     if not secret_key:
         return str(secret_data)
-    secret_dict = _t.cast('dict[str, str]', _json.loads(secret_data))
+    try:
+        secret_dict = _t.cast('dict[str, str]', _json.loads(secret_data))
+    except _json.JSONDecodeError as exc:
+        raise ValueError(
+            'Secret data not valid JSON',
+        ) from exc
     try:
         return secret_dict[secret_key]
     except KeyError as exc:

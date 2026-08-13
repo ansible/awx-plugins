@@ -216,6 +216,21 @@ def test_backend_password_secret_username_key(
     assert fetched_secret == 'myuser'
 
 
+def test_backend_pwd_secret_invalid_json_raises(
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """Invalid json returned for password-type secret."""
+    payload = '"username": "invalid", "password": "json"}'
+    patch_setup_client(
+        item_sub_type='password',
+        secret_format='text',
+        secret_data=payload,
+    )
+
+    with pytest.raises(ValueError, match='Secret data not valid JSON'):
+        akeyless_mod.akeyless_backend(**_backend_kwargs(secret_key='username'))
+
+
 def test_backend_unsupported_type_raises(
     patch_setup_client: _MockApiFactory,
 ) -> None:
