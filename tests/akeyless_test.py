@@ -400,6 +400,28 @@ def test_backend_structured_invalid_json_raises(
         )
 
 
+@pytest.mark.parametrize(
+    'secret_data',
+    (
+        pytest.param('null', id='null'),
+        pytest.param('["s3cr3t"]', id='array'),
+        pytest.param('42', id='number'),
+        pytest.param('"s3cr3t"', id='string'),
+    ),
+)
+def test_backend_non_object_json_raises(
+    secret_data: str,
+    patch_setup_client: _MockApiFactory,
+) -> None:
+    """Keyed lookups need a JSON object, not an array or a scalar."""
+    patch_setup_client(secret_format='json', secret_data=secret_data)
+
+    with pytest.raises(RuntimeError, match='Secret data not a JSON object'):
+        akeyless_mod.akeyless_backend(
+            **_backend_kwargs(secret_key='db_password'),
+        )
+
+
 def test_backend_path_missing_in_response(
     patch_setup_client: _MockApiFactory,
 ) -> None:

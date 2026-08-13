@@ -374,9 +374,12 @@ def _authenticate(
 
 def _load_secret_json(secret_data: str) -> dict[str, str]:
     try:
-        return _t.cast('dict[str, str]', _json.loads(secret_data))
+        loaded_secret = _json.loads(secret_data)
     except _json.JSONDecodeError as exc:
         raise ValueError('Secret data not valid JSON') from exc
+    if isinstance(loaded_secret, dict):
+        return _t.cast('dict[str, str]', loaded_secret)
+    raise ValueError('Secret data not a JSON object')
 
 
 def _extract_password_secret(secret_data: str, secret_key: str | None) -> str:
