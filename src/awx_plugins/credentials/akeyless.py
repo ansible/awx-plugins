@@ -1,8 +1,12 @@
 """Akeyless credential plugins for AWX."""
 
+import contextlib as _contextlib
 import json as _json
 import typing as _t
-from collections.abc import Mapping as _Mapping
+from collections.abc import (
+    Iterator as _Iterator,
+    Mapping as _Mapping,
+)
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -368,6 +372,13 @@ def _authenticate(
     return auth_response.token
 
 
+def _load_secret_json(secret_data: str) -> dict[str, str]:
+    try:
+        return _t.cast('dict[str, str]', _json.loads(secret_data))
+    except _json.JSONDecodeError as exc:
+        raise ValueError('Secret data not valid JSON') from exc
+
+
 def _extract_password_secret(secret_data: str, secret_key: str | None) -> str:
     if not secret_key:
         return secret_data
@@ -375,13 +386,13 @@ def _extract_password_secret(secret_data: str, secret_key: str | None) -> str:
         raise NotImplementedError(
             'Password secrets only support "username" or "password" keys.',
         )
+    secret_dict = _load_secret_json(secret_data)
     try:
-        secret_dict = _t.cast('dict[str, str]', _json.loads(secret_data))
-    except _json.JSONDecodeError as exc:
+        return secret_dict[secret_key]
+    except KeyError as exc:
         raise ValueError(
-            'Secret data not valid JSON',
+            f'Key "{secret_key}" not found in the password secret.',
         ) from exc
-    return secret_dict[secret_key]
 
 
 def _extract_text_secret(
@@ -405,16 +416,11 @@ def _extract_structured_secret(
 ) -> str:
     if not secret_key:
         return str(secret_data)
-    try:
-        secret_dict = _t.cast('dict[str, str]', _json.loads(secret_data))
-    except _json.JSONDecodeError as exc:
-        raise ValueError(
-            'Secret data not valid JSON',
-        ) from exc
+    secret_dict = _load_secret_json(secret_data)
     try:
         return secret_dict[secret_key]
     except KeyError as exc:
-        raise KeyError(
+        raise ValueError(
             f'Key "{secret_key}" not found in secret at path: {secret_path}',
         ) from exc
 
@@ -426,7 +432,12 @@ def _extract_secret_value(
     static_secret_format: str,
     static_secret_sub_type: str,
 ) -> str:
-    secret_data = secret_response[secret_path]
+    try:
+        secret_data = secret_response[secret_path]
+    except KeyError as exc:
+        raise ValueError(
+            f'No secret data returned for path: {secret_path}',
+        ) from exc
     if static_secret_format == 'text':
         return _extract_text_secret(
             secret_data,
@@ -483,34 +494,36 @@ def _fetch_secret_value(
     )
 
 
+@_contextlib.contextmanager
+def _wrapped_api_errors() -> _Iterator[None]:
+    """Surface every Akeyless failure to the caller as ``RuntimeError``."""
+    try:
+        yield
+    except _ApiException as api_exc:
+        raise RuntimeError(
+            f'Akeyless API error: {api_exc.reason} (Status: {api_exc.status})',
+        ) from api_exc
+    except ValueError as val_err:
+        raise RuntimeError(str(val_err)) from val_err
+
+
 def akeyless_backend(**kwargs: _t.Unpack[_AkeylessBackendKwargs]) -> str:
     """Retrieve a secret value from Akeyless."""
-    with _plugin.CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
+    with (
+        _wrapped_api_errors(),
+        _plugin.CertFiles(kwargs.get('ca_cert')) as ca_cert_path,
+    ):
         api_instance = _setup_client(
             _resolve_gateway_url(kwargs),
             ca_cert_path,
         )
-        try:
-            token = _authenticate(api_instance, kwargs)
-        except _ApiException as api_exc:
-            raise RuntimeError(
-                f'Akeyless API error: {api_exc.reason}'
-                f' (Status: {api_exc.status})',
-            ) from api_exc
-        except ValueError as val_err:
-            raise RuntimeError(str(val_err)) from val_err
-        try:
-            return _fetch_secret_value(
-                api_instance,
-                token,
-                kwargs['secret_path'],
-                kwargs.get('secret_key'),
-            )
-        except _ApiException as api_exc:
-            raise RuntimeError(
-                f'Akeyless API error: {api_exc.reason}'
-                f' (Status: {api_exc.status})',
-            ) from api_exc
+        token = _authenticate(api_instance, kwargs)
+        return _fetch_secret_value(
+            api_instance,
+            token,
+            kwargs['secret_path'],
+            kwargs.get('secret_key'),
+        )
 
 
 def _coerce_ttl(ttl_value: int | str | None) -> int | None:
@@ -547,33 +560,20 @@ def akeyless_ssh_backend(
     **kwargs: _t.Unpack[_AkeylessSshBackendKwargs],
 ) -> str:
     """Generate a signed SSH certificate using Akeyless."""
-    with _plugin.CertFiles(kwargs.get('ca_cert')) as ca_cert_path:
+    with (
+        _wrapped_api_errors(),
+        _plugin.CertFiles(kwargs.get('ca_cert')) as ca_cert_path,
+    ):
         api_instance = _setup_client(
             _resolve_gateway_url(kwargs),
             ca_cert_path,
         )
-        try:
-            token = _authenticate(api_instance, kwargs)
-        except _ApiException as api_exc:
-            raise RuntimeError(
-                f'Akeyless API error: {api_exc.reason}'
-                f' (Status: {api_exc.status})',
-            ) from api_exc
-        except ValueError as val_err:
-            raise RuntimeError(str(val_err)) from val_err
-        try:
-            return _fetch_ssh_certificate(
-                api_instance,
-                token,
-                kwargs,
-            )
-        except _ApiException as api_exc:
-            raise RuntimeError(
-                f'Akeyless API error: {api_exc.reason}'
-                f' (Status: {api_exc.status})',
-            ) from api_exc
-        except ValueError as val_err:
-            raise RuntimeError(str(val_err)) from val_err
+        token = _authenticate(api_instance, kwargs)
+        return _fetch_ssh_certificate(
+            api_instance,
+            token,
+            kwargs,
+        )
 
 
 _OIDC_PLUGIN_DESCRIPTION = (

@@ -227,7 +227,7 @@ def test_backend_pwd_secret_invalid_json_raises(
         secret_data=payload,
     )
 
-    with pytest.raises(ValueError, match='Secret data not valid JSON'):
+    with pytest.raises(RuntimeError, match='Secret data not valid JSON'):
         akeyless_mod.akeyless_backend(**_backend_kwargs(secret_key='username'))
 
 
@@ -288,13 +288,13 @@ def test_backend_auth_api_exc_raises(
 def test_backend_missing_json_key_raises(
     patch_setup_client: _MockApiFactory,
 ) -> None:
-    """A missing key in a structured secret should raise KeyError with the path."""
+    """A missing key in a structured secret should name the secret path."""
     patch_setup_client(
         secret_format='json',
         secret_data='{"other_key": "value"}',
     )
 
-    with pytest.raises(KeyError, match=_SECRET_PATH):
+    with pytest.raises(RuntimeError, match=_SECRET_PATH):
         akeyless_mod.akeyless_backend(
             **_backend_kwargs(secret_key='missing_key'),
         )
@@ -463,7 +463,7 @@ def test_missing_gateway_url_raises(
     kwargs = _oidc_backend_kwargs()
     del kwargs['url']  # noqa: WPS420
 
-    with pytest.raises(ValueError, match='Gateway URL must be set'):
+    with pytest.raises(RuntimeError, match='Gateway URL must be set'):
         akeyless_mod.akeyless_backend(**kwargs)
 
 

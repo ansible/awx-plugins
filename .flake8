@@ -119,8 +119,7 @@ per-file-ignores =
 
   # WPS202: two-plugin module (secret store + SSH) with Protocol types, TypedDicts,
   # and multiple helpers per plugin; could be split into a sub-package later.
-  # WPS238: auth + fetch each wrap ApiException and ValueError into RuntimeError.
-  src/awx_plugins/credentials/akeyless.py: WPS202, WPS238
+  src/awx_plugins/credentials/akeyless.py: WPS202
 
   # The following ignores must be fixed and the entries removed from this config:
   src/awx_plugins/credentials/aim.py: ANN003, ANN201, B950, CCR001, D100, D103, LN001, Q003, WPS210, WPS221, WPS223, WPS231, WPS336, WPS432
