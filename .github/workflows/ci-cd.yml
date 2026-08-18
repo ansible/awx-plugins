@@ -406,6 +406,8 @@ jobs:
         }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
+      job-dependencies-context: >-  # context for hooks
+        ${{ toJSON(needs) }}
       post-toxenv-preparation-command: >-
         ${{
           matrix.toxenv == 'pre-commit'
