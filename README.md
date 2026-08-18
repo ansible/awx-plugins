@@ -5,7 +5,6 @@
 [![PyPI Badge]][PyPI]
 [![PyPI Supported Versions Badge]][PyPI Supported Versions]
 [![Codecov Badge]][Codecov]
-[![Coveralls Badge]][Coveralls]
 [![Code of Conduct Badge]][Code of Conduct]
 [![Apache v2 License Badge]][Apache v2 License]
 [![Ansible Matrix Badge]][Ansible Matrix]
@@ -30,11 +29,6 @@ https://results.pre-commit.ci/latest/github/ansible/awx-plugins/devel
 https://codecov.io/gh/ansible/awx-plugins/branch/devel/graph/badge.svg?flag=pytest
 [Codecov]:
 https://app.codecov.io/gh/ansible/awx-plugins?flags[]=pytest
-
-[Coveralls Badge]:
-https://coveralls.io/repos/github/ansible/awx-plugins/badge.svg?branch=devel
-[Coveralls]:
-https://coveralls.io/github/ansible/awx-plugins?branch=devel
 
 [Code of Conduct Badge]: https://img.shields.io/badge/code%20of%20conduct-Ansible-yellow.svg
 [Code of Conduct]: https://docs.ansible.com/ansible/latest/community/code_of_conduct.html
