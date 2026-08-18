@@ -35,7 +35,16 @@ runs:
     uses: coverallsapp/github-action@v2
     with:
       debug: ${{ runner.debug == 1 && true || false }}
-      fail-on-error: ${{ runner.debug == 1 && false || true }}
+      # NOTE: Only require the upload to succeed in the upstream repo,
+      # NOTE: since forks are not registered on Coveralls.
+      fail-on-error: >-
+        ${{
+          runner.debug != 1
+          && fromJSON(
+            inputs.job-dependencies-context
+          ).pre-setup.outputs.upstream-repository-id
+          == github.repository_id
+        }}
       files: >-
         ${{
           fromJSON(
