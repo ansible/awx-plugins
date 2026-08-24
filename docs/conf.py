@@ -240,6 +240,7 @@ nitpick_ignore = [
     ('py:class', '_PT'),  # generic ParamSpec type variable
     ('py:class', '_contextvars.ContextVar'),  # unresolved context var type
     ('py:class', 'EnvVarsType'),
+    ('py:class', 'requests.models.Response'),
 ]
 
 
