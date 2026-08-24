@@ -192,6 +192,7 @@ linkcheck_ignore = [
     # GitHub rate-limits unauthenticated HTTP requests aggressively, causing
     # linkcheck timeouts on blob URLs.
     r'https://github\.com(/[^/]+){2}/blob',
+    r'https://coveralls\.io',  # 403 to automated link checkers
 ]
 linkcheck_anchors_ignore_for_url = (
     r'^https://ansible\.r(eadthedocs|tfd)\.io'  # noqa: ISC004  # intentional
