@@ -4,45 +4,46 @@
 #
 #    tox run -qq -e pip-compile-tox-env-lock -- metadata-validation --upgrade
 #
-certifi==2026.2.25
+certifi==2026.7.22
     # via requests
-charset-normalizer==3.4.4
+charset-normalizer==3.5.1
     # via requests
-docutils==0.22.4
+docutils==0.23
     # via readme-renderer
 id==1.6.1
     # via twine
-idna==3.11
+idna==3.19
     # via requests
 jaraco-classes==3.4.0
     # via keyring
-jaraco-context==6.1.0
+jaraco-context==6.1.2
     # via keyring
-jaraco-functools==4.4.0
+jaraco-functools==4.6.0
     # via keyring
 keyring==25.7.0
     # via twine
-markdown-it-py==4.0.0
+markdown-it-py==4.2.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
-more-itertools==10.8.0
+more-itertools==11.1.0
     # via
     #   jaraco-classes
     #   jaraco-functools
-nh3==0.3.3
+nh3==0.3.7
     # via readme-renderer
-packaging==26.0
+packaging==26.3
     # via
     #   setuptools-scm
     #   twine
-pygments==2.19.2
+    #   vcs-versioning
+pygments==2.21.0
     # via
     #   readme-renderer
     #   rich
-readme-renderer==44.0
+readme-renderer==45.0
     # via twine
-requests==2.32.5
+requests==2.34.2
     # via
     #   requests-toolbelt
     #   twine
@@ -50,18 +51,20 @@ requests-toolbelt==1.0.0
     # via twine
 rfc3986==2.0.0
     # via twine
-rich==14.3.3
+rich==15.0.0
     # via twine
-setuptools-scm==9.2.2
+setuptools-scm==10.2.1
     # via -r dependencies/direct/metadata-validation.in
-twine==6.2.0
+twine==7.0.0
     # via -r dependencies/direct/metadata-validation.in
-urllib3==2.6.3
+urllib3==2.7.0
     # via
     #   id
     #   requests
     #   twine
+vcs-versioning==2.3.1
+    # via setuptools-scm
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==82.0.0
+setuptools==84.0.0
     # via setuptools-scm

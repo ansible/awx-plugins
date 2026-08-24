@@ -12,44 +12,44 @@ alabaster==1.0.0
     # via sphinx
 awx-plugins-interfaces==0.0.1a5
     # via awx-plugins-core (pyproject.toml)
-azure-core==1.38.2
+azure-core==1.41.0
     # via
     #   azure-identity
     #   azure-keyvault-certificates
     #   azure-keyvault-keys
     #   azure-keyvault-secrets
     #   msrest
-azure-identity==1.25.2
+azure-identity==1.25.3
     # via awx-plugins-core (pyproject.toml)
 azure-keyvault==4.2.0
     # via awx-plugins-core (pyproject.toml)
-azure-keyvault-certificates==4.10.0
+azure-keyvault-certificates==4.11.1
     # via azure-keyvault
-azure-keyvault-keys==4.11.0
+azure-keyvault-keys==4.11.1
     # via azure-keyvault
-azure-keyvault-secrets==4.10.0
+azure-keyvault-secrets==4.11.1
     # via azure-keyvault
 babel==2.18.0
     # via sphinx
-beautifulsoup4==4.14.3
+beautifulsoup4==4.15.0
     # via furo
-boto3==1.42.60
+boto3==1.43.78
     # via awx-plugins-core (pyproject.toml)
-botocore==1.42.60
+botocore==1.43.78
     # via
     #   boto3
     #   s3transfer
-certifi==2026.2.25
+certifi==2026.7.22
     # via
     #   msrest
     #   requests
-cffi==2.0.0
+cffi==2.1.1
     # via
     #   cryptography
     #   pynacl
-charset-normalizer==3.4.4
+charset-normalizer==3.5.1
     # via requests
-cryptography==46.0.5
+cryptography==50.0.0
     # via
     #   adal
     #   azure-identity
@@ -63,7 +63,7 @@ docutils==0.21.2
     #   sphinx-tabs
 furo==2025.12.19
     # via -r dependencies/direct/codelinter-docs.in
-idna==3.11
+idna==3.19
     # via requests
 imagesize==2.0.0
     # via sphinx
@@ -83,17 +83,17 @@ jmespath==1.1.0
     #   botocore
 linkify-it-py==2.1.0
     # via myst-parser
-markdown-it-py==4.0.0
+markdown-it-py==4.2.0
     # via
     #   mdit-py-plugins
     #   myst-parser
 markupsafe==3.0.3
     # via jinja2
-mdit-py-plugins==0.5.0
+mdit-py-plugins==0.6.1
     # via myst-parser
 mdurl==0.1.2
     # via markdown-it-py
-msal==1.35.0
+msal==1.37.0
     # via
     #   azure-identity
     #   msal-extensions
@@ -103,27 +103,27 @@ msrest==0.7.1
     # via msrestazure
 msrestazure==0.6.4.post1
     # via awx-plugins-core (pyproject.toml)
-myst-parser==5.0.0
+myst-parser==5.1.0
     # via -r dependencies/direct/codelinter-docs.in
 oauthlib==3.3.1
     # via requests-oauthlib
-packaging==26.0
+packaging==26.3
     # via sphinx
-pathspec==1.0.4
+pathspec==1.1.1
     # via yamllint
 pbr==7.0.3
     # via sphinxcontrib-apidoc
 pycparser==3.0
     # via cffi
-pygithub==2.8.1
+pygithub==2.10.0
     # via awx-plugins-core (pyproject.toml)
-pygments==2.19.2
+pygments==2.21.0
     # via
     #   accessible-pygments
     #   furo
     #   sphinx
     #   sphinx-tabs
-pyjwt==2.11.0
+pyjwt==2.13.0
     # via
     #   adal
     #   msal
@@ -143,7 +143,7 @@ pyyaml==6.0.3
     #   awx-plugins-core (pyproject.toml)
     #   myst-parser
     #   yamllint
-requests==2.32.5
+requests==2.34.2
     # via
     #   adal
     #   awx-plugins-core (pyproject.toml)
@@ -157,15 +157,15 @@ requests==2.32.5
     #   sphinx
 requests-oauthlib==2.0.0
     # via msrest
-s3transfer==0.16.0
+s3transfer==0.19.2
     # via boto3
 six==1.17.0
     # via
     #   msrestazure
     #   python-dateutil
-snowballstemmer==3.0.1
+snowballstemmer==3.1.1
     # via sphinx
-soupsieve==2.8.3
+soupsieve==2.9.2
     # via beautifulsoup4
 sphinx==8.1.3
     # via
@@ -183,7 +183,7 @@ sphinx-autodoc-typehints==3.0.1
     # via -r dependencies/direct/codelinter-docs.in
 sphinx-basic-ng==1.0.0b2
     # via furo
-sphinx-issues==5.0.1
+sphinx-issues==6.0.0
     # via -r dependencies/direct/codelinter-docs.in
 sphinx-tabs==3.5.0
     # via -r dependencies/direct/codelinter-docs.in
@@ -203,7 +203,7 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
-typing-extensions==4.15.0
+typing-extensions==4.16.0
     # via
     #   azure-core
     #   azure-identity
@@ -214,7 +214,7 @@ typing-extensions==4.15.0
     #   pygithub
 uc-micro-py==2.0.0
     # via linkify-it-py
-urllib3==2.6.3
+urllib3==2.7.0
     # via
     #   botocore
     #   pygithub
@@ -223,5 +223,5 @@ yamllint==1.38.0
     # via -r dependencies/direct/codelinter-docs.in
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==82.0.0
+setuptools==84.0.0
     # via pbr
