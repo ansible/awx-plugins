@@ -197,7 +197,7 @@ linkcheck_anchors_ignore_for_url = (
     r'^https://ansible\.r(eadthedocs|tfd)\.io'  # noqa: ISC004  # intentional
     r'/projects/awx/en/latest/rest_api/api_ref\.html$',
 )
-linkcheck_workers = 25
+linkcheck_workers = 25 
 
 # -- Options for sphinx.ext.autosectionlabel extension -----------------------
 
