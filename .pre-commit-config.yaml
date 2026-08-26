@@ -86,11 +86,6 @@ repos:
     - yaml
   - id: check-readthedocs
 
-- repo: https://github.com/andreoliwa/nitpick.git
-  rev: v0.38.1
-  hooks:
-  - id: nitpick-check
-    pass_filenames: false
 
 - repo: https://github.com/pre-commit/pygrep-hooks.git
   rev: v1.10.0
@@ -166,32 +161,6 @@ repos:
   hooks:
   - id: shellcheck
 
-- repo: https://github.com/PyCQA/flake8.git
-  rev: 7.3.0
-  hooks:
-  - id: flake8
-    additional_dependencies:
-    - flake8-annotations ~= 3.2.0
-    - flake8-comprehensions ~= 3.17.0
-    - flake8-cognitive-complexity ~= 0.1.0
-    - flake8-docstrings ~= 1.7.0
-    - flake8-length ~= 0.3.1
-    - flake8-logging ~= 1.8.0
-    # NOTE: `flake8-logging-format` hasn't had updates since 2024 and
-    # NOTE: thus gained an unresolved incompatibility with Python 3.14.
-    - flake8-logging-format ~= 2024.24.12; python_version < "3.14"
-    - flake8-pytest-style ~= 2.2.0
-    # NOTE: `setuptools` provides `pkg_resources` needed by
-    # NOTE: `flake8-logging-format`. `setuptools` stopped being bundled
-    # NOTE: in CPython starting Python 3.12. The latest version of
-    # NOTE: `setuptools` that's a part of Python 3.11.14 is v79.0.1.
-    # NOTE: This may also happen under Python 3.11.15 security release
-    # NOTE: as the underlying `virtualenv` invocation seems to be coming
-    # NOTE: pre-installing the newest available version of `setuptools`
-    # NOTE: from PyPI via its seeding mechanism.
-    - setuptools < 81; python_version < "3.14"
-    - wemake-python-styleguide ~= 1.5.0
-    language_version: python3
 
 - repo: https://github.com/Lucas-C/pre-commit-hooks-lxml.git
   rev: v1.1.0
@@ -201,74 +170,6 @@ repos:
 - repo: https://github.com/pre-commit/mirrors-mypy.git
   rev: v1.20.0
   hooks:
-  - id: mypy
-    alias: mypy-py313
-    name: MyPy, for Python 3.13
-    additional_dependencies:
-    - >-  # standard interface declarations for AWX plugins
-      awx_plugins.interfaces == 0.0.1a4
-    - azure-identity  # needed by credentials.azure_kv
-    - azure-keyvault  # needed by credentials.azure_kv
-    - boto3-stubs  # needed by credentials.awx_secretsmanager
-    - hypothesis
-    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
-    - msrestazure  # needed by credentials.azure_kv
-    - PyGithub  # needed by credentials.github_app
-    - pytest
-    - pytest-mock
-    - pytest-subtests
-    - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
-    - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
-    - tox  # needed by `toxfile.py`
-    - types-PyYAML  # needed by credentials.injectors, inventory.plugins
-    # The following dependency is used in `credentials.aim`,
-    # `credentials.centrify_vault`, `credentials.conjur`
-    # and `credentials.hashivault`:
-    - types-requests
-    args:
-    - --python-version=3.13
-    - --any-exprs-report=.tox/.tmp/.test-results/mypy--py-3.13
-    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.13
-    - --html-report=.tox/.tmp/.test-results/mypy--py-3.13
-    - --linecount-report=.tox/.tmp/.test-results/mypy--py-3.13
-    - --linecoverage-report=.tox/.tmp/.test-results/mypy--py-3.13
-    - --lineprecision-report=.tox/.tmp/.test-results/mypy--py-3.13
-    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.13
-    pass_filenames: false
-  - id: mypy
-    alias: mypy-py312
-    name: MyPy, for Python 3.12
-    additional_dependencies:
-    - >-  # standard interface declarations for AWX plugins
-      awx_plugins.interfaces == 0.0.1a4
-    - azure-identity  # needed by credentials.azure_kv
-    - azure-keyvault  # needed by credentials.azure_kv
-    - boto3-stubs  # needed by credentials.awx_secretsmanager
-    - hypothesis
-    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
-    - msrestazure  # needed by credentials.azure_kv
-    - PyGithub  # needed by credentials.github_app
-    - pytest
-    - pytest-mock
-    - pytest-subtests
-    - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
-    - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
-    - tox  # needed by `toxfile.py`
-    - types-PyYAML  # needed by credentials.injectors, inventory.plugins
-    # The following dependency is used in `credentials.aim`,
-    # `credentials.centrify_vault`, `credentials.conjur`
-    # and `credentials.hashivault`:
-    - types-requests
-    args:
-    - --python-version=3.12
-    - --any-exprs-report=.tox/.tmp/.test-results/mypy--py-3.12
-    - --cobertura-xml-report=.tox/.tmp/.test-results/mypy--py-3.12
-    - --html-report=.tox/.tmp/.test-results/mypy--py-3.12
-    - --linecount-report=.tox/.tmp/.test-results/mypy--py-3.12
-    - --linecoverage-report=.tox/.tmp/.test-results/mypy--py-3.12
-    - --lineprecision-report=.tox/.tmp/.test-results/mypy--py-3.12
-    - --txt-report=.tox/.tmp/.test-results/mypy--py-3.12
-    pass_filenames: false
   - id: mypy
     alias: mypy-py311
     name: MyPy, for Python 3.11

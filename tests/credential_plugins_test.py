@@ -22,13 +22,13 @@ class TestDelineaImports:
     fallback import."""
 
     def test_dsv_import(self) -> None:
-        from awx_plugins.credentials.dsv import SecretsVault  # noqa: F401
+        from awx_plugins.credentials.dsv import SecretsVault
 
         # assert this module as opposed to older thycotic.secrets.vault
         assert SecretsVault.__module__ == 'delinea.secrets.vault'
 
     def test_tss_import(self) -> None:
-        from awx_plugins.credentials.tss import (  # noqa: F401
+        from awx_plugins.credentials.tss import (
             DomainPasswordGrantAuthorizer,
             PasswordGrantAuthorizer,
             SecretServer,

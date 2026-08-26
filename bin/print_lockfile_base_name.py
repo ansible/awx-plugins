@@ -25,4 +25,4 @@ def compute_constraint_base_name(toxenv: str) -> str:
 
 
 if __name__ == '__main__':
-    print(compute_constraint_base_name(sys.argv[1]))  # noqa: T201, WPS421
+    print(compute_constraint_base_name(sys.argv[1]))  # noqa: T201
