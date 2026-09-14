@@ -263,7 +263,7 @@ class PinnedPipInstallerSelectedMixin:
 
     @cached_property
     def installer(self) -> PinnedPipInstaller:
-        """Return a constraint-aware pip installer."""
+        """Constraint-aware pip installer."""
         return PinnedPipInstaller(t.cast('Python', self))
 
 
@@ -376,7 +376,7 @@ class PipCompileToxEnvBase:
 
     @property
     def commands(self) -> list[str]:
-        """Return a rendered ``pip-compile`` command."""
+        """Rendered ``pip-compile`` command."""
         pip_compile_cmd = (
             'python',  # instead of `{envpython}`
             # '-bb',
@@ -395,12 +395,12 @@ class PipCompileToxEnvBase:
 
     @property
     def description(self) -> str:
-        """Return a prefixed tox env description."""
+        """Prefixed tox env description."""
         return f'[tox-lock] {self._description}'
 
     @property
     def set_env(self) -> dict[str, str]:
-        """Return a environment variables for tox env."""
+        """Environment variables for tox env."""
         cmd_posargs_trailer = ''
         if self._pos_args is not None:
             quoted_pos_args = _shlex_join(self._pos_args)
