@@ -240,6 +240,12 @@ nitpick_ignore = [
     ('py:class', '_PT'),  # generic ParamSpec type variable
     ('py:class', '_contextvars.ContextVar'),  # unresolved context var type
     ('py:class', 'EnvVarsType'),
+    # Akeyless SDK types: auto-generated from OpenAPI
+    # without type annotations or .pyi stubs
+    ('py:class', 'akeyless.models.auth.Auth'),
+    ('py:class', 'akeyless.models.describe_item.DescribeItem'),
+    ('py:class', 'akeyless.models.get_secret_value.GetSecretValue'),
+    ('py:class', 'akeyless.models.get_ssh_certificate.GetSSHCertificate'),
 ]
 
 

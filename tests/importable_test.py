@@ -80,6 +80,26 @@ credential_plugins = (
         'aws_secretsmanager_credential',
         'awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin',
     ),
+    EntryPointParam(
+        'awx_plugins.credentials',
+        'akeyless',
+        'awx_plugins.credentials.akeyless:akeyless_plugin',
+    ),
+    EntryPointParam(
+        'awx_plugins.credentials',
+        'akeyless_ssh',
+        'awx_plugins.credentials.akeyless:akeyless_ssh_plugin',
+    ),
+    EntryPointParam(
+        'awx_plugins.credentials',
+        'akeyless-oidc',
+        'awx_plugins.credentials.akeyless:akeyless_oidc_plugin',
+    ),
+    EntryPointParam(
+        'awx_plugins.credentials',
+        'akeyless-ssh-oidc',
+        'awx_plugins.credentials.akeyless:akeyless_ssh_oidc_plugin',
+    ),
 )
 
 
