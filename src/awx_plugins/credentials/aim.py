@@ -118,6 +118,10 @@ def aim_backend(**kwargs):
     request_qs = '?' + urlencode(query_params, quote_via=quote)
     request_url = urljoin(url, '/'.join([webservice_id, 'api', 'Accounts']))
 
+    headers = {
+        'Cache-Control': 'no-cache',
+    }
+
     with CertFiles(client_cert, client_key) as cert:
         res = requests.get(
             request_url + request_qs,
@@ -125,6 +129,7 @@ def aim_backend(**kwargs):
             cert=cert,
             verify=verify,
             allow_redirects=False,
+            headers=headers,
         )
     sensitive_query_params = {
         'AppId': '****',
