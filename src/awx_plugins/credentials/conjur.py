@@ -5,7 +5,7 @@ import base64
 import binascii
 from urllib.parse import quote, urljoin
 
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop as _,
 )
 

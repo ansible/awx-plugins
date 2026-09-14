@@ -49,7 +49,7 @@ def test_hashivault_kubernetes_auth(mocker: MockerFixture) -> None:
     assert res == expected_res
 
 
-def test_hashivault_client_cert_auth_explicit_role() -> None:  # noqa: WPS118
+def test_hashivault_client_cert_auth_explicit_role() -> None:
     """Test ``client_cert_auth()`` with explicit role returns a certificate."""
     kwargs = {
         'client_cert_role': 'test-cert-1',

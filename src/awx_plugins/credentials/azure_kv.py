@@ -14,7 +14,7 @@ Functions:
 - ``azure_keyvault_plugin``: Defines the credential plugin interface.
 """
 
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop as _,
 )
 
@@ -118,9 +118,8 @@ def _initialize_credential(
     return ManagedIdentityCredential()
 
 
-# WPS211 "too many args" is controlled externally
 # pylint: disable-next=too-many-arguments,too-many-positional-arguments
-def azure_keyvault_backend(  # noqa: WPS211
+def azure_keyvault_backend(
     *,
     url: str,
     client: str = '',

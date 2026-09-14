@@ -11,7 +11,7 @@ import typing as _t
 from collections import abc as _abc
 from urllib.parse import urljoin
 
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop as _,
 )
 
@@ -537,7 +537,7 @@ def _inject_auth_token_with_revocation(
     /,
 ) -> _t.Callable[_PT, _RT]:
     @_functools.wraps(decorated_function)
-    def _decorate_the_function_with_revocation(  # noqa: WPS430 -- in-decorator
+    def _decorate_the_function_with_revocation(
         *args: _PT.args,
         **kwargs: _PT.kwargs,
     ) -> _RT:
@@ -593,7 +593,7 @@ def method_auth(**kwargs):
 # NOTE: The "too many args" rules of flake8 and pylint are disabled due to such
 # NOTE: many arguments being a common public plugin API at the moment.
 # pylint: disable-next=too-many-arguments
-def kv_backend(  # noqa: WPS211 -- the same as too-many-arguments
+def kv_backend(
     *,
     url: str,
     api_version: str,
@@ -679,7 +679,7 @@ def kv_backend(  # noqa: WPS211 -- the same as too-many-arguments
 # NOTE: The "too many args" rules of flake8 and pylint are disabled due to such
 # NOTE: many arguments being a common public plugin API at the moment.
 # pylint: disable-next=too-many-arguments
-def ssh_backend(  # noqa: WPS211 -- the same as too-many-arguments
+def ssh_backend(
     *,
     url: str,
     secret_path: str,

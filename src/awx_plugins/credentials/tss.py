@@ -1,7 +1,7 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="no-untyped-def, import-not-found, import-untyped"
 
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop as _,
 )
 

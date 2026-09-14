@@ -1,10 +1,10 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="assignment, misc, no-redef"
 
-from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_api import (
     ManagedCredentialType,
 )
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop,
 )
 
@@ -19,7 +19,7 @@ from .injectors import (
 )
 
 
-__all__ = ()  # noqa: WPS410
+__all__ = ()
 
 
 ssh = ManagedCredentialType(
