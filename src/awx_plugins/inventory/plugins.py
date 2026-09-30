@@ -219,8 +219,8 @@ class vmware(PluginFileInjector):
 
 
 class vmware_vm_supported(PluginFileInjector):
-    plugin_name = 'vm'
-    plugin_description = 'VMware VM (vCenter)'
+    plugin_name = 'vms'
+    plugin_description = 'VMware VMs (vCenter)'
     base_injector = 'managed'
     namespace = 'vmware'
     collection = 'vmware'
