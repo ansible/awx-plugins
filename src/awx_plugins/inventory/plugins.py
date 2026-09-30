@@ -225,6 +225,7 @@ class vmware_vm_supported(PluginFileInjector):
     namespace = 'vmware'
     collection = 'vmware'
 
+
 class vmware_esxi_supported(PluginFileInjector):
     plugin_name = 'esxi_hosts'
     plugin_description = 'VMware ESXi'
