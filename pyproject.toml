@@ -126,6 +126,7 @@ controller = "awx_plugins.inventory.plugins:controller_supported"
 insights = "awx_plugins.inventory.plugins:insights_supported"
 openshift_virtualization = "awx_plugins.inventory.plugins:openshift_virtualization_supported"
 vmware_esxi = "awx_plugins.inventory.plugins:vmware_esxi_supported"
+vmware_vm = "awx_plugins.inventory.plugins:vmware_vm_supported"
 
 [project.license]
 file = "LICENSE"
@@ -206,6 +207,10 @@ inventory-vmware = [
   "PyYAML",
 ]
 inventory-vmware-esxi = [
+  "awx_plugins.interfaces",
+  "PyYAML",
+]
+inventory-vmware-vm = [
   "awx_plugins.interfaces",
   "PyYAML",
 ]

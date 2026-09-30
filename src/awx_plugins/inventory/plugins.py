@@ -212,11 +212,18 @@ class gce(PluginFileInjector):
 
 class vmware(PluginFileInjector):
     plugin_name = 'vmware_vm_inventory'
-    plugin_description = 'VMware vCenter'
+    plugin_description = 'Community VMware vCenter (Removed in v7.0.0)'
     base_injector = 'managed'
     namespace = 'community'
     collection = 'vmware'
 
+
+class vmware_vm_supported(PluginFileInjector):
+    plugin_name = 'vm'
+    plugin_description = 'VMware VM (vCenter)'
+    base_injector = 'managed'
+    namespace = 'vmware'
+    collection = 'vmware'
 
 class vmware_esxi_supported(PluginFileInjector):
     plugin_name = 'esxi_hosts'

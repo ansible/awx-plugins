@@ -183,6 +183,11 @@ inventory_plugins = (
         'vmware_esxi',
         'awx_plugins.inventory.plugins:vmware_esxi_supported',
     ),
+    EntryPointParam(
+        'awx_plugins.inventory.supported',
+        'vmware_vm',
+        'awx_plugins.inventory.plugins:vmware_vm_supported',
+    ),
 )
 
 
