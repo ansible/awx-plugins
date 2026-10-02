@@ -30,7 +30,9 @@ class PluginFileInjector:
         '2.9'  # Starting with this version, we use collections
     )
     use_fqcn = False  # plugin: name versus plugin: namespace.collection.name
-    managed_credential = None # Indicates the name of the credential class that can
+    managed_credential = (
+        None  # Indicates the name of the credential class that can
+    )
     # be injected/used with the plugin. The default (None) falls back to the
     # plugin's entry-point name
 
@@ -116,7 +118,10 @@ class PluginFileInjector:
             ),  # so injector knows this is inventory
         }
         if self.base_injector == 'managed':
-            cred_kind = self.managed_credential or inventory_update.source.replace('ec2', 'aws')
+            cred_kind = (
+                self.managed_credential
+                or inventory_update.source.replace('ec2', 'aws')
+            )
             cred_type = ManagedCredentialType.registry[cred_kind]
             if cred_type.custom_injectors:
                 cred_type.custom_injectors(
