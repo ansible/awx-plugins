@@ -110,6 +110,7 @@ azure_rm = "awx_plugins.inventory.plugins:azure_rm"
 ec2 = "awx_plugins.inventory.plugins:ec2"
 gce = "awx_plugins.inventory.plugins:gce"
 vmware = "awx_plugins.inventory.plugins:vmware"
+vmware_vm = "awx_plugins.inventory.plugins:vmware_vm"
 openstack = "awx_plugins.inventory.plugins:openstack"
 rhv = "awx_plugins.inventory.plugins:rhv"
 satellite6 = "awx_plugins.inventory.plugins:satellite6"
@@ -206,6 +207,10 @@ inventory-vmware = [
   "PyYAML",
 ]
 inventory-vmware-esxi = [
+  "awx_plugins.interfaces",
+  "PyYAML",
+]
+inventory-vmware-vm = [
   "awx_plugins.interfaces",
   "PyYAML",
 ]
