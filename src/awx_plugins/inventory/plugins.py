@@ -30,6 +30,9 @@ class PluginFileInjector:
         '2.9'  # Starting with this version, we use collections
     )
     use_fqcn = False  # plugin: name versus plugin: namespace.collection.name
+    managed_credential = None # Indicates the name of the credential class that can
+    # be injected/used with the plugin. The default (None) falls back to the
+    # plugin's entry-point name
 
     # TODO: delete this method and update unit tests
     @classmethod
@@ -113,7 +116,7 @@ class PluginFileInjector:
             ),  # so injector knows this is inventory
         }
         if self.base_injector == 'managed':
-            cred_kind = inventory_update.source.replace('ec2', 'aws')
+            cred_kind = self.managed_credential or inventory_update.source.replace('ec2', 'aws')
             cred_type = ManagedCredentialType.registry[cred_kind]
             if cred_type.custom_injectors:
                 cred_type.custom_injectors(
@@ -218,18 +221,21 @@ class vmware(PluginFileInjector):
     collection = 'vmware'
 
 
-class vmware_vm_supported(PluginFileInjector):
+class vmware_vm(PluginFileInjector):
     plugin_name = 'vms'
     plugin_description = 'VMware VMs (vCenter)'
     base_injector = 'managed'
+    managed_credential = 'vmware'
     namespace = 'vmware'
     collection = 'vmware'
+    use_fqcn = True
 
 
 class vmware_esxi_supported(PluginFileInjector):
     plugin_name = 'esxi_hosts'
     plugin_description = 'VMware ESXi'
     base_injector = 'managed'
+    managed_credential = 'vmware'
     namespace = 'vmware'
     collection = 'vmware'
     use_fqcn = True

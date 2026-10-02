@@ -186,7 +186,7 @@ inventory_plugins = (
     EntryPointParam(
         'awx_plugins.inventory.supported',
         'vmware_vm',
-        'awx_plugins.inventory.plugins:vmware_vm_supported',
+        'awx_plugins.inventory.plugins:vmware_vm',
     ),
 )
 
