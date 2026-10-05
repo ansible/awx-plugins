@@ -38,7 +38,7 @@ repos:
   - id: no_optional
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.15.20
+  rev: v0.16.10
   hooks:
   - id: ruff
     args:
@@ -46,7 +46,7 @@ repos:
     - --fix  # NOTE: When `--fix` is used, linting should be before ruff-format
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.15.20
+  rev: v0.16.10
   hooks:
   - id: ruff-format
     alias: ruff-format-first-pass
@@ -58,7 +58,7 @@ repos:
   - id: add-trailing-comma
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.15.20
+  rev: v0.16.10
   hooks:
   - id: ruff-format
     alias: ruff-format-second-pass
@@ -70,7 +70,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.37.4
+  rev: 0.38.2
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -140,7 +140,7 @@ repos:
       ^README\.rst$
 
 - repo: https://github.com/codespell-project/codespell.git
-  rev: v2.4.2
+  rev: v2.4.3
   hooks:
   - id: codespell
     exclude: >-
@@ -162,12 +162,12 @@ repos:
   - id: bashate
 
 - repo: https://github.com/shellcheck-py/shellcheck-py.git
-  rev: v0.11.0.1
+  rev: v0.11.0.1-1
   hooks:
   - id: shellcheck
 
 - repo: https://github.com/PyCQA/flake8.git
-  rev: 7.3.0
+  rev: 7.4.1
   hooks:
   - id: flake8
     additional_dependencies:
@@ -194,12 +194,12 @@ repos:
     language_version: python3
 
 - repo: https://github.com/Lucas-C/pre-commit-hooks-lxml.git
-  rev: v1.1.0
+  rev: v1.1.1
   hooks:
   - id: forbid-html-img-without-alt-text
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v2.1.0
+  rev: v2.4.0
   hooks:
   - id: mypy
     alias: mypy-py313
@@ -305,7 +305,7 @@ repos:
     pass_filenames: false
 
 - repo: https://github.com/PyCQA/pylint.git
-  rev: v4.0.6
+  rev: v4.1.2
   hooks:
   - id: pylint
     additional_dependencies:
