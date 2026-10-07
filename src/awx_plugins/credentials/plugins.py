@@ -913,6 +913,55 @@ galaxy_api_token = ManagedCredentialType(
     },
 )
 
+
+galaxy_service_account = ManagedCredentialType(
+    namespace='galaxy_service_account',
+    kind='galaxy',
+    name=gettext_noop('Ansible Galaxy/Automation Hub Service Account'),
+    managed=True,
+    inputs={
+        'fields': [
+            {
+                'id': 'url',
+                'label': gettext_noop('Galaxy Server URL'),
+                'type': 'string',
+                'help_text': gettext_noop(
+                    'The URL of the Galaxy instance to connect to.',
+                ),
+            },
+            {
+                'id': 'auth_url',
+                'label': gettext_noop('Auth Server URL'),
+                'type': 'string',
+                'help_text': gettext_noop(
+                    'The URL of a Keycloak server token_endpoint for '
+                    'service account authentication.',
+                ),
+            },
+            {
+                'id': 'client_id',
+                'label': gettext_noop('Client ID'),
+                'type': 'string',
+                'help_text': gettext_noop(
+                    'The Client ID for Keycloak service account authentication. '
+                    'Requires ansible-core 2.19+ in the control plane execution environment.',
+                ),
+            },
+            {
+                'id': 'client_secret',
+                'label': gettext_noop('Client Secret'),
+                'type': 'string',
+                'secret': True,
+                'help_text': gettext_noop(
+                    'The Client Secret for Keycloak service account authentication. '
+                    'Requires ansible-core 2.19+ in the control plane execution environment.',
+                ),
+            },
+        ],
+        'required': ['url', 'client_id', 'client_secret'],
+    },
+)
+
 gpg_public_key = ManagedCredentialType(
     namespace='gpg_public_key',
     kind='cryptography',
