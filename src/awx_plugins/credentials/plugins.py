@@ -1,5 +1,6 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="assignment, misc, no-redef"
+# pylint: disable=too-many-lines
 
 from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
     ManagedCredentialType,
