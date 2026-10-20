@@ -129,6 +129,7 @@ def _post_token_request(
             token_url,
             data=post_data,
             timeout=_REQUEST_TIMEOUT_SECONDS,
+            allow_redirects=False,
         )
     except requests.exceptions.Timeout as timeout_exc:
         raise ValueError(
