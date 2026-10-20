@@ -178,6 +178,7 @@ spelling_word_list_filename = [
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
+    'requests': ('https://requests.readthedocs.io/en/latest/', None),
 }
 
 # -- Options for linkcheck builder -------------------------------------------
@@ -240,7 +241,6 @@ nitpick_ignore = [
     ('py:class', '_PT'),  # generic ParamSpec type variable
     ('py:class', '_contextvars.ContextVar'),  # unresolved context var type
     ('py:class', 'EnvVarsType'),
-    ('py:class', 'requests.models.Response'),
 ]
 
 

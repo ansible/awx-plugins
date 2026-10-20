@@ -1,7 +1,8 @@
 """Tests for the OAuth2 Client Credentials Token credential plugin."""
 
 import http
-from typing import NamedTuple, Protocol
+import secrets
+import typing as _t
 
 import pytest
 from pytest_mock import MockerFixture
@@ -16,20 +17,21 @@ TOKEN_URL = (
     '/00000000-0000-0000-0000-000000000000/oauth2/v2.0/token'
 )
 ADO_SCOPE = '499b84ac-1321-427f-aa17-267ca6975798/.default'
-FAKE_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.fake.token'  # noqa: S105
+CLIENT_ID = '11111111-1111-1111-1111-111111111111'
+_RANDOM_TOKEN_BYTES = 24
 
 
-class _BackendCaller(Protocol):
+class _BackendCaller(_t.Protocol):
     """Typing protocol for the ``call_backend`` fixture."""
 
     def __call__(
-        self,  # noqa: ANN101
+        self: _t.Self,
         **overrides: str,
     ) -> str:
         """Call the backend with optional credential overrides."""
 
 
-class _ErrorCase(NamedTuple):
+class _ErrorCase(_t.NamedTuple):
     """Parameters for an HTTP error test case."""
 
     status_code: int
@@ -42,7 +44,7 @@ class _FakeResponse:
     """Minimal stand-in for ``requests.Response``."""
 
     def __init__(
-        self,  # noqa: ANN101
+        self: _t.Self,
         status_code: int,
         json_data: object = None,
         text: str = '',
@@ -51,7 +53,7 @@ class _FakeResponse:
         self._json_data = json_data
         self.text = text
 
-    def json(self) -> object:  # noqa: ANN101
+    def json(self: _t.Self) -> object:
         """Return the stored JSON payload or raise."""
         if self._json_data is None:
             raise ValueError('No JSON')
@@ -59,17 +61,34 @@ class _FakeResponse:
 
 
 @pytest.fixture
-def call_backend() -> _BackendCaller:
+def fake_token() -> str:
+    """Generate a random token string for each test."""
+    return secrets.token_urlsafe(_RANDOM_TOKEN_BYTES)
+
+
+@pytest.fixture
+def fake_secret() -> str:
+    """Generate a random client secret for each test."""
+    return secrets.token_urlsafe(_RANDOM_TOKEN_BYTES)
+
+
+@pytest.fixture
+def call_backend(fake_secret: str) -> _BackendCaller:
     """Return a helper that calls the backend with default credentials."""
 
-    def _invoke(**overrides: str) -> str:
-        kwargs: dict[str, str] = {
-            'token_url': TOKEN_URL,
-            'client_id': '11111111-1111-1111-1111-111111111111',
-            'client_secret': 'test-secret-value',  # noqa: S105
-        }
-        kwargs.update(overrides)
-        return oauth2_mod.oauth2_client_credentials_backend(**kwargs)
+    def _invoke(
+        *,
+        token_url: str = TOKEN_URL,
+        client_id: str = CLIENT_ID,
+        client_secret: str = fake_secret,
+        **extra: str,
+    ) -> str:
+        return oauth2_mod.oauth2_client_credentials_backend(
+            token_url=token_url,
+            client_id=client_id,
+            client_secret=client_secret,
+            **extra,
+        )
 
     return _invoke
 
@@ -125,6 +144,7 @@ def test_plugin_has_description() -> None:
 def test_successful_token_fetch(
     mocker: MockerFixture,
     call_backend: _BackendCaller,
+    fake_token: str,
 ) -> None:
     """Test a successful token retrieval."""
     mocker.patch.object(
@@ -133,19 +153,20 @@ def test_successful_token_fetch(
         return_value=_FakeResponse(
             status_code=http.HTTPStatus.OK,
             json_data={
-                'access_token': FAKE_TOKEN,
+                'access_token': fake_token,
                 'token_type': 'Bearer',
                 'expires_in': 3600,
             },
         ),
     )
 
-    assert call_backend(scope=ADO_SCOPE) == FAKE_TOKEN
+    assert call_backend(scope=ADO_SCOPE) == fake_token
 
 
 def test_request_includes_grant_type(
     mocker: MockerFixture,
     call_backend: _BackendCaller,
+    fake_token: str,
 ) -> None:
     """Verify the POST body includes grant_type=client_credentials."""
     mock_post = mocker.patch.object(
@@ -153,7 +174,7 @@ def test_request_includes_grant_type(
         'post',
         return_value=_FakeResponse(
             status_code=http.HTTPStatus.OK,
-            json_data={'access_token': FAKE_TOKEN},
+            json_data={'access_token': fake_token},
         ),
     )
 
@@ -175,6 +196,7 @@ def test_request_includes_grant_type(
 def test_no_scope_omits_scope_from_request(
     mocker: MockerFixture,
     call_backend: _BackendCaller,
+    fake_token: str,
     scope_value: str | None,
 ) -> None:
     """Verify that an empty or missing scope is not sent."""
@@ -183,7 +205,7 @@ def test_no_scope_omits_scope_from_request(
         'post',
         return_value=_FakeResponse(
             status_code=http.HTTPStatus.OK,
-            json_data={'access_token': FAKE_TOKEN},
+            json_data={'access_token': fake_token},
         ),
     )
 
@@ -218,6 +240,7 @@ def test_no_scope_omits_scope_from_request(
 def test_works_with_various_providers(
     mocker: MockerFixture,
     call_backend: _BackendCaller,
+    fake_token: str,
     token_url: str,
 ) -> None:
     """Verify the plugin works with different OAuth2 provider URLs."""
@@ -226,11 +249,11 @@ def test_works_with_various_providers(
         'post',
         return_value=_FakeResponse(
             status_code=http.HTTPStatus.OK,
-            json_data={'access_token': FAKE_TOKEN},
+            json_data={'access_token': fake_token},
         ),
     )
 
-    assert call_backend(token_url=token_url) == FAKE_TOKEN
+    assert call_backend(token_url=token_url) == fake_token
     assert mock_post.call_args[0][0] == token_url
 
 
@@ -461,6 +484,8 @@ def test_generic_request_exception(
 
 def test_discarded_kwargs_are_ignored(
     mocker: MockerFixture,
+    fake_token: str,
+    fake_secret: str,
 ) -> None:
     """Verify unexpected kwargs don't break the backend."""
     mocker.patch.object(
@@ -468,15 +493,15 @@ def test_discarded_kwargs_are_ignored(
         'post',
         return_value=_FakeResponse(
             status_code=http.HTTPStatus.OK,
-            json_data={'access_token': FAKE_TOKEN},
+            json_data={'access_token': fake_token},
         ),
     )
 
     token = oauth2_mod.oauth2_client_credentials_backend(
         token_url=TOKEN_URL,
-        client_id='11111111-1111-1111-1111-111111111111',
-        client_secret='test-secret-value',  # noqa: S105
+        client_id=CLIENT_ID,
+        client_secret=fake_secret,
         description='some metadata that may be passed',  # type: ignore[call-arg]
     )
 
-    assert token == FAKE_TOKEN
+    assert token == fake_token
