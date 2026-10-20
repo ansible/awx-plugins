@@ -159,9 +159,10 @@ def test_request_includes_grant_type(
 
     call_backend(scope=ADO_SCOPE)
 
-    post_data = mock_post.call_args[1]['data']
-    assert post_data['grant_type'] == 'client_credentials'
-    assert post_data['scope'] == ADO_SCOPE
+    call_kwargs = mock_post.call_args[1]
+    assert call_kwargs['data']['grant_type'] == 'client_credentials'
+    assert call_kwargs['data']['scope'] == ADO_SCOPE
+    assert call_kwargs['allow_redirects'] is False
 
 
 @pytest.mark.parametrize(
@@ -375,6 +376,27 @@ def test_rejects_non_https_token_url(
         )
 
     mock_post.assert_not_called()
+
+
+def test_redirect_is_rejected(
+    mocker: MockerFixture,
+    call_backend: _BackendCaller,
+) -> None:
+    """Verify a 3xx redirect is not followed and raises ValueError."""
+    mocker.patch.object(
+        oauth2_mod.requests,
+        'post',
+        return_value=_FakeResponse(
+            status_code=http.HTTPStatus.TEMPORARY_REDIRECT,
+            text='Redirecting',
+        ),
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r'Token request failed.*HTTP 307',
+    ):
+        call_backend()
 
 
 def test_connection_error(
