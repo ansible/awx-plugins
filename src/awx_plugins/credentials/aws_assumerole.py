@@ -24,10 +24,13 @@ if _t.TYPE_CHECKING:
 from .plugin import CredentialPlugin
 
 
-_aws_cred_cache: dict[
-    str,
-    CredentialsTypeDef | dict[_t.Never, _t.Never],
-] | dict[_t.Never, _t.Never] = {}
+_aws_cred_cache: (
+    dict[
+        str,
+        CredentialsTypeDef | dict[_t.Never, _t.Never],
+    ]
+    | dict[_t.Never, _t.Never]
+) = {}
 
 
 assume_role_inputs = {
@@ -80,10 +83,10 @@ assume_role_inputs = {
 
 
 def aws_assumerole_getcreds(
-        access_key: str | None,
-        secret_key: str | None,
-        role_arn: str,
-        external_id: int,
+    access_key: str | None,
+    secret_key: str | None,
+    role_arn: str,
+    external_id: int,
 ) -> CredentialsTypeDef | dict[_t.Never, _t.Never]:
     """Return the credentials for use.
 
@@ -120,11 +123,11 @@ def aws_assumerole_getcreds(
 
 
 def aws_assumerole_backend(
-        access_key: str | None,
-        secret_key: str | None,
-        role_arn: str,
-        external_id: int,
-        identifier: str,
+    access_key: str | None,
+    secret_key: str | None,
+    role_arn: str,
+    external_id: int,
+    identifier: str,
 ) -> dict:
     """Contact AWS to assume a given role for the user.
 
@@ -156,13 +159,14 @@ def aws_assumerole_backend(
     # If there are no credentials for this user/ARN *or* the credentials
     # we have in the cache have expired, then we need to contact AWS again.
     creds_expired = (
-        (creds_expire_at := credentials.get('Expiration')) and
-        creds_expire_at < datetime.now(credentials['Expiration'].tzinfo)
-    )
+        creds_expire_at := credentials.get('Expiration')
+    ) and creds_expire_at < datetime.now(credentials['Expiration'].tzinfo)
     if creds_expired:
-
         credentials = aws_assumerole_getcreds(
-            access_key, secret_key, role_arn, external_id,
+            access_key,
+            secret_key,
+            role_arn,
+            external_id,
         )
 
         _aws_cred_cache[credential_key] = credentials
