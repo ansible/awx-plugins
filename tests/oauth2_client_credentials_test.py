@@ -6,6 +6,7 @@ import typing as _t
 from urllib.parse import parse_qs
 
 import pytest
+
 import requests
 import responses as _responses_mod
 
