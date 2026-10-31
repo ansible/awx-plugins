@@ -216,6 +216,7 @@ repos:
     - PyGithub  # needed by credentials.github_app
     - pytest
     - pytest-mock
+    - pytest-responses  # needed by oauth2_client_credentials_test
     - pytest-subtests
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
     - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
@@ -250,6 +251,7 @@ repos:
     - PyGithub  # needed by credentials.github_app
     - pytest
     - pytest-mock
+    - pytest-responses  # needed by oauth2_client_credentials_test
     - pytest-subtests
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
     - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
@@ -284,6 +286,7 @@ repos:
     - PyGithub  # needed by credentials.github_app
     - pytest
     - pytest-mock
+    - pytest-responses  # needed by oauth2_client_credentials_test
     - pytest-subtests
     - python-dsv-sdk >= 1.0.4  # needed by credentials.thycotic_dsv
     - python-tss-sdk >= 1.2.1  # needed by credentials.thycotic_tss
@@ -321,6 +324,7 @@ repos:
     - pylint-pytest ~= 2.0.0a1
     - pytest-cov  # needed by pylint-pytest since it picks up pytest's args
     - pytest-mock  # needed by pylint-pytest since it picks up pytest's args
+    - pytest-responses  # needed by pylint-pytest for mocked_responses fixture
     - pytest-subtests  # needed by pylint-pytest since it picks up pytest's args
     - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
     - python-dsv-sdk  # needed by credentials.dsv, credentials.thycotic_dsv
