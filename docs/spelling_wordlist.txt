@@ -13,11 +13,13 @@ doas
 ec
 ec2
 edu
+Entra
 Hashi
 hasn
 hostvars
 https
 ini
+Keycloak
 Kerberos
 keylogging
 Kubernetes
@@ -25,6 +27,7 @@ lookups
 namespace
 natively
 OAuth
+Okta
 OpenShift
 Ovirt
 ovirt
@@ -37,6 +40,7 @@ selinux
 Submodules
 Subpackages
 sudo
+synchronisation
 systemd
 templating
 Thycotic
