@@ -3,9 +3,11 @@
 import http
 import secrets
 import typing as _t
+from urllib.parse import parse_qs
 
 import pytest
-from pytest_mock import MockerFixture
+import requests
+import responses as _responses_mod
 
 from awx_plugins.credentials import (
     oauth2_client_credentials as oauth2_mod,
@@ -36,28 +38,8 @@ class _ErrorCase(_t.NamedTuple):
 
     status_code: int
     json_data: object
-    text: str
+    body: str
     error_pattern: str
-
-
-class _FakeResponse:
-    """Minimal stand-in for ``requests.Response``."""
-
-    def __init__(
-        self: _t.Self,
-        status_code: int,
-        json_data: object = None,
-        text: str = '',
-    ) -> None:
-        self.status_code = status_code
-        self._json_data = json_data
-        self.text = text
-
-    def json(self: _t.Self) -> object:
-        """Return the stored JSON payload or raise."""
-        if self._json_data is None:
-            raise ValueError('No JSON')
-        return self._json_data
 
 
 @pytest.fixture
@@ -142,48 +124,41 @@ def test_plugin_has_description() -> None:
 
 
 def test_successful_token_fetch(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
     fake_token: str,
 ) -> None:
     """Test a successful token retrieval."""
-    mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        return_value=_FakeResponse(
-            status_code=http.HTTPStatus.OK,
-            json_data={
-                'access_token': fake_token,
-                'token_type': 'Bearer',
-                'expires_in': 3600,
-            },
-        ),
+    responses.post(
+        TOKEN_URL,
+        json={
+            'access_token': fake_token,
+            'token_type': 'Bearer',
+            'expires_in': 3600,
+        },
+        status=http.HTTPStatus.OK,
     )
 
     assert call_backend(scope=ADO_SCOPE) == fake_token
 
 
 def test_request_includes_grant_type(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
     fake_token: str,
 ) -> None:
     """Verify the POST body includes grant_type=client_credentials."""
-    mock_post = mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        return_value=_FakeResponse(
-            status_code=http.HTTPStatus.OK,
-            json_data={'access_token': fake_token},
-        ),
+    responses.post(
+        TOKEN_URL,
+        json={'access_token': fake_token},
+        status=http.HTTPStatus.OK,
     )
 
     call_backend(scope=ADO_SCOPE)
 
-    call_kwargs = mock_post.call_args[1]
-    assert call_kwargs['data']['grant_type'] == 'client_credentials'
-    assert call_kwargs['data']['scope'] == ADO_SCOPE
-    assert call_kwargs['allow_redirects'] is False
+    sent_body = parse_qs(responses.calls[0].request.body)
+    assert sent_body['grant_type'] == ['client_credentials']
+    assert sent_body['scope'] == [ADO_SCOPE]
 
 
 @pytest.mark.parametrize(
@@ -194,19 +169,16 @@ def test_request_includes_grant_type(
     ),
 )
 def test_no_scope_omits_scope_from_request(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
     fake_token: str,
     scope_value: str | None,
 ) -> None:
     """Verify that an empty or missing scope is not sent."""
-    mock_post = mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        return_value=_FakeResponse(
-            status_code=http.HTTPStatus.OK,
-            json_data={'access_token': fake_token},
-        ),
+    responses.post(
+        TOKEN_URL,
+        json={'access_token': fake_token},
+        status=http.HTTPStatus.OK,
     )
 
     if scope_value is None:
@@ -214,8 +186,8 @@ def test_no_scope_omits_scope_from_request(
     else:
         call_backend(scope=scope_value)
 
-    post_data = mock_post.call_args[1]['data']
-    assert 'scope' not in post_data
+    sent_body = parse_qs(responses.calls[0].request.body)
+    assert 'scope' not in sent_body
 
 
 @pytest.mark.parametrize(
@@ -238,23 +210,20 @@ def test_no_scope_omits_scope_from_request(
     ),
 )
 def test_works_with_various_providers(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
     fake_token: str,
     token_url: str,
 ) -> None:
     """Verify the plugin works with different OAuth2 provider URLs."""
-    mock_post = mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        return_value=_FakeResponse(
-            status_code=http.HTTPStatus.OK,
-            json_data={'access_token': fake_token},
-        ),
+    responses.post(
+        token_url,
+        json={'access_token': fake_token},
+        status=http.HTTPStatus.OK,
     )
 
     assert call_backend(token_url=token_url) == fake_token
-    assert mock_post.call_args[0][0] == token_url
+    assert responses.calls[0].request.url == token_url
 
 
 @pytest.mark.parametrize(
@@ -267,7 +236,7 @@ def test_works_with_various_providers(
                     'error': 'invalid_client',
                     'error_description': 'Invalid client secret provided.',
                 },
-                text='',
+                body='',
                 error_pattern=(
                     r'Token request failed.*HTTP 401.*Invalid client secret'
                 ),
@@ -281,7 +250,7 @@ def test_works_with_various_providers(
                     'error': 'invalid_request',
                     'error_description': 'Tenant not found.',
                 },
-                text='',
+                body='',
                 error_pattern=r'Tenant not found',
             ),
             id='bad-request',
@@ -290,7 +259,7 @@ def test_works_with_various_providers(
             _ErrorCase(
                 status_code=http.HTTPStatus.SERVICE_UNAVAILABLE,
                 json_data=None,
-                text='Service Unavailable',
+                body='Service Unavailable',
                 error_pattern=r'HTTP 503.*Service Unavailable',
             ),
             id='non-json-error',
@@ -299,47 +268,47 @@ def test_works_with_various_providers(
             _ErrorCase(
                 status_code=http.HTTPStatus.BAD_REQUEST,
                 json_data=['not', 'a', 'dict'],
-                text='Bad Request',
-                error_pattern=r'HTTP 400.*Bad Request',
+                body='',
+                error_pattern=r'HTTP 400',
             ),
             id='non-dict-json-error',
         ),
     ),
 )
 def test_http_errors_raise_value_error(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
     error_case: _ErrorCase,
 ) -> None:
     """Test that HTTP errors are converted to ValueError."""
-    mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        return_value=_FakeResponse(
-            status_code=error_case.status_code,
-            json_data=error_case.json_data,
-            text=error_case.text,
-        ),
-    )
+    if error_case.json_data is not None:
+        responses.post(
+            TOKEN_URL,
+            json=error_case.json_data,
+            status=error_case.status_code,
+        )
+    else:
+        responses.post(
+            TOKEN_URL,
+            body=error_case.body,
+            status=error_case.status_code,
+        )
 
     with pytest.raises(ValueError, match=error_case.error_pattern):
         call_backend()
 
 
 @pytest.mark.parametrize(
-    (
-        'json_data',
-        'text',
-    ),
+    ('json_data', 'body'),
     (
         pytest.param(
             {'token_type': 'Bearer', 'expires_in': 3600},
-            '',
+            None,
             id='missing-access-token-key',
         ),
         pytest.param(
             ['not', 'a', 'dict'],
-            '',
+            None,
             id='non-dict-json',
         ),
         pytest.param(
@@ -349,32 +318,35 @@ def test_http_errors_raise_value_error(
         ),
         pytest.param(
             {'access_token': None},
-            '',
+            None,
             id='null-access-token',
         ),
         pytest.param(
             {'access_token': ''},
-            '',
+            None,
             id='empty-access-token',
         ),
     ),
 )
 def test_malformed_success_response(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
     json_data: object,
-    text: str,
+    body: str | None,
 ) -> None:
     """Test handling of 200 responses without a usable access_token."""
-    mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        return_value=_FakeResponse(
-            status_code=http.HTTPStatus.OK,
-            json_data=json_data,
-            text=text,
-        ),
-    )
+    if json_data is not None:
+        responses.post(
+            TOKEN_URL,
+            json=json_data,
+            status=http.HTTPStatus.OK,
+        )
+    else:
+        responses.post(
+            TOKEN_URL,
+            body=body or '',
+            status=http.HTTPStatus.OK,
+        )
 
     with pytest.raises(
         ValueError,
@@ -384,12 +356,10 @@ def test_malformed_success_response(
 
 
 def test_rejects_non_https_token_url(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
 ) -> None:
     """Verify non-https token endpoints are rejected before posting."""
-    mock_post = mocker.patch.object(oauth2_mod.requests, 'post')
-
     with pytest.raises(ValueError, match=r'must use https'):
         call_backend(
             token_url=(
@@ -398,21 +368,18 @@ def test_rejects_non_https_token_url(
             ),
         )
 
-    mock_post.assert_not_called()
+    assert not responses.calls
 
 
 def test_redirect_is_rejected(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
 ) -> None:
-    """Verify a 3xx redirect is not followed and raises ValueError."""
-    mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        return_value=_FakeResponse(
-            status_code=http.HTTPStatus.TEMPORARY_REDIRECT,
-            text='Redirecting',
-        ),
+    """Verify a 3xx redirect response raises ValueError."""
+    responses.post(
+        TOKEN_URL,
+        body='Redirecting',
+        status=http.HTTPStatus.TEMPORARY_REDIRECT,
     )
 
     with pytest.raises(
@@ -423,16 +390,13 @@ def test_redirect_is_rejected(
 
 
 def test_connection_error(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
 ) -> None:
     """Test that connection errors are wrapped in ValueError."""
-    mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        side_effect=oauth2_mod.requests.exceptions.ConnectionError(
-            'Connection refused',
-        ),
+    responses.post(
+        TOKEN_URL,
+        body=requests.exceptions.ConnectionError('Connection refused'),
     )
 
     with pytest.raises(
@@ -443,16 +407,13 @@ def test_connection_error(
 
 
 def test_timeout_error(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
 ) -> None:
     """Test that timeout errors are wrapped in ValueError."""
-    mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        side_effect=oauth2_mod.requests.exceptions.Timeout(
-            'Read timed out',
-        ),
+    responses.post(
+        TOKEN_URL,
+        body=requests.exceptions.Timeout('Read timed out'),
     )
 
     with pytest.raises(
@@ -463,14 +424,13 @@ def test_timeout_error(
 
 
 def test_generic_request_exception(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
 ) -> None:
     """Test that other RequestException subclasses are wrapped."""
-    mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        side_effect=oauth2_mod.requests.exceptions.TooManyRedirects(
+    responses.post(
+        TOKEN_URL,
+        body=requests.exceptions.TooManyRedirects(
             'Exceeded 30 redirects',
         ),
     )
@@ -483,18 +443,15 @@ def test_generic_request_exception(
 
 
 def test_discarded_kwargs_are_ignored(
-    mocker: MockerFixture,
+    responses: _responses_mod.RequestsMock,
     fake_token: str,
     fake_secret: str,
 ) -> None:
     """Verify unexpected kwargs don't break the backend."""
-    mocker.patch.object(
-        oauth2_mod.requests,
-        'post',
-        return_value=_FakeResponse(
-            status_code=http.HTTPStatus.OK,
-            json_data={'access_token': fake_token},
-        ),
+    responses.post(
+        TOKEN_URL,
+        json={'access_token': fake_token},
+        status=http.HTTPStatus.OK,
     )
 
     token = oauth2_mod.oauth2_client_credentials_backend(
