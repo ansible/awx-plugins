@@ -330,6 +330,9 @@ repos:
     # FIXME: drop the chardet constraint hack once `requests > 2.32.5` is out
     - >-  # Ref: https://github.com/psf/requests/issues/7219
       chardet < 6
+    # FIXME: drop the pytest constraint once `pylint-pytest` supports v9.2+
+    - >-  # Ref: https://github.com/pylint-dev/pylint-pytest/issues/163
+      pytest < 9.2
 
 - repo: https://github.com/rhysd/actionlint.git
   rev: v1.7.12
