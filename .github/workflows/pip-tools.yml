@@ -370,6 +370,7 @@ jobs:
         '${{ steps.pr.outputs.pull-request-url }}'
 
     - name: Instruct the maintainers to trigger CI by undrafting the PR
+      if: steps.pr.outputs.pull-request-operation == 'created'
       env:
         GITHUB_TOKEN: ${{ github.token }}
       run: >-
