@@ -120,11 +120,14 @@ pytest==9.2.0
     #   -r dependencies/direct/py.in
     #   pytest-cov
     #   pytest-mock
+    #   pytest-responses
     #   pytest-subtests
     #   pytest-xdist
 pytest-cov==7.1.0
     # via -r dependencies/direct/py.in
 pytest-mock==3.17.0
+    # via -r dependencies/direct/py.in
+pytest-responses==0.6.0
     # via -r dependencies/direct/py.in
 pytest-subtests==0.15.0
     # via -r dependencies/direct/py.in
@@ -139,7 +142,9 @@ python-dsv-sdk==1.0.4
 python-tss-sdk==2.0.1
     # via awx-plugins-core (pyproject.toml)
 pyyaml==6.0.3
-    # via awx-plugins-core (pyproject.toml)
+    # via
+    #   awx-plugins-core (pyproject.toml)
+    #   responses
 requests==2.34.2
     # via
     #   adal
@@ -151,8 +156,11 @@ requests==2.34.2
     #   python-dsv-sdk
     #   python-tss-sdk
     #   requests-oauthlib
+    #   responses
 requests-oauthlib==2.0.0
     # via msrest
+responses==0.26.3
+    # via pytest-responses
 s3transfer==0.19.3
     # via boto3
 six==1.17.0
@@ -174,3 +182,4 @@ urllib3==2.8.0
     #   botocore
     #   pygithub
     #   requests
+    #   responses
