@@ -85,7 +85,7 @@ class EmptyKwargs(_t.TypedDict):
     """Schema for zero keyword arguments."""
 
 
-def _extract_error_detail(resp: requests.Response) -> str:
+def _extract_error_detail(resp: requests.Response, /) -> str:
     """Pull a human-readable error from a non-200 response.
 
     :param resp: The failed HTTP response.
@@ -102,7 +102,7 @@ def _extract_error_detail(resp: requests.Response) -> str:
     return str(body.get('error_description', resp.text))
 
 
-def _require_https(token_url: str) -> None:
+def _require_https(token_url: str, /) -> None:
     """Ensure the token endpoint uses ``https`` before sending secrets.
 
     :param token_url: The full OAuth2 token endpoint URL.
@@ -117,6 +117,7 @@ def _require_https(token_url: str) -> None:
 
 
 def _post_token_request(
+    *,
     token_url: str,
     post_data: dict[str, str],
 ) -> requests.Response:
@@ -151,7 +152,7 @@ def _post_token_request(
         ) from req_exc
 
 
-def _extract_access_token(resp: requests.Response) -> str:
+def _extract_access_token_from(resp: requests.Response, /) -> str:
     """Parse the access_token from a successful token response.
 
     :param resp: A 200 HTTP response from the token endpoint.
@@ -206,7 +207,7 @@ def oauth2_client_credentials_backend(
     if scope:
         post_data['scope'] = scope
 
-    resp = _post_token_request(token_url, post_data)
+    resp = _post_token_request(token_url=token_url, post_data=post_data)
 
     if resp.status_code != 200:  # noqa: WPS432
         raise ValueError(
@@ -215,7 +216,7 @@ def oauth2_client_credentials_backend(
             f'{_extract_error_detail(resp)!s}',
         )
 
-    return _extract_access_token(resp)
+    return _extract_access_token_from(resp)
 
 
 #: Plugin entry point registered with AWX/AAP.
