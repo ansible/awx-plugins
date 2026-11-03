@@ -8,11 +8,14 @@ Works with any compliant token endpoint including Microsoft Entra ID
 Primary use case: Azure DevOps project synchronisation after PAT/SSH
 deprecation, using a Microsoft Entra Service Principal.
 
-Functions:
+Backend:
 
 - :func:`oauth2_client_credentials_backend`: Fetches an OAuth2 token.
-- ``oauth2_client_credentials_plugin``: Defines the credential plugin
-  interface.
+
+Plugin entry point:
+
+- :data:`oauth2_client_credentials_plugin`: ``CredentialPlugin``
+  instance registered with AWX/AAP.
 """
 
 import typing as _t
@@ -87,6 +90,7 @@ def _extract_error_detail(resp: requests.Response) -> str:
 
     :param resp: The failed HTTP response.
     :returns: An error description string.
+    :meta private:
     """
     try:
         body: object = resp.json()
@@ -104,6 +108,7 @@ def _require_https(token_url: str) -> None:
     :param token_url: The full OAuth2 token endpoint URL.
     :raises ValueError: If ``token_url`` does not use the ``https``
         scheme.
+    :meta private:
     """
     if not token_url.lower().startswith('https://'):
         raise ValueError(
@@ -121,6 +126,7 @@ def _post_token_request(
     :param post_data: The form data to send.
     :returns: The HTTP response.
     :raises ValueError: On any transport-level failure.
+    :meta private:
     """
     _require_https(token_url)
 
@@ -152,6 +158,7 @@ def _extract_access_token(resp: requests.Response) -> str:
     :returns: The bearer access token string.
     :raises ValueError: If the response body is not valid JSON,
         is not a JSON object, or lacks ``access_token``.
+    :meta private:
     """
     try:
         body: object = resp.json()
@@ -211,6 +218,7 @@ def oauth2_client_credentials_backend(
     return _extract_access_token(resp)
 
 
+#: Plugin entry point registered with AWX/AAP.
 oauth2_client_credentials_plugin = CredentialPlugin(
     'OAuth2 Client Credentials Token Lookup',
     inputs=oauth2_client_credentials_inputs,
