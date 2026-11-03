@@ -34,13 +34,22 @@ class _BackendCaller(_t.Protocol):
         """Call the backend with optional credential overrides."""
 
 
-class _ErrorCase(_t.NamedTuple):
-    """Parameters for an HTTP error test case."""
+class _StubbedResponse(_t.NamedTuple):
+    """Parameters for a stubbed token-endpoint response.
 
+    ``response_kwargs`` are unpacked into ``responses.post`` (for
+    example ``{'json': ...}`` or ``{'body': ...}``) so the test body
+    stays branch-free.
+    """
+
+    label: str
     status_code: int
-    json_data: object
-    body: str
+    response_kwargs: dict[str, object]
     error_pattern: str
+
+    def __str__(self: _t.Self) -> str:
+        """Return the human-readable parametrize id."""
+        return self.label
 
 
 def _parse_form_body(raw_body: object) -> dict[str, list[str]]:
@@ -237,129 +246,112 @@ def test_works_with_various_providers(
 @pytest.mark.parametrize(
     'error_case',
     (
-        pytest.param(
-            _ErrorCase(
-                status_code=http.HTTPStatus.UNAUTHORIZED,
-                json_data={
+        _StubbedResponse(
+            label='invalid-credentials',
+            status_code=http.HTTPStatus.UNAUTHORIZED,
+            response_kwargs={
+                'json': {
                     'error': 'invalid_client',
                     'error_description': 'Invalid client secret provided.',
                 },
-                body='',
-                error_pattern=(
-                    r'Token request failed.*HTTP 401.*Invalid client secret'
-                ),
+            },
+            error_pattern=(
+                r'Token request failed.*HTTP 401.*Invalid client secret'
             ),
-            id='invalid-credentials',
         ),
-        pytest.param(
-            _ErrorCase(
-                status_code=http.HTTPStatus.BAD_REQUEST,
-                json_data={
+        _StubbedResponse(
+            label='bad-request',
+            status_code=http.HTTPStatus.BAD_REQUEST,
+            response_kwargs={
+                'json': {
                     'error': 'invalid_request',
                     'error_description': 'Tenant not found.',
                 },
-                body='',
-                error_pattern=r'Tenant not found',
-            ),
-            id='bad-request',
+            },
+            error_pattern=r'Tenant not found',
         ),
-        pytest.param(
-            _ErrorCase(
-                status_code=http.HTTPStatus.SERVICE_UNAVAILABLE,
-                json_data=None,
-                body='Service Unavailable',
-                error_pattern=r'HTTP 503.*Service Unavailable',
-            ),
-            id='non-json-error',
+        _StubbedResponse(
+            label='non-json-error',
+            status_code=http.HTTPStatus.SERVICE_UNAVAILABLE,
+            response_kwargs={'body': 'Service Unavailable'},
+            error_pattern=r'HTTP 503.*Service Unavailable',
         ),
-        pytest.param(
-            _ErrorCase(
-                status_code=http.HTTPStatus.BAD_REQUEST,
-                json_data=['not', 'a', 'dict'],
-                body='',
-                error_pattern=r'HTTP 400',
-            ),
-            id='non-dict-json-error',
+        _StubbedResponse(
+            label='non-dict-json-error',
+            status_code=http.HTTPStatus.BAD_REQUEST,
+            response_kwargs={'json': ['not', 'a', 'dict']},
+            error_pattern=r'HTTP 400',
         ),
     ),
+    ids=str,
 )
 def test_http_errors_raise_value_error(
     responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
-    error_case: _ErrorCase,
+    error_case: _StubbedResponse,
 ) -> None:
     """Test that HTTP errors are converted to ValueError."""
-    if error_case.json_data is None:
-        responses.post(
-            TOKEN_URL,
-            body=error_case.body,
-            status=error_case.status_code,
-        )
-    else:
-        responses.post(
-            TOKEN_URL,
-            json=error_case.json_data,
-            status=error_case.status_code,
-        )
+    responses.post(
+        TOKEN_URL,
+        status=error_case.status_code,
+        **error_case.response_kwargs,
+    )
 
     with pytest.raises(ValueError, match=error_case.error_pattern):
         call_backend()
 
 
 @pytest.mark.parametrize(
-    ('json_data', 'body'),
+    'response_case',
     (
-        pytest.param(
-            {'token_type': 'Bearer', 'expires_in': 3600},
-            None,
-            id='missing-access-token-key',
+        _StubbedResponse(
+            label='missing-access-token-key',
+            status_code=http.HTTPStatus.OK,
+            response_kwargs={
+                'json': {'token_type': 'Bearer', 'expires_in': 3600},
+            },
+            error_pattern=r'did not contain an access_token',
         ),
-        pytest.param(
-            ['not', 'a', 'dict'],
-            None,
-            id='non-dict-json',
+        _StubbedResponse(
+            label='non-dict-json',
+            status_code=http.HTTPStatus.OK,
+            response_kwargs={'json': ['not', 'a', 'dict']},
+            error_pattern=r'did not contain an access_token',
         ),
-        pytest.param(
-            None,
-            'not json at all',
-            id='unparseable-json',
+        _StubbedResponse(
+            label='unparseable-json',
+            status_code=http.HTTPStatus.OK,
+            response_kwargs={'body': 'not json at all'},
+            error_pattern=r'did not contain an access_token',
         ),
-        pytest.param(
-            {'access_token': None},
-            None,
-            id='null-access-token',
+        _StubbedResponse(
+            label='null-access-token',
+            status_code=http.HTTPStatus.OK,
+            response_kwargs={'json': {'access_token': None}},
+            error_pattern=r'did not contain an access_token',
         ),
-        pytest.param(
-            {'access_token': ''},
-            None,
-            id='empty-access-token',
+        _StubbedResponse(
+            label='empty-access-token',
+            status_code=http.HTTPStatus.OK,
+            response_kwargs={'json': {'access_token': ''}},
+            error_pattern=r'did not contain an access_token',
         ),
     ),
+    ids=str,
 )
 def test_malformed_success_response(
     responses: _responses_mod.RequestsMock,
     call_backend: _BackendCaller,
-    json_data: object,
-    body: str | None,
+    response_case: _StubbedResponse,
 ) -> None:
     """Test handling of 200 responses without a usable access_token."""
-    if json_data is None:
-        responses.post(
-            TOKEN_URL,
-            body=body or '',
-            status=http.HTTPStatus.OK,
-        )
-    else:
-        responses.post(
-            TOKEN_URL,
-            json=json_data,
-            status=http.HTTPStatus.OK,
-        )
+    responses.post(
+        TOKEN_URL,
+        status=response_case.status_code,
+        **response_case.response_kwargs,
+    )
 
-    with pytest.raises(
-        ValueError,
-        match=r'did not contain an access_token',
-    ):
+    with pytest.raises(ValueError, match=response_case.error_pattern):
         call_backend()
 
 
