@@ -19,6 +19,7 @@ Plugin entry point:
 """
 
 import typing as _t
+from http import HTTPStatus
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -209,7 +210,7 @@ def oauth2_client_credentials_backend(
 
     resp = _post_token_request(token_url=token_url, post_data=post_data)
 
-    if resp.status_code != 200:  # noqa: WPS432
+    if resp.status_code != HTTPStatus.OK:
         raise ValueError(
             'Token request failed '
             f'(HTTP {resp.status_code}): '
