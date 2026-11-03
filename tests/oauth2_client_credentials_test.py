@@ -43,6 +43,13 @@ class _ErrorCase(_t.NamedTuple):
     error_pattern: str
 
 
+def _parse_form_body(raw_body: object) -> dict[str, list[str]]:
+    """Parse a URL-encoded form body from a recorded request."""
+    assert isinstance(raw_body, (str, bytes))
+    body_text = raw_body if isinstance(raw_body, str) else raw_body.decode()
+    return parse_qs(body_text)
+
+
 @pytest.fixture
 def fake_token() -> str:
     """Generate a random token string for each test."""
@@ -157,7 +164,7 @@ def test_request_includes_grant_type(
 
     call_backend(scope=ADO_SCOPE)
 
-    sent_body = parse_qs(responses.calls[0].request.body)
+    sent_body = _parse_form_body(responses.calls[0].request.body)
     assert sent_body['grant_type'] == ['client_credentials']
     assert sent_body['scope'] == [ADO_SCOPE]
 
@@ -187,7 +194,7 @@ def test_no_scope_omits_scope_from_request(
     else:
         call_backend(scope=scope_value)
 
-    sent_body = parse_qs(responses.calls[0].request.body)
+    sent_body = _parse_form_body(responses.calls[0].request.body)
     assert 'scope' not in sent_body
 
 
@@ -282,16 +289,16 @@ def test_http_errors_raise_value_error(
     error_case: _ErrorCase,
 ) -> None:
     """Test that HTTP errors are converted to ValueError."""
-    if error_case.json_data is not None:
+    if error_case.json_data is None:
         responses.post(
             TOKEN_URL,
-            json=error_case.json_data,
+            body=error_case.body,
             status=error_case.status_code,
         )
     else:
         responses.post(
             TOKEN_URL,
-            body=error_case.body,
+            json=error_case.json_data,
             status=error_case.status_code,
         )
 
@@ -336,16 +343,16 @@ def test_malformed_success_response(
     body: str | None,
 ) -> None:
     """Test handling of 200 responses without a usable access_token."""
-    if json_data is not None:
+    if json_data is None:
         responses.post(
             TOKEN_URL,
-            json=json_data,
+            body=body or '',
             status=http.HTTPStatus.OK,
         )
     else:
         responses.post(
             TOKEN_URL,
-            body=body or '',
+            json=json_data,
             status=http.HTTPStatus.OK,
         )
 
@@ -390,56 +397,38 @@ def test_redirect_is_rejected(
         call_backend()
 
 
-def test_connection_error(
-    responses: _responses_mod.RequestsMock,
-    call_backend: _BackendCaller,
-) -> None:
-    """Test that connection errors are wrapped in ValueError."""
-    responses.post(
-        TOKEN_URL,
-        body=requests.exceptions.ConnectionError('Connection refused'),
-    )
-
-    with pytest.raises(
-        ValueError,
-        match=r'Could not connect to token endpoint',
-    ):
-        call_backend()
-
-
-def test_timeout_error(
-    responses: _responses_mod.RequestsMock,
-    call_backend: _BackendCaller,
-) -> None:
-    """Test that timeout errors are wrapped in ValueError."""
-    responses.post(
-        TOKEN_URL,
-        body=requests.exceptions.Timeout('Read timed out'),
-    )
-
-    with pytest.raises(
-        ValueError,
-        match=r'Timed out requesting token',
-    ):
-        call_backend()
-
-
-def test_generic_request_exception(
-    responses: _responses_mod.RequestsMock,
-    call_backend: _BackendCaller,
-) -> None:
-    """Test that other RequestException subclasses are wrapped."""
-    responses.post(
-        TOKEN_URL,
-        body=requests.exceptions.TooManyRedirects(
-            'Exceeded 30 redirects',
+@pytest.mark.parametrize(
+    ('exception', 'error_pattern'),
+    (
+        pytest.param(
+            requests.exceptions.ConnectionError('Connection refused'),
+            r'Could not connect to token endpoint',
+            id='connection-error',
         ),
-    )
+        pytest.param(
+            requests.exceptions.Timeout('Read timed out'),
+            r'Timed out requesting token',
+            id='timeout',
+        ),
+        pytest.param(
+            requests.exceptions.TooManyRedirects(
+                'Exceeded 30 redirects',
+            ),
+            r'Failed requesting token from endpoint',
+            id='too-many-redirects',
+        ),
+    ),
+)
+def test_transport_errors_raise_value_error(
+    responses: _responses_mod.RequestsMock,
+    call_backend: _BackendCaller,
+    exception: Exception,
+    error_pattern: str,
+) -> None:
+    """Test that transport failures are wrapped in ValueError."""
+    responses.post(TOKEN_URL, body=exception)
 
-    with pytest.raises(
-        ValueError,
-        match=r'Failed requesting token from endpoint',
-    ):
+    with pytest.raises(ValueError, match=error_pattern):
         call_backend()
 
 

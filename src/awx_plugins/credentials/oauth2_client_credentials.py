@@ -15,7 +15,7 @@ Functions:
   interface.
 """
 
-from typing import TypedDict, Unpack
+import typing as _t
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
     gettext_noop as _,
@@ -78,7 +78,7 @@ oauth2_client_credentials_inputs: _types.PluginInputs = {
 }
 
 
-class EmptyKwargs(TypedDict):
+class EmptyKwargs(_t.TypedDict):
     """Schema for zero keyword arguments."""
 
 
@@ -174,7 +174,7 @@ def oauth2_client_credentials_backend(
     client_id: str,
     client_secret: str,
     scope: str = '',
-    **_discarded_kwargs: Unpack[EmptyKwargs],
+    **_discarded_kwargs: _t.Unpack[EmptyKwargs],
 ) -> str:
     """Fetch an OAuth 2.0 access token via the client_credentials grant.
 
