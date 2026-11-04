@@ -1,5 +1,6 @@
 # FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="assignment, misc, no-redef"
+# pylint: disable=too-many-lines
 
 from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
     ManagedCredentialType,
@@ -910,6 +911,51 @@ galaxy_api_token = ManagedCredentialType(
             },
         ],
         'required': ['url'],
+    },
+)
+
+galaxy_service_account = ManagedCredentialType(
+    namespace='galaxy_service_account',
+    kind='galaxy',
+    name=gettext_noop('Ansible Galaxy/Automation Hub Service Account'),
+    managed=True,
+    inputs={
+        'fields': [
+            {
+                'id': 'url',
+                'label': gettext_noop('Galaxy Server URL'),
+                'type': 'string',
+                'help_text': gettext_noop(
+                    'The URL of the Galaxy instance to connect to.',
+                ),
+            },
+            {
+                'id': 'auth_url',
+                'label': gettext_noop('Auth Server URL'),
+                'type': 'string',
+                'help_text': gettext_noop(
+                    'The URL of a Keycloak server token_endpoint for service account authentication.',
+                ),
+            },
+            {
+                'id': 'client_id',
+                'label': gettext_noop('Client ID'),
+                'type': 'string',
+                'help_text': gettext_noop(
+                    'Client ID for Keycloak service account authentication. Requires ansible-core 2.19+.',
+                ),
+            },
+            {
+                'id': 'client_secret',
+                'label': gettext_noop('Client Secret'),
+                'type': 'string',
+                'secret': True,
+                'help_text': gettext_noop(
+                    'Client Secret for Keycloak service account authentication. Requires ansible-core 2.19+.',
+                ),
+            },
+        ],
+        'required': ['url', 'client_id', 'client_secret'],
     },
 )
 
