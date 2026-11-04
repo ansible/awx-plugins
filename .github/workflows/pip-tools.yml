@@ -73,10 +73,11 @@ jobs:
         # NOTE: The latest and the lowest supported Pythons are prioritized
         # NOTE: to improve the responsiveness. It's nice to see the most
         # NOTE: important results first.
-        - 3.14
+        - 3.15
         - 3.11
         - 3.12
         - 3.13
+        - 3.14
         runner-vm-os:
         - ubuntu-24.04-arm
         - ubuntu-24.04  # x86_64
@@ -149,10 +150,11 @@ jobs:
         # NOTE: The latest and the lowest supported Pythons are prioritized
         # NOTE: to improve the responsiveness. It's nice to see the most
         # NOTE: important results first.
-        - 3.14
+        - 3.15
         - 3.11
         - 3.12
         - 3.13
+        - 3.14
         runner-vm-os:
         - macos-26  # arm64
         - macos-26-intel
@@ -245,8 +247,8 @@ jobs:
 
     # NOTE: Signing makes `create-pull-request` recreate every commit via
     # NOTE: 3 throttled GitHub API calls, taking ~3s per lock file. With
-    # NOTE: all the lock files updated, this adds up to ~11 minutes.
-    timeout-minutes: 15
+    # NOTE: all the lock files updated, this adds up to ~14 minutes.
+    timeout-minutes: 20
 
     environment:
       name: pip-tools
