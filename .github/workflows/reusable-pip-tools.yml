@@ -1,6 +1,9 @@
 ---
 
-name: ♲ 🔒 pip-tools
+name: >-
+  ❌
+  [DO NOT CLICK]
+  Reusable pip-tools
 
 on:  # yamllint disable-line rule:truthy
   workflow_call:
