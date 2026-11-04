@@ -209,7 +209,8 @@ repos:
       awx_plugins.interfaces == 0.0.1a4
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
-    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - hypothesis
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
@@ -243,7 +244,8 @@ repos:
       awx_plugins.interfaces == 0.0.1a4
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
-    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - hypothesis
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
@@ -277,7 +279,8 @@ repos:
       awx_plugins.interfaces == 0.0.1a4
     - azure-identity  # needed by credentials.azure_kv
     - azure-keyvault  # needed by credentials.azure_kv
-    - boto3-stubs  # needed by credentials.awx_secretsmanager
+    - boto3-stubs[sts]  # needed by credentials.awx_secretsmanager
+    - botocore-stubs  # needed by credentials.awx_secretsmanager
     - hypothesis
     - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
     - msrestazure  # needed by credentials.azure_kv
