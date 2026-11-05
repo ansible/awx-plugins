@@ -3,7 +3,7 @@
 
 from urllib.parse import quote, urlencode, urljoin
 
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop as _,
 )
 
@@ -151,7 +151,7 @@ def aim_backend(**kwargs):
         object_property = 'Content'
     elif object_property.lower() == 'address':
         object_property = 'Address'
-    elif object_property not in res:  # noqa: WPS504  # FIXME
+    elif object_property not in res:
         raise KeyError(
             f'Property {object_property} not found in object, available properties: Username, Password and Address',
         )

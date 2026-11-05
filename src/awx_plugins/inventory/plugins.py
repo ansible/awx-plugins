@@ -5,10 +5,10 @@ import os.path
 import stat
 import tempfile
 
-from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_api import (
     ManagedCredentialType,
 )
-from awx_plugins.interfaces._temporary_private_container_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_container_api import (
     get_incontainer_path,
 )
 
@@ -45,12 +45,12 @@ class PluginFileInjector:
     @property
     def filename(self) -> str:
         """Inventory filename for using the inventory plugin This is created
-        dynamically, but the auto plugin requires this exact naming."""  # noqa: DAR201; FIXME
+        dynamically, but the auto plugin requires this exact naming."""
         return f'{self.plugin_name}.yml'
 
     def inventory_contents(self, inventory_update, private_data_dir):
         """Returns a string that is the content for the inventory file for the
-        inventory plugin."""  # noqa: DAR101, DAR201; FIXME
+        inventory plugin."""
         return yaml.safe_dump(
             self.inventory_as_dict(
                 inventory_update,
@@ -97,7 +97,7 @@ class PluginFileInjector:
         inventory_update,
         private_data_dir,
         private_data_files,
-    ):  # noqa: DAR101, DAR201; FIXME
+    ):
         """By default, we will apply the standard managed injectors."""
         if self.base_injector not in {'managed', 'template'}:
             return {}

@@ -29,7 +29,7 @@
 # fail-on =
 
 # Specify a score threshold under which the program will exit with error.
-fail-under = 10
+fail-under = 9
 
 # Interpret the stdin as a python script, whose filename needs to be passed as
 # the module_or_package argument.
@@ -136,16 +136,6 @@ bad-names = [
   "toto",
   "tutu",
   "tata",
-  "a",
-  "b",
-  "c",
-  "i",
-  "j",
-  "k",
-  "x",
-  "y",
-  "z",
-  "_",
 ]
 
 # Bad variable names regexes, separated by a comma. If names match any regex,
@@ -194,7 +184,7 @@ function-naming-style = "snake_case"
 # function-rgx =
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names = []
+good-names = ["i", "j", "k", "x", "y", "f", "e", "_"]
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted

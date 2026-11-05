@@ -10,18 +10,18 @@ from typing import Generic, TypeVar
 import pytest
 from pytest_subtests import SubTests
 
-from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_api import (
     EnvVarsType,
     ManagedCredentialType,
 )
 from awx_plugins.interfaces._temporary_private_container_api import (
     CONTAINER_ROOT,
 )
-from awx_plugins.interfaces._temporary_private_credential_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_credential_api import (
     Credential,
     CredentialInputType,
 )
-from awx_plugins.interfaces._temporary_private_inject_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_inject_api import (
     HIDDEN_PASSWORD,
     inject_credential,
 )
@@ -29,7 +29,7 @@ from awx_plugins.interfaces._temporary_private_inject_api import (  # noqa: WPS4
 import yaml
 
 from awx_plugins.credentials._managed_types.terraform import hcp_terraform
-from awx_plugins.credentials.plugins import (  # noqa: WPS235
+from awx_plugins.credentials.plugins import (
     aws,
     azure_rm,
     gce,
@@ -60,9 +60,9 @@ backend "gcs" {
 def get_gce_creds() -> dict[str, str]:
     """GCE plugin expected backend credentials.
 
-    This is a function instead of a module variable to work around
-    WPS407. MappingProxy did not work to fix WPS407 due to the type not
-    being json serializable errors during pytest fixture gathering.
+    This is a function instead of a module variable because
+    MappingProxy did not work due to the type not being json
+    serializable errors during pytest fixture gathering.
 
     :returns: sample gce backend credential data.
     """
@@ -79,7 +79,7 @@ def get_gce_creds() -> dict[str, str]:
         'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
         'token_uri': 'https://oauth2.googleapis.com/token',
         'auth_provider_x509_cert_url': 'https://www.googleapis.com/oauth2/v1/certs',
-        'client_x509_cert_url': 'https://www.googleapis.com/robot/v1/metadata/x509/cloud-content-robot%40sample.iam.gserviceaccount.com',  # noqa: B950, WPS323
+        'client_x509_cert_url': 'https://www.googleapis.com/robot/v1/metadata/x509/cloud-content-robot%40sample.iam.gserviceaccount.com',
     }
 
 
@@ -559,7 +559,7 @@ class YamlEnvFile(BaseEnvFile[dict[str, IniEntryDataType]]):
 )
 # FIXME: Type ignore below due to ManagedCredentialType type not found.
 # pylint: disable-next=too-many-arguments, too-many-positional-arguments
-def test_credential_plugins(  # type: ignore[no-any-unimported]  # noqa: WPS211
+def test_credential_plugins(  # type: ignore[no-any-unimported]
     cred_type: ManagedCredentialType,
     inputs: CredentialInputType,
     expected_env: dict[str, str],

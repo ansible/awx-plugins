@@ -3,7 +3,7 @@
 
 from base64 import b64decode
 
-from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
+from awx_plugins.interfaces._temporary_private_django_api import (
     gettext_noop as _,
 )
 
@@ -19,7 +19,7 @@ from .plugin import CredentialPlugin
 class Settings:
     """A stub Django settings-like interface."""
 
-    DEBUG: bool = False  # noqa: WPS115
+    DEBUG: bool = False
 
 
 settings = Settings()
