@@ -323,6 +323,7 @@ repos:
     - pytest-mock  # needed by pylint-pytest since it picks up pytest's args
     - pytest-subtests  # needed by pylint-pytest since it picks up pytest's args
     - pytest-xdist  # needed by pylint-pytest since it picks up pytest's args
+    - akeyless >= 5.0.8  # needed by credentials.akeyless and its tests
     - python-dsv-sdk  # needed by credentials.dsv, credentials.thycotic_dsv
     - PyYAML  # needed by credentials.injectors, inventory.plugins
     - Sphinx  # needed by the Sphinx extension stub

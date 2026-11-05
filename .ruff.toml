@@ -173,6 +173,9 @@ testing = [
   "S101",    # Allow use of `assert` in test files
   "S105",    # hardcoded-password-string
   "S106",    # hardcoded-password-func-arg
+  "S107",    # hardcoded-password-func-default: test helper factories use
+             # credential-like param names (token, secret_data) as configurable
+             # defaults — these are never real credentials
   "S108",    # tmp dirs
   "S404",    # Allow importing 'subprocess' module to testing call external tools needed by these hooks
   "S603",    # subprocess calls
