@@ -8,11 +8,11 @@ from sphinx.util.nodes import nodes
 
 
 try:
-    from enchant.tokenize import (  # noqa: WPS433
+    from enchant.tokenize import (
         Filter as _EnchantTokenizeFilterBase,
     )
 except ImportError:
-    _EnchantTokenizeFilterBase = object  # noqa: WPS440
+    _EnchantTokenizeFilterBase = object
 
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def _configure_spelling_ext(app: Sphinx, config: _SphinxConfig) -> None:
     # pylint: disable-next=too-few-public-methods
-    class VersionFilter(_EnchantTokenizeFilterBase):  # noqa: WPS431
+    class VersionFilter(_EnchantTokenizeFilterBase):
         # NOTE: It's nested because we need to reference the config by closure.
         """Filter for treating version words as known."""
 
@@ -38,11 +38,11 @@ def _configure_spelling_ext(app: Sphinx, config: _SphinxConfig) -> None:
                 return False
 
             logger.debug(
-                'Known version words: %r',  # noqa: WPS323
+                'Known version words: %r',
                 known_version_words,
             )
             logger.debug(
-                'Ignoring %r because it is a known version',  # noqa: WPS323
+                'Ignoring %r because it is a known version',
                 word,
             )
 
@@ -51,7 +51,7 @@ def _configure_spelling_ext(app: Sphinx, config: _SphinxConfig) -> None:
     app.config.spelling_filters = [VersionFilter]
     app.setup_extension('sphinxcontrib.spelling')
     # suppress unpicklable value warnings:
-    del app.config.spelling_filters  # noqa: WPS420
+    del app.config.spelling_filters
 
 
 class SpellingNoOpDirective(SphinxDirective):
