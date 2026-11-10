@@ -267,7 +267,14 @@ def _select_matching_secret(secrets: list, secret_title: str) -> dict:
     return matches[0]
 
 
-def _fetch_secrets(url: str, client_id: str, client_secret: str, verify, cacert, params):
+def _fetch_secrets(
+    url: str,
+    client_id: str,
+    client_secret: str,
+    verify,
+    cacert,
+    params,
+):
     secrets_url = urljoin(_normalize_base_url(url), 'secrets-safe/secrets')
     with _ssl_verify(verify, cacert) as ssl_verify:
         access_token = _get_access_token(
