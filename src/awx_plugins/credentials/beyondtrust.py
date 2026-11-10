@@ -1,4 +1,3 @@
-# FIXME: the following violations must be addressed gradually and unignored
 # mypy: disable-error-code="no-untyped-call, no-untyped-def"
 
 """BeyondTrust Password Safe / Secrets Safe credential lookup plugin."""
@@ -218,29 +217,58 @@ def _extract_secret_value(secret: dict, secret_field: str):
     )
 
 
-def beyondtrust_backend(**kwargs):
-    url = kwargs['url']
-    client_id = kwargs['client_id']
-    client_secret = kwargs['client_secret']
-    verify = kwargs.get('verify', True)
-    cacert = kwargs.get('cacert') or None
-    secret_path = (kwargs.get('secret_path') or '').strip()
-    secret_title = (kwargs.get('secret_title') or '').strip()
-    secret_field = kwargs.get('secret_field') or 'password'
-
-    if not secret_path and not secret_title:
-        raise RuntimeError(
-            'At least one of Secret Path or Secret Title must be provided',
-        )
-
+def _build_secret_query_params(secret_path: str, secret_title: str) -> dict:
     params = {'decrypt': 'true', 'limit': 100}
     if secret_path:
         params['Path'] = secret_path
     if secret_title:
         params['Title'] = secret_title
+    return params
 
+
+def _unwrap_secrets_payload(secrets) -> list:
+    if isinstance(secrets, list):
+        return secrets
+    if isinstance(secrets, dict):
+        unwrapped = (
+            secrets.get('data')
+            or secrets.get('Secrets')
+            or secrets.get('secrets')
+            or []
+        )
+        if isinstance(unwrapped, list):
+            return unwrapped
+    raise RuntimeError(
+        'Unexpected BeyondTrust secrets response; expected a list of secrets',
+    )
+
+
+def _select_matching_secret(secrets: list, secret_title: str) -> dict:
+    if not secrets:
+        raise RuntimeError(
+            'No BeyondTrust Secrets Safe secret matched the provided path/title',
+        )
+
+    matches = secrets
+    if len(matches) > 1 and secret_title:
+        exact = [
+            item
+            for item in matches
+            if str(item.get('Title') or item.get('title') or '')
+            == secret_title
+        ]
+        if exact:
+            matches = exact
+
+    if len(matches) > 1:
+        raise RuntimeError(
+            'Multiple BeyondTrust secrets matched; refine Secret Path and/or Secret Title',
+        )
+    return matches[0]
+
+
+def _fetch_secrets(url: str, client_id: str, client_secret: str, verify, cacert, params):
     secrets_url = urljoin(_normalize_base_url(url), 'secrets-safe/secrets')
-
     with _ssl_verify(verify, cacert) as ssl_verify:
         access_token = _get_access_token(
             url,
@@ -256,40 +284,36 @@ def beyondtrust_backend(**kwargs):
             timeout=(5, 30),
         )
         raise_for_status(response)
-        secrets = response.json()
+        return response.json()
 
-    if isinstance(secrets, dict):
-        # Some API versions wrap results.
-        secrets = (
-            secrets.get('data')
-            or secrets.get('Secrets')
-            or secrets.get('secrets')
-            or []
-        )
 
-    if not isinstance(secrets, list):
+def beyondtrust_backend(**kwargs):
+    url = kwargs['url']
+    client_id = kwargs['client_id']
+    client_secret = kwargs['client_secret']
+    verify = kwargs.get('verify', True)
+    cacert = kwargs.get('cacert') or None
+    secret_path = (kwargs.get('secret_path') or '').strip()
+    secret_title = (kwargs.get('secret_title') or '').strip()
+    secret_field = kwargs.get('secret_field') or 'password'
+
+    if not secret_path and not secret_title:
         raise RuntimeError(
-            'Unexpected BeyondTrust secrets response; expected a list of secrets',
-        )
-    if not secrets:
-        raise RuntimeError(
-            'No BeyondTrust Secrets Safe secret matched the provided path/title',
-        )
-    if len(secrets) > 1 and secret_title:
-        exact = [
-            item
-            for item in secrets
-            if str(item.get('Title') or item.get('title') or '')
-            == secret_title
-        ]
-        if exact:
-            secrets = exact
-    if len(secrets) > 1:
-        raise RuntimeError(
-            'Multiple BeyondTrust secrets matched; refine Secret Path and/or Secret Title',
+            'At least one of Secret Path or Secret Title must be provided',
         )
 
-    return _extract_secret_value(secrets[0], secret_field)
+    params = _build_secret_query_params(secret_path, secret_title)
+    payload = _fetch_secrets(
+        url,
+        client_id,
+        client_secret,
+        verify,
+        cacert,
+        params,
+    )
+    secrets = _unwrap_secrets_payload(payload)
+    secret = _select_matching_secret(secrets, secret_title)
+    return _extract_secret_value(secret, secret_field)
 
 
 beyondtrust_plugin = CredentialPlugin(
