@@ -60,7 +60,9 @@ def test_beyondtrust_reuses_cached_token(mocker: MockerFixture) -> None:
         'token_type': 'Bearer',
     }
     get.return_value.status_code = 200
-    get.return_value.json.return_value = [{'Title': 'app-secret', 'Password': 'one'}]
+    get.return_value.json.return_value = [
+        {'Title': 'app-secret', 'Password': 'one'},
+    ]
 
     kwargs = {
         'url': 'https://bt.example.com/BeyondTrust/api/public/v3',
@@ -72,7 +74,9 @@ def test_beyondtrust_reuses_cached_token(mocker: MockerFixture) -> None:
     }
     beyondtrust.beyondtrust_backend(**kwargs)
 
-    get.return_value.json.return_value = [{'Title': 'app-secret', 'Password': 'two'}]
+    get.return_value.json.return_value = [
+        {'Title': 'app-secret', 'Password': 'two'},
+    ]
     result = beyondtrust.beyondtrust_backend(**kwargs)
 
     assert result == 'two'
@@ -103,7 +107,10 @@ def test_beyondtrust_no_match(mocker: MockerFixture) -> None:
     get.return_value.status_code = 200
     get.return_value.json.return_value = []
 
-    with pytest.raises(RuntimeError, match='No BeyondTrust Secrets Safe secret'):
+    with pytest.raises(
+        RuntimeError,
+        match='No BeyondTrust Secrets Safe secret',
+    ):
         beyondtrust.beyondtrust_backend(
             url='https://bt.example.com/BeyondTrust/api/public/v3',
             client_id='client',

@@ -18,6 +18,7 @@ import requests
 from . import _types
 from .plugin import CertFiles, CredentialPlugin, raise_for_status
 
+
 beyondtrust_inputs: _types.PluginInputs = {
     'fields': [
         {
@@ -124,7 +125,12 @@ class _NullCertContext:
         return None
 
 
-def _request_token(url: str, client_id: str, client_secret: str, verify) -> tuple[str, float]:
+def _request_token(
+    url: str,
+    client_id: str,
+    client_secret: str,
+    verify,
+) -> tuple[str, float]:
     token_url = urljoin(_normalize_base_url(url), 'Auth/Connect/Token')
     response = requests.post(
         token_url,
@@ -150,7 +156,12 @@ def _request_token(url: str, client_id: str, client_secret: str, verify) -> tupl
     return access_token, expires_at
 
 
-def _get_access_token(url: str, client_id: str, client_secret: str, verify) -> str:
+def _get_access_token(
+    url: str,
+    client_id: str,
+    client_secret: str,
+    verify,
+) -> str:
     cache_key = (url, client_id)
     now = time.monotonic()
     with _TOKEN_LOCK:
@@ -158,7 +169,12 @@ def _get_access_token(url: str, client_id: str, client_secret: str, verify) -> s
         if cached and cached[1] > now:
             return cached[0]
 
-    access_token, expires_at = _request_token(url, client_id, client_secret, verify)
+    access_token, expires_at = _request_token(
+        url,
+        client_id,
+        client_secret,
+        verify,
+    )
     with _TOKEN_LOCK:
         _TOKEN_CACHE[cache_key] = (access_token, expires_at)
     return access_token
@@ -195,7 +211,7 @@ def _extract_secret_value(secret: dict, secret_field: str):
         if candidate in secret and secret[candidate] not in (None, ''):
             return secret[candidate]
 
-    available = ', '.join(sorted(str(key) for key in secret.keys()))
+    available = ', '.join(sorted(str(key) for key in secret))
     raise KeyError(
         f'Field {secret_field!r} not found in BeyondTrust secret; '
         f'available fields: {available}',
@@ -226,7 +242,12 @@ def beyondtrust_backend(**kwargs):
     secrets_url = urljoin(_normalize_base_url(url), 'secrets-safe/secrets')
 
     with _ssl_verify(verify, cacert) as ssl_verify:
-        access_token = _get_access_token(url, client_id, client_secret, ssl_verify)
+        access_token = _get_access_token(
+            url,
+            client_id,
+            client_secret,
+            ssl_verify,
+        )
         response = requests.get(
             secrets_url,
             params=params,
@@ -239,7 +260,12 @@ def beyondtrust_backend(**kwargs):
 
     if isinstance(secrets, dict):
         # Some API versions wrap results.
-        secrets = secrets.get('data') or secrets.get('Secrets') or secrets.get('secrets') or []
+        secrets = (
+            secrets.get('data')
+            or secrets.get('Secrets')
+            or secrets.get('secrets')
+            or []
+        )
 
     if not isinstance(secrets, list):
         raise RuntimeError(
@@ -253,7 +279,8 @@ def beyondtrust_backend(**kwargs):
         exact = [
             item
             for item in secrets
-            if str(item.get('Title') or item.get('title') or '') == secret_title
+            if str(item.get('Title') or item.get('title') or '')
+            == secret_title
         ]
         if exact:
             secrets = exact
