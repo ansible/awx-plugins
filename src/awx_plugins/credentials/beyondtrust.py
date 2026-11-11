@@ -1,4 +1,3 @@
-
 """BeyondTrust Password Safe / Secrets Safe credential lookup plugin."""
 
 from __future__ import annotations

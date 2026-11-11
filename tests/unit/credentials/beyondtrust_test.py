@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import pytest
+
 import responses
 
 from awx_plugins.credentials import beyondtrust
+
 
 BASE_URL = 'https://bt.example.com/BeyondTrust/api/public/v3'
 
@@ -61,8 +63,7 @@ def test_beyondtrust_backend_fetches_password() -> None:
     )
     assert responses.calls[1].request.params['decrypt'] == 'true'
     assert (
-        responses.calls[1].request.headers['Authorization']
-        == 'Bearer token-1'
+        responses.calls[1].request.headers['Authorization'] == 'Bearer token-1'
     )
 
 
@@ -95,12 +96,18 @@ def test_beyondtrust_reuses_cached_token() -> None:
     result = beyondtrust.beyondtrust_backend(**kwargs)
 
     assert result == 'two'
-    assert len(
-        [c for c in responses.calls if c.request.method == 'POST'],
-    ) == 1
-    assert len(
-        [c for c in responses.calls if c.request.method == 'GET'],
-    ) == 2
+    assert (
+        len(
+            [c for c in responses.calls if c.request.method == 'POST'],
+        )
+        == 1
+    )
+    assert (
+        len(
+            [c for c in responses.calls if c.request.method == 'GET'],
+        )
+        == 2
+    )
 
 
 def test_beyondtrust_requires_path_or_title() -> None:
