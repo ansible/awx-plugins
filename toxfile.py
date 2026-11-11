@@ -1,8 +1,10 @@
 """Project-local tox env customizations."""
 
+from __future__ import annotations
+
 import platform
 import ssl
-import typing as t  # noqa: WPS111
+import typing as _t  # noqa: WPS111
 from base64 import b64encode
 from dataclasses import dataclass
 from functools import cached_property
@@ -14,12 +16,8 @@ from shlex import join as _shlex_join
 from sys import path as _sys_path
 
 from tox.config.loader.memory import MemoryLoader
-from tox.config.sets import ConfigSet
-from tox.config.types import Command
 from tox.execute.request import StdinSource
 from tox.plugin import impl
-from tox.session.state import State
-from tox.tox_env.api import ToxEnv
 from tox.tox_env.python.pip.pip_install import Pip as PipInstaller
 from tox.tox_env.python.virtual_env.package.cmd_builder import (
     VirtualEnvCmdBuilder,
@@ -28,11 +26,15 @@ from tox.tox_env.python.virtual_env.package.pyproject import (
     Pep517VirtualEnvPackager,
 )
 from tox.tox_env.python.virtual_env.runner import VirtualEnvRunner
-from tox.tox_env.register import ToxEnvRegister
 
 
-if t.TYPE_CHECKING:
+if _t.TYPE_CHECKING:
+    from tox.config.sets import ConfigSet
+    from tox.config.types import Command
+    from tox.session.state import State
+    from tox.tox_env.api import ToxEnv
     from tox.tox_env.python.api import Python
+    from tox.tox_env.register import ToxEnvRegister
 
 
 _sys_path[:0] = ['bin/']  # noqa: WPS362
@@ -212,10 +214,14 @@ def tox_after_run_commands(tox_env: ToxEnv) -> None:
 class PinnedPipInstaller(PipInstaller):
     """A constraint-aware pip installer."""
 
-    _non_existing_constraint_files: t.ClassVar[set[Path]] = set()
+    _non_existing_constraint_files: _t.ClassVar[set[Path]] = set()
 
     def post_process_install_command(self, cmd: Command) -> Command:
-        """Inject an env-specific constraint into pip install."""
+        """Inject an env-specific constraint into pip install.
+
+        :param cmd: The pip install command to post-process.
+        :returns: The pip install command with the constraint injected.
+        """
         constraint_file_path = get_constraint_file_path(
             req_dir='dependencies/lock-files/',
             toxenv=self._env.name,
@@ -263,8 +269,11 @@ class PinnedPipInstallerSelectedMixin:
 
     @cached_property
     def installer(self) -> PinnedPipInstaller:
-        """Constraint-aware pip installer."""
-        return PinnedPipInstaller(t.cast('Python', self))
+        """Constraint-aware pip installer.
+
+        :returns: A pip installer instance applying lock files.
+        """
+        return PinnedPipInstaller(_t.cast('Python', self))
 
 
 # pylint: disable-next=too-many-ancestors
@@ -276,7 +285,10 @@ class PinnedPep517VirtualEnvPackager(
 
     @staticmethod
     def id() -> str:  # noqa: WPS602, WPS605
-        """Render a pinned virtualenv packager identifier."""
+        """Render a pinned virtualenv packager identifier.
+
+        :returns: The packager identifier.
+        """
         return f'{_PINNED_PREFIX}{Pep517VirtualEnvPackager.id()}'
 
 
@@ -289,7 +301,10 @@ class PinnedVirtualEnvCmdBuilder(
 
     @staticmethod
     def id() -> str:  # noqa: WPS602, WPS605
-        """Render a pinned virtualenv command builder identifier."""
+        """Render a pinned virtualenv command builder identifier.
+
+        :returns: The command builder identifier.
+        """
         return f'{_PINNED_PREFIX}{VirtualEnvCmdBuilder.id()}'
 
 
@@ -302,7 +317,10 @@ class PinnedVirtualEnvRunner(
 
     @staticmethod
     def id() -> str:  # noqa: WPS602, WPS605
-        """Render a pinned virtualenv runner identifier."""
+        """Render a pinned virtualenv runner identifier.
+
+        :returns: The runner identifier.
+        """
         return f'{_PINNED_PREFIX}{VirtualEnvRunner.id()}'
 
     @property
@@ -316,7 +334,10 @@ class PinnedVirtualEnvRunner(
 
 @impl
 def tox_register_tox_env(register: ToxEnvRegister) -> None:
-    """Register locked virtualenv wrappers."""
+    """Register locked virtualenv wrappers.
+
+    :param register: The tox env type registry.
+    """
     run_env_id = PinnedVirtualEnvRunner.id()
 
     logger.debug(
@@ -349,9 +370,14 @@ def tox_register_tox_env(register: ToxEnvRegister) -> None:
     register._default_run_env = run_env_id  # noqa: SLF001, WPS437
 
 
-@impl
+# NOTE: The hook is marked as optional to keep the plugin loadable under
+# NOTE: older tox versions that lack it, like the ones supporting Python 3.8.
+@impl(optionalhook=True)
 def tox_extend_envs() -> tuple[str, ...]:
-    """Declare plugin-provided pip-compile in-memory tox envs."""
+    """Declare plugin-provided pip-compile in-memory tox envs.
+
+    :returns: The names of the injected tox envs.
+    """
     pip_compile_envs = tuple(env_cls.name for env_cls in pip_compile_env_clss)
     logger.debug(
         'tox-lock:tox_extend_envs> '  # noqa: WPS323
@@ -367,16 +393,19 @@ class PipCompileToxEnvBase:
     """A base class for dynamically injected pip-compile envs."""
 
     _pos_args: tuple[str, ...] | None
-    name: t.ClassVar[str]
-    _description: t.ClassVar[str]
-    deps: t.ClassVar[list[str]] = ['pip-tools']
-    commands_pre: t.ClassVar[list[str]] = []
-    commands_post: t.ClassVar[list[str]] = []
-    package: t.ClassVar[str] = 'skip'
+    name: _t.ClassVar[str]
+    _description: _t.ClassVar[str]
+    deps: _t.ClassVar[list[str]] = ['pip-tools']
+    commands_pre: _t.ClassVar[list[str]] = []
+    commands_post: _t.ClassVar[list[str]] = []
+    package: _t.ClassVar[str] = 'skip'
 
     @property
     def commands(self) -> list[str]:
-        """Rendered ``pip-compile`` command."""
+        """Rendered ``pip-compile`` command.
+
+        :returns: The ``pip-compile`` command line.
+        """
         pip_compile_cmd = (
             'python',  # instead of `{envpython}`
             # '-bb',
@@ -385,6 +414,13 @@ class PipCompileToxEnvBase:
             '-s',
             '-I',
             '-Werror',
+            # NOTE: Some dependencies are only shipped as sdists with
+            # NOTE: outdated packaging metadata that recent `setuptools`
+            # NOTE: versions warn about when building it. The build
+            # NOTE: backend warnings get re-emitted as `UserWarning`
+            # NOTE: subclasses, are out of our control, and must not fail
+            # NOTE: the locking. Other warning categories remain fatal.
+            '-Wdefault::UserWarning',
             '-mpiptools',
             'compile',
             *self._first_args,
@@ -395,12 +431,18 @@ class PipCompileToxEnvBase:
 
     @property
     def description(self) -> str:
-        """Prefixed tox env description."""
+        """Prefixed tox env description.
+
+        :returns: The tox env description.
+        """
         return f'[tox-lock] {self._description}'
 
     @property
     def set_env(self) -> dict[str, str]:
-        """Environment variables for tox env."""
+        """Environment variables for tox env.
+
+        :returns: The environment variables mapping.
+        """
         cmd_posargs_trailer = ''
         if self._pos_args is not None:
             quoted_pos_args = _shlex_join(self._pos_args)
@@ -412,7 +454,10 @@ class PipCompileToxEnvBase:
         }
 
     def to_memory_loader(self) -> MemoryLoader:
-        """Construct a memory loader populated with current settings."""
+        """Construct a memory loader populated with current settings.
+
+        :returns: A tox in-memory config loader.
+        """
         return MemoryLoader(
             base=[],  # disable inheritance for plugin-provided in-memory envs
             commands_pre=self.commands_pre,
@@ -438,9 +483,9 @@ class PipCompileToxEnvBase:
 class PipCompileToxEnv(PipCompileToxEnvBase):
     """An injected env for pip-compile invocations."""
 
-    name: t.ClassVar[str] = 'pip-compile'
+    name: _t.ClassVar[str] = 'pip-compile'
     # Run `pip-compile {posargs:}` under {envpython}
-    _description: t.ClassVar[str] = 'Invoke pip-compile of pip-tools'
+    _description: _t.ClassVar[str] = 'Invoke pip-compile of pip-tools'
 
 
 # pylint: disable-next=fixme
@@ -448,9 +493,9 @@ class PipCompileToxEnv(PipCompileToxEnvBase):
 class PipCompileBuildLockToxEnv(PipCompileToxEnvBase):
     """An injected env for making build env constraint file."""
 
-    name: t.ClassVar[str] = 'pip-compile-build-lock'
+    name: _t.ClassVar[str] = 'pip-compile-build-lock'
     # Produce a PEP 517/660 build deps lock using {envpython}
-    _description: t.ClassVar[str] = 'Produce a PEP 517/660 build deps lock'
+    _description: _t.ClassVar[str] = 'Produce a PEP 517/660 build deps lock'
 
     @property
     def _first_args(self) -> tuple[str, ...]:
@@ -470,9 +515,9 @@ class PipCompileBuildLockToxEnv(PipCompileToxEnvBase):
 class PipCompileToxEnvLockToxEnv(PipCompileToxEnvBase):
     """An injected env for making pre-env constraint files."""
 
-    name: t.ClassVar[str] = 'pip-compile-tox-env-lock'
+    name: _t.ClassVar[str] = 'pip-compile-tox-env-lock'
     # Produce {posargs} lock file using {envpython}
-    _description: t.ClassVar[str] = (
+    _description: _t.ClassVar[str] = (
         'Produce a lock file for the passed tox env using current python'
     )
 
@@ -513,7 +558,11 @@ def tox_add_core_config(
     core_conf: ConfigSet,  # noqa: ARG001  # pylint: disable=unused-argument
     state: State,
 ) -> None:
-    """Define pip-compile in-memory tox environment configs."""
+    """Define pip-compile in-memory tox environment configs.
+
+    :param core_conf: The tox core configuration (unused).
+    :param state: The tox session state.
+    """
     # NOTE: Command injections are happening in this hook because this allows
     # NOTE: them to show up in the `tox config` output. In-memory configs do
     # NOTE: not support substitutions like `{posargs}` or `{envpython}`. We

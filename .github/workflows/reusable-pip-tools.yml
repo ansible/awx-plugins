@@ -30,6 +30,12 @@ on:  # yamllint disable-line rule:truthy
           The runner VM OS to generate the lock file under
         required: true
         type: string
+      timeout-minutes:
+        description: >-
+          Deadline for the lock file generation job
+        default: 3
+        required: false
+        type: number
       upgrade-package:
         description: >-
           A target Python package distribution to upgrade,
@@ -55,7 +61,7 @@ jobs:
       }}
     runs-on: ${{ inputs.runner-vm-os }}
 
-    timeout-minutes: 3
+    timeout-minutes: ${{ inputs.timeout-minutes }}
 
     env:
       TOXENV: pip-compile-tox-env-lock
