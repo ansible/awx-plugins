@@ -1,4 +1,3 @@
-# mypy: disable-error-code="no-untyped-call, no-untyped-def"
 
 """BeyondTrust Password Safe / Secrets Safe credential lookup plugin."""
 
@@ -6,6 +5,7 @@ from __future__ import annotations
 
 import threading
 import time
+from contextlib import nullcontext
 from urllib.parse import urljoin
 
 from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS436
@@ -107,21 +107,13 @@ def _normalize_base_url(url: str) -> str:
     return url if url.endswith('/') else f'{url}/'
 
 
-def _ssl_verify(verify: bool, cacert: str | None):
+def _ssl_verify(
+    verify: bool,
+    cacert: str | None,
+) -> CertFiles | nullcontext[bool]:
     if cacert:
         return CertFiles(cacert)
-    return _NullCertContext(verify)
-
-
-class _NullCertContext:
-    def __init__(self, verify):
-        self.verify = verify
-
-    def __enter__(self):
-        return self.verify
-
-    def __exit__(self, *args):
-        return None
+    return nullcontext(verify)
 
 
 def _request_token(
@@ -146,10 +138,10 @@ def _request_token(
     payload = response.json()
     try:
         access_token = payload['access_token']
-    except KeyError as exc:
-        raise RuntimeError(
+    except KeyError as key_err:
+        raise ValueError(
             'BeyondTrust OAuth token response did not include access_token',
-        ) from exc
+        ) from key_err
     expires_in = int(payload.get('expires_in', 300))
     expires_at = time.monotonic() + max(expires_in - _TOKEN_SKEW_SECONDS, 1)
     return access_token, expires_at
@@ -238,14 +230,14 @@ def _unwrap_secrets_payload(secrets) -> list:
         )
         if isinstance(unwrapped, list):
             return unwrapped
-    raise RuntimeError(
+    raise ValueError(
         'Unexpected BeyondTrust secrets response; expected a list of secrets',
     )
 
 
 def _select_matching_secret(secrets: list, secret_title: str) -> dict:
     if not secrets:
-        raise RuntimeError(
+        raise LookupError(
             'No BeyondTrust Secrets Safe secret matched the provided path/title',
         )
 
@@ -261,7 +253,7 @@ def _select_matching_secret(secrets: list, secret_title: str) -> dict:
             matches = exact
 
     if len(matches) > 1:
-        raise RuntimeError(
+        raise LookupError(
             'Multiple BeyondTrust secrets matched; refine Secret Path and/or Secret Title',
         )
     return matches[0]
@@ -305,7 +297,7 @@ def beyondtrust_backend(**kwargs):
     secret_field = kwargs.get('secret_field') or 'password'
 
     if not secret_path and not secret_title:
-        raise RuntimeError(
+        raise ValueError(
             'At least one of Secret Path or Secret Title must be provided',
         )
 

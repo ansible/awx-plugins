@@ -80,6 +80,11 @@ credential_plugins = (
         'aws_secretsmanager_credential',
         'awx_plugins.credentials.aws_secretsmanager:aws_secretmanager_plugin',
     ),
+    EntryPointParam(
+        'awx_plugins.credentials',
+        'beyondtrust',
+        'awx_plugins.credentials.beyondtrust:beyondtrust_plugin',
+    ),
 )
 
 

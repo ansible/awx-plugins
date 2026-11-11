@@ -245,6 +245,7 @@ credentials-beyondtrust = [
   "awx_plugins.interfaces",
   "requests",
 ]
+
 [project.readme]
 file = "README.md"
 content-type = "text/markdown"
