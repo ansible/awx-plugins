@@ -83,22 +83,22 @@ credential_plugins = (
     EntryPointParam(
         'awx_plugins.credentials',
         'akeyless',
-        'awx_plugins.credentials.akeyless:akeyless_plugin',
+        'awx_plugins.credentials.akeyless_vault.secret:akeyless_plugin',
     ),
     EntryPointParam(
         'awx_plugins.credentials',
         'akeyless_ssh',
-        'awx_plugins.credentials.akeyless:akeyless_ssh_plugin',
+        'awx_plugins.credentials.akeyless_vault.ssh:akeyless_ssh_plugin',
     ),
     EntryPointParam(
         'awx_plugins.credentials',
         'akeyless-oidc',
-        'awx_plugins.credentials.akeyless:akeyless_oidc_plugin',
+        'awx_plugins.credentials.akeyless_vault.secret:akeyless_oidc_plugin',
     ),
     EntryPointParam(
         'awx_plugins.credentials',
         'akeyless-ssh-oidc',
-        'awx_plugins.credentials.akeyless:akeyless_ssh_oidc_plugin',
+        'awx_plugins.credentials.akeyless_vault.ssh:akeyless_ssh_oidc_plugin',
     ),
 )
 

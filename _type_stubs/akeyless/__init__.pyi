@@ -1,5 +1,7 @@
 from collections.abc import Mapping
 
+from .models.get_ssh_certificate import GetSSHCertificate
+
 class Configuration:
     host: str
     ssl_ca_cert: str | None
@@ -7,6 +9,7 @@ class Configuration:
     def __init__(self, host: str = ...) -> None: ...
 
 class ApiClient:
+    configuration: Configuration
     user_agent: str
     default_headers: dict[str, str]
     def __init__(self, configuration: Configuration | None = ...) -> None: ...
@@ -63,6 +66,7 @@ class GetSSHCertificateOutput:
     data: str | None
 
 class V2Api:
+    api_client: ApiClient
     def __init__(self, api_client: ApiClient | None = ...) -> None: ...
     def auth(self, auth: Auth) -> AuthOutput: ...
     def describe_item(self, req: DescribeItem) -> DescribeItemOutput: ...
@@ -72,5 +76,5 @@ class V2Api:
     ) -> Mapping[str, str]: ...
     def get_ssh_certificate(
         self,
-        req: object,
+        req: GetSSHCertificate,
     ) -> GetSSHCertificateOutput: ...

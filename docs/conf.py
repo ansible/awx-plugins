@@ -237,16 +237,18 @@ nitpick_ignore = [
         'py:class',
         'awx_plugins.credentials.hashivault._RT',
     ),
+    (  # generic return type variable:
+        'py:class',
+        'awx_plugins.credentials.akeyless_vault._session._RT',
+    ),
     ('py:class', '_PT'),  # generic ParamSpec type variable
     ('py:class', '_contextvars.ContextVar'),  # unresolved context var type
     ('py:class', 'EnvVarsType'),
-    # Akeyless SDK types: auto-generated from OpenAPI
-    # without type annotations or .pyi stubs
-    ('py:class', 'akeyless.models.auth.Auth'),
-    ('py:class', 'akeyless.models.describe_item.DescribeItem'),
-    ('py:class', 'akeyless.models.get_secret_value.GetSecretValue'),
-    ('py:class', 'akeyless.models.get_ssh_certificate.GetSSHCertificate'),
 ]
+
+_AKEYLESS_SDK_DOCS_URL = (
+    'https://github.com/akeylesslabs/akeyless-python/blob/master/docs'
+)
 
 
 def _replace_missing_tokencredential_reference(
@@ -270,6 +272,29 @@ def _replace_missing_tokencredential_reference(
     )
 
 
+def _replace_missing_akeyless_reference(
+    app: Sphinx,
+    env: BuildEnvironment,
+    node: pending_xref,
+    contnode: literal,
+) -> reference | None:
+    if (node.get('refdomain'), node.get('reftype')) != ('py', 'class'):
+        return None
+
+    ref_target = node.get('reftarget', '')
+    if not ref_target.startswith('akeyless.'):
+        return None
+
+    # The SDK publishes no Sphinx inventory, only a Markdown page per class:
+    class_name = ref_target.rpartition('.')[-1]
+    return reference(
+        ref_target,
+        ref_target,
+        internal=False,
+        refuri=f'{_AKEYLESS_SDK_DOCS_URL}/{class_name}.md',
+    )
+
+
 def setup(app: Sphinx) -> dict[str, bool | str]:
     """Register project-local Sphinx extension-API customizations.
 
@@ -280,6 +305,7 @@ def setup(app: Sphinx) -> dict[str, bool | str]:
         'missing-reference',
         _replace_missing_tokencredential_reference,
     )
+    app.connect('missing-reference', _replace_missing_akeyless_reference)
 
     return {
         'parallel_read_safe': True,
