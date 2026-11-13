@@ -578,6 +578,30 @@ bitbucket_dc_token = ManagedCredentialType(
     },
 )
 
+bitbucket_cloud_token = ManagedCredentialType(
+    namespace='bitbucket_cloud_token',
+    kind='token',
+    name=gettext_noop('Bitbucket Cloud HTTP Access Token'),
+    managed=True,
+    inputs={
+        'fields': [
+            {
+                'id': 'token',
+                'label': gettext_noop('Token'),
+                'type': 'string',
+                'secret': True,
+                'help_text': gettext_noop(
+                    'This token needs to come from your user settings in '
+                    'Bitbucket Cloud',
+                ),
+            },
+        ],
+        'required': [
+            'token',
+        ],
+    },
+)
+
 insights = ManagedCredentialType(
     namespace='insights',
     kind='insights',
