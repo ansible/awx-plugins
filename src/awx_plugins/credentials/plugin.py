@@ -61,5 +61,8 @@ class CertFiles:
         return str(self.certfile.name)
 
     def __exit__(self, *args: object) -> None:
-        if self.certfile and os.path.exists(self.certfile.name):
+        if not self.certfile:
+            return
+        self.certfile.close()
+        if os.path.exists(self.certfile.name):
             os.remove(self.certfile.name)
