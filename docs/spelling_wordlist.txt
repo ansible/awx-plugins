@@ -3,11 +3,13 @@ Ansible
 Approle
 async
 awx
+Backports
 Backend
 backend
 Centrify
 config
 Conjur
+Cyber
 doas
 ec
 ec2
@@ -31,6 +33,7 @@ PEM
 Pre
 pre
 refspec
+reportable
 selinux
 Submodules
 Subpackages
