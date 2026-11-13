@@ -605,7 +605,7 @@ def kv_backend(  # noqa: WPS211 -- the same as too-many-arguments
     namespace: str | None = None,
     **_discarded_kwargs: _t.Unpack[_EmptyKwargs],
 ) -> str:
-    request_kwargs = {
+    request_kwargs: dict[str, object] = {
         'timeout': 30,
         'allow_redirects': False,
     }
@@ -620,7 +620,7 @@ def kv_backend(  # noqa: WPS211 -- the same as too-many-arguments
 
     if api_version == 'v2':
         if secret_version:
-            request_kwargs['params'] = {  # type: ignore[assignment]  # FIXME
+            request_kwargs['params'] = {
                 'version': secret_version,
             }
         if secret_backend:
