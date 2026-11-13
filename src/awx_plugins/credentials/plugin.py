@@ -45,11 +45,11 @@ class CertFiles:
 
     certfile: typing.IO[bytes] | None = None
 
-    def __init__(self, cert, key=None):
+    def __init__(self, cert: str | None, key: str | None = None) -> None:
         self.cert = cert
         self.key = key
 
-    def __enter__(self):
+    def __enter__(self) -> str | None:
         if not self.cert:
             return None
         self.certfile = tempfile.NamedTemporaryFile('wb', delete=False)
@@ -60,6 +60,9 @@ class CertFiles:
         self.certfile.flush()
         return str(self.certfile.name)
 
-    def __exit__(self, *args):
-        if self.certfile and os.path.exists(self.certfile.name):
+    def __exit__(self, *args: object) -> None:
+        if not self.certfile:
+            return
+        self.certfile.close()
+        if os.path.exists(self.certfile.name):
             os.remove(self.certfile.name)
