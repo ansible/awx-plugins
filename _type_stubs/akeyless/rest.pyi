@@ -1,4 +1,4 @@
-class ApiException(Exception):  # noqa: N818
+class ApiException(Exception):  # noqa: N818 -- the Akeyless SDK class name
     status: int
     reason: str
     def __init__(
