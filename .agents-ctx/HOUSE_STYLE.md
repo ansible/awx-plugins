@@ -25,8 +25,10 @@ whole tree pollute the context window up front.
 - No `tests/__init__.py`. Pytest must not promote the project
   root into `sys.path` via package discovery.
 
-Here: `setup.py` was dropped in `b08a7fd4`. The metadata lives in
-the PEP 621 `[project]` table of `pyproject.toml` (see
+Here: there has never been a `setup.py`; the metadata lives in
+the PEP 621 `[project]` table of `pyproject.toml`. There's also
+no `__init__.py` under `src/awx_plugins/` or its sub-packages:
+they're PEP 420 implicit namespace packages (see
 [NAMING_THE_DUCKS.md](NAMING_THE_DUCKS.md)).
 
 ## Python
@@ -49,9 +51,8 @@ the PEP 621 `[project]` table of `pyproject.toml` (see
   `:raises X:`. Not Google, not Napoleon, not NumPy.
 
 Here: quotes and `parametrize` tuples are enforced by
-`.ruff.toml`, and the docstring style by `.darglint`. The Cython
-sources and the libssh C API they wrap have conventions of their
-own -- see [CYTHON_AND_LIBSSH.md](CYTHON_AND_LIBSSH.md).
+`.ruff.toml` (and the latter by `.flake8` too), and the docstring
+style by `.darglint`.
 
 ## Configuration files
 

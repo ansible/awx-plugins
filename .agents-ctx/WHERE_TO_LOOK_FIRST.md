@@ -14,20 +14,29 @@ Read, in this order:
 
 Here:
 
-1. `pyproject.toml` (build backend and metadata).
-2. `src/pylibsshext/<module>.pyx` and its `.pxd`; libssh
-   declarations live under `src/pylibsshext/includes/`.
-3. `tests/conftest.py` (e.g. the `sshd_addr` fixture), then
-   `tests/unit/<module>_test.py` or `tests/integration/`.
-4. As above.
-5. `.github/workflows/ci-cd.yml`, with the `reusable-*.yml`
-   workflows it calls.
+1. `pyproject.toml` (setuptools with `setuptools-scm`, the
+   metadata, and the `awx_plugins.*` entry point groups AWX
+   discovers the plugins through).
+2. `src/awx_plugins/credentials/<plugin>.py`, or
+   `src/awx_plugins/inventory/plugins.py`. The managed credential
+   types live under `src/awx_plugins/credentials/_managed_types/`.
+3. There's no `tests/conftest.py`; go straight to the tests --
+   `tests/<topic>_test.py`, or `tests/unit/credentials/` for
+   `hashivault`.
+4. As above, plus `toxfile.py` -- an in-tree tox plugin that
+   installs from the lock files and adds the `pip-compile*` envs.
+5. `.github/workflows/ci-cd.yml`, which delegates to
+   `tox-dev/workflow`'s `reusable-tox.yml`.
 
 Other places worth knowing:
 
-- `packaging/pep517_backend/` -- the in-tree PEP 517 build backend.
-- `packaging/rpm/` -- RPM packaging, used by `.packit.yml`.
-- `build-scripts/manylinux-container-image/` -- the manylinux
-  images wheels are built in.
-- `docs/` -- Sphinx docs (RST); change notes go under
-  `docs/changelog-fragments/`.
+- `dependencies/` -- direct dependencies per tox env under
+  `direct/`, and the pinned `lock-files/` generated from them.
+  Never edit `lock-files/` by hand -- the `pip-tools` GitHub
+  Actions workflow regenerates them (see
+  `dependencies/README.md`).
+- `docs/` -- Sphinx docs (MyST Markdown and RST);
+  `docs/contributing/` includes the root `CONTRIBUTING.md` and a
+  testing guide.
+- `nitpick-style.toml` -- the style the `nitpick-check` hook
+  checks the tool configs against.
