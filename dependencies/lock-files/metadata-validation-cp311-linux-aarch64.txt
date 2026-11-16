@@ -20,7 +20,7 @@ id==1.6.1
     # via twine
 idna==3.20
     # via requests
-importlib-metadata==10.1.0
+importlib-metadata==10.2.0
     # via keyring
 jaraco-classes==3.4.0
     # via keyring
@@ -34,7 +34,9 @@ jeepney==0.9.0
     #   secretstorage
 keyring==25.7.0
     # via twine
-markdown-it-py==4.2.0
+lazy-importer==0.1.0
+    # via importlib-metadata
+markdown-it-py==4.3.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py

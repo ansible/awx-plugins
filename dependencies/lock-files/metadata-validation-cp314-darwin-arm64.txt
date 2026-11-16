@@ -22,7 +22,7 @@ jaraco-functools==4.6.0
     # via keyring
 keyring==25.7.0
     # via twine
-markdown-it-py==4.2.0
+markdown-it-py==4.3.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
