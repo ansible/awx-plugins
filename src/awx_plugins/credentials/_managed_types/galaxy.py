@@ -36,8 +36,7 @@ galaxy_service_account = ManagedCredentialType(
                 'label': _('Client ID'),
                 'type': 'string',
                 'help_text': _(
-                    'Client ID for Keycloak service account authentication. '
-                    'Requires ansible-core 2.19+.',
+                    'OAuth2 Client ID. Requires ansible-core 2.19+.',
                 ),
             },
             {
@@ -46,8 +45,7 @@ galaxy_service_account = ManagedCredentialType(
                 'type': 'string',
                 'secret': True,
                 'help_text': _(
-                    'Client Secret for Keycloak service account authentication. '
-                    'Requires ansible-core 2.19+.',
+                    'OAuth2 Client Secret. Requires ansible-core 2.19+.',
                 ),
             },
         ],
