@@ -10,6 +10,7 @@ from akeyless import ApiClient, Auth, Configuration, V2Api
 from akeyless.rest import ApiException
 
 from ..plugin import CertFiles
+from . import _inputs
 
 
 class AkeylessSession(_t.NamedTuple):
@@ -17,17 +18,6 @@ class AkeylessSession(_t.NamedTuple):
 
     api: V2Api
     token: str
-
-
-class _AuthInputs(_t.TypedDict, total=False):
-    """Credential type inputs used to authenticate to Akeyless."""
-
-    access_id: str
-    access_key: str
-    ca_cert: str | None
-    gateway_url: str
-    url: str
-    workload_identity_token: str
 
 
 _SESSION: _ctx_vars.ContextVar[AkeylessSession] = _ctx_vars.ContextVar(
@@ -75,13 +65,11 @@ def _authenticate(
     api: V2Api,
     /,
     *,
-    access_id: str = '',
+    access_id: str,
     access_key: str = '',
     workload_identity_token: str = '',
     **_other_inputs: object,
 ) -> str:
-    if not access_id:
-        raise ValueError('An Akeyless Access ID must be set.')
     # The controller injects `workload_identity_token` for the OIDC
     # credential types, the others hold a user-supplied `access_key`:
     if workload_identity_token:
@@ -103,6 +91,19 @@ def _authenticate(
             'Failed to authenticate with Akeyless: no token received.',
         )
     return auth_response.token
+
+
+@_ctx.contextmanager
+def _authenticated_session(
+    **auth_inputs: _t.Unpack[_inputs.AuthInputs],
+) -> _abc.Iterator[None]:
+    with _api_client(**auth_inputs) as api:
+        token = _authenticate(api, **auth_inputs)
+        session_token = _SESSION.set(AkeylessSession(api, token))
+        try:
+            yield
+        finally:
+            _SESSION.reset(session_token)
 
 
 @_ctx.contextmanager
@@ -135,14 +136,8 @@ def inject_session(
     @_functools.wraps(decorated_function)
     def wrapper(*args: _PT.args, **kwargs: _PT.kwargs) -> _RT:
         # The controller passes every input of the credential type in kwargs:
-        auth_inputs = _t.cast('_AuthInputs', kwargs)
-        with _wrapped_api_errors(), _api_client(**auth_inputs) as api:
-            session_token = _SESSION.set(
-                AkeylessSession(api, _authenticate(api, **auth_inputs)),
-            )
-            try:
-                return decorated_function(*args, **kwargs)
-            finally:
-                _SESSION.reset(session_token)
+        auth_inputs = _t.cast('_inputs.AuthInputs', kwargs)
+        with _wrapped_api_errors(), _authenticated_session(**auth_inputs):
+            return decorated_function(*args, **kwargs)
 
     return wrapper

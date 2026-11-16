@@ -13,6 +13,17 @@ class EmptyKwargs(_t.TypedDict):
     """Schema for zero keyword arguments."""
 
 
+class AuthInputs(_t.TypedDict, total=False):
+    """Credential type inputs used to authenticate to Akeyless."""
+
+    access_id: _t.Required[str]
+    access_key: str
+    ca_cert: str | None
+    gateway_url: str
+    url: str
+    workload_identity_token: str
+
+
 OIDC_PLUGIN_DESCRIPTION = (
     'Uses OIDC/JWT authentication for enhanced security with short-lived '
     'tokens'

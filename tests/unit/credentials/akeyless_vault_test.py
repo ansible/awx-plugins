@@ -577,17 +577,6 @@ def test_missing_auth_material_raises() -> None:
         secret.akeyless_backend(**credential_inputs, secret_path=_SECRET_PATH)
 
 
-def test_missing_access_id_raises(mock_api: MockType) -> None:
-    """A missing access ID should fail before contacting Akeyless."""
-    credential_inputs = _API_KEY_INPUTS.copy()
-    credential_inputs.pop('access_id')
-
-    with pytest.raises(RuntimeError, match='Access ID must be set'):
-        secret.akeyless_backend(**credential_inputs, secret_path=_SECRET_PATH)
-
-    mock_api.auth.assert_not_called()
-
-
 @pytest.mark.parametrize(
     'plugin',
     (
