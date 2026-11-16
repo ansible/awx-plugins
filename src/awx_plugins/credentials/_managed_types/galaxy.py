@@ -7,6 +7,7 @@ from awx_plugins.interfaces._temporary_private_django_api import (  # noqa: WPS4
     gettext_noop as _,
 )
 
+
 galaxy_service_account = ManagedCredentialType(
     namespace='galaxy_service_account',
     kind='galaxy',
