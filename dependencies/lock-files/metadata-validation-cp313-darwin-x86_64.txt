@@ -4,9 +4,9 @@
 #
 #    tox run -qq -e pip-compile-tox-env-lock -- metadata-validation --upgrade
 #
-certifi==2026.10.23
+certifi==2026.11.20
     # via requests
-charset-normalizer==3.5.2
+charset-normalizer==3.5.3
     # via requests
 docutils==0.23
     # via readme-renderer
@@ -22,7 +22,7 @@ jaraco-functools==4.6.0
     # via keyring
 keyring==25.7.0
     # via twine
-markdown-it-py==4.2.0
+markdown-it-py==4.3.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
@@ -30,7 +30,7 @@ more-itertools==11.2.1
     # via
     #   jaraco-classes
     #   jaraco-functools
-nh3==0.3.7
+nh3==0.3.8
     # via readme-renderer
 packaging==26.3
     # via
