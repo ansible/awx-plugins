@@ -6,9 +6,9 @@
 #
 backports-tarfile==1.2.0
     # via jaraco-context
-certifi==2026.10.23
+certifi==2026.11.20
     # via requests
-charset-normalizer==3.5.2
+charset-normalizer==3.5.3
     # via requests
 docutils==0.23
     # via readme-renderer
@@ -16,7 +16,7 @@ id==1.6.1
     # via twine
 idna==3.20
     # via requests
-importlib-metadata==10.1.0
+importlib-metadata==10.2.0
     # via keyring
 jaraco-classes==3.4.0
     # via keyring
@@ -26,7 +26,9 @@ jaraco-functools==4.6.0
     # via keyring
 keyring==25.7.0
     # via twine
-markdown-it-py==4.2.0
+lazy-importer==0.1.0
+    # via importlib-metadata
+markdown-it-py==4.3.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
@@ -34,7 +36,7 @@ more-itertools==11.2.1
     # via
     #   jaraco-classes
     #   jaraco-functools
-nh3==0.3.7
+nh3==0.3.8
     # via readme-renderer
 packaging==26.3
     # via
