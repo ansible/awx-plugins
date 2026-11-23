@@ -1,7 +1,5 @@
 """Ansible Galaxy and Automation Hub service account credential type."""
 
-# mypy: disable-error-code="misc"
-
 from awx_plugins.interfaces._temporary_private_api import (  # noqa: WPS436
     ManagedCredentialType,
 )
