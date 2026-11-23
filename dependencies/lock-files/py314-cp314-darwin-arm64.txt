@@ -45,7 +45,7 @@ charset-normalizer==3.5.3
     # via requests
 covdefaults==2.3.0
     # via -r dependencies/direct/py.in
-coverage==7.17.4
+coverage==7.17.5
     # via
     #   -r dependencies/direct/py.in
     #   covdefaults
