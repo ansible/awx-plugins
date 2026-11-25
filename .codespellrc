@@ -1,3 +1,8 @@
 [codespell]
 ignore-words = docs/spelling_wordlist.txt
-ignore-words-list = THIRDPARTY
+
+# Ref: https://dictionary.cambridge.org/fr/dictionnaire/anglais/fait-accompli
+# faits accomplis
+ignore-words-list =
+  accomplis,
+  THIRDPARTY,

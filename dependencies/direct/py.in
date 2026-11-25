@@ -10,5 +10,6 @@ PyJWT  # used by `tests/github_app_test.py`
 pytest
 pytest-cov
 pytest-mock
+pytest-responses
 pytest-subtests  # allows marking bits of test functions as subtests
 pytest-xdist

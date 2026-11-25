@@ -1,7 +1,7 @@
 [build-system]
 requires = [
   # Essentials:
-  "setuptools >= 64",
+  "setuptools >= 77.0.1",  # PEP 639 license expressions support
 
   # Plugins:
   "setuptools-scm >= 8",
@@ -28,8 +28,6 @@ classifiers = [  # Allowlist: https://pypi.org/classifiers/
 
   "Intended Audience :: System Administrators",
 
-  "License :: OSI Approved :: Apache Software License",
-
   "Operating System :: POSIX :: Linux",
 
   "Programming Language :: Python :: 3",
@@ -38,6 +36,7 @@ classifiers = [  # Allowlist: https://pypi.org/classifiers/
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
 
   "Topic :: System :: Systems Administration",
 
@@ -49,6 +48,10 @@ dynamic = [
 keywords = [
   "Ansible",
   "AWX",
+]
+license = "Apache-2.0"  # SPDX expression, PEP 639
+license-files = [
+  "LICENSE",
 ]
 requires-python = ">= 3.11"  # must be set from the very first release
 
@@ -127,9 +130,6 @@ controller = "awx_plugins.inventory.plugins:controller_supported"
 insights = "awx_plugins.inventory.plugins:insights_supported"
 openshift_virtualization = "awx_plugins.inventory.plugins:openshift_virtualization_supported"
 vmware_esxi = "awx_plugins.inventory.plugins:vmware_esxi_supported"
-
-[project.license]
-file = "LICENSE"
 
 # [[project.maintainers]]  # if differs from authors
 # name = ""
