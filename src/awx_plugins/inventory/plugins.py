@@ -437,23 +437,21 @@ class terraform(PluginFileInjector):
 
 
 class controller(PluginFileInjector):
-    # TODO: relying on routing for now, update after EEs pick up revised
-    # collection
-    plugin_name = 'tower'
+    plugin_name = 'controller'
     plugin_description = 'Red Hat Ansible Automation Platform'
     base_injector = 'template'
     namespace = 'awx'
     collection = 'awx'
+    use_fqcn = True
 
 
 class controller_supported(PluginFileInjector):
-    # TODO: relying on routing for now, update after EEs pick up revised
-    # collection
-    plugin_name = 'tower'
+    plugin_name = 'controller'
     plugin_description = 'Supported Red Hat Ansible Automation Platform'
     base_injector = 'template'
     namespace = 'ansible'
     collection = 'controller'
+    use_fqcn = True
 
 
 class insights(PluginFileInjector):
