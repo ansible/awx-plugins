@@ -18,12 +18,14 @@ secrets_manager_inputs: _types.PluginInputs = {
             'id': 'aws_access_key',
             'label': _('AWS Access Key'),
             'type': 'string',
+            'default': '',
         },
         {
             'id': 'aws_secret_key',
             'label': _('AWS Secret Key'),
             'type': 'string',
             'secret': True,
+            'default': '',
         },
     ],
     'metadata': [
@@ -40,8 +42,6 @@ secrets_manager_inputs: _types.PluginInputs = {
         },
     ],
     'required': [
-        'aws_access_key',
-        'aws_secret_key',
         'region_name',
         'secret_name',
     ],
@@ -51,8 +51,14 @@ secrets_manager_inputs: _types.PluginInputs = {
 def aws_secretsmanager_backend(**kwargs):
     secret_name = kwargs['secret_name']
     region_name = kwargs['region_name']
-    aws_secret_access_key = kwargs['aws_secret_key']
-    aws_access_key_id = kwargs['aws_access_key']
+    # Unset is coerced to None so that botocore falls back to its default
+    # credential chain -- environment, web identity token (IRSA), container or
+    # instance metadata. An empty string would instead be treated as a supplied
+    # credential and fail at signing time.
+    if (aws_secret_access_key := kwargs.get('aws_secret_key', '')) == '':
+        aws_secret_access_key = None
+    if (aws_access_key_id := kwargs.get('aws_access_key', '')) == '':
+        aws_access_key_id = None
 
     session = boto3.session.Session()
     client = session.client(
