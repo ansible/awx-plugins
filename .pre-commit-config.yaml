@@ -309,6 +309,7 @@ repos:
   hooks:
   - id: pylint
     additional_dependencies:
+    - akeyless >= 5.0.8  # needed by credentials.akeyless_vault and its tests
     - >-  # standard interface declarations for AWX plugins
       awx_plugins.interfaces == 0.0.1a4
     - azure-identity  # needed by credentials.azure_kv
