@@ -24,6 +24,7 @@ class MetadataDict(_t.TypedDict):
     id: str
     label: _t.NotRequired[str]
     type: _t.NotRequired[str]
+    format: _t.NotRequired[str]
     help_text: _t.NotRequired[str]
     multiline: _t.NotRequired[bool]
     default: _t.NotRequired[str | bool]
