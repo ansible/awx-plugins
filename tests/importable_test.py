@@ -85,6 +85,11 @@ credential_plugins = (
 
 managed_credential_plugins = (
     EntryPointParam(
+        'awx_plugins.managed_credentials',
+        'galaxy_service_account',
+        'awx_plugins.credentials._managed_types.galaxy:galaxy_service_account',
+    ),
+    EntryPointParam(
         'awx_plugins.managed_credentials.supported',
         'hcp_terraform',
         'awx_plugins.credentials._managed_types.terraform:hcp_terraform',
